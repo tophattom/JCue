@@ -1,5 +1,7 @@
 package jcue.domain;
 
+import java.util.ArrayList;
+
 /**
  * Base class for all different types of cues. Defines properties common to all
  * types such as name, description and start info. Also defines three abstract
@@ -12,10 +14,12 @@ public abstract class Cue {
     private String name, description;
     private StartMode startMode;
     private double startDelay;
+    private CueType type;
 
-    public Cue(String name, String description) {
+    public Cue(String name, String description, CueType type) {
         this.name = name;
         this.description = description;
+        this.type = type;
     }
 
     public String getDescription() {
@@ -32,6 +36,10 @@ public abstract class Cue {
 
     public double getStartDelay() {
         return startDelay;
+    }
+
+    public CueType getType() {
+        return type;
     }
 
     public void setDescription(String description) {
