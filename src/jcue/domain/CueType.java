@@ -13,4 +13,6 @@ public enum CueType {
     EVENT,
     CHANGE,
     NOTE;
+    
+    //TODO: toString()
 }

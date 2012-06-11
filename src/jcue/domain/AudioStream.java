@@ -15,9 +15,6 @@ public class AudioStream {
     
     private double length;
 
-    public AudioStream() {
-    }
-
     public boolean loadFile(String path) {
         if (this.stream != null) {
             Bass.BASS_StreamFree(this.stream);
@@ -30,6 +27,8 @@ public class AudioStream {
         if (this.stream == null) {
             return false;
         }
+        
+        //TODO: create waveform image
         
         double bytePos = Bass.BASS_ChannelGetLength(this.stream.asInt(), BASS_POS.BASS_POS_BYTE);
         this.length = Bass.BASS_ChannelBytes2Seconds(this.stream.asInt(), (long) bytePos);
@@ -55,6 +54,22 @@ public class AudioStream {
         if (this.stream != null) {
             Bass.BASS_ChannelStop(this.stream.asInt());
         }
+    }
+    
+    public void setPosition(double pos) {
+        if (this.stream != null) {
+            long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.stream.asInt(), pos);
+            Bass.BASS_ChannelSetPosition(this.stream.asInt(), bytePos, BASS_POS.BASS_POS_BYTE);
+        }
+    }
+    
+    public double getPosition() {
+        if (this.stream != null) {
+            long bytePos = Bass.BASS_ChannelGetPosition(this.stream.asInt(), BASS_POS.BASS_POS_BYTE);
+            return Bass.BASS_ChannelBytes2Seconds(this.stream.asInt(), bytePos);
+        }
+        
+        return -1;
     }
 
     public double getLength() {

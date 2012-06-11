@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jcue.domain;
 
 /**
@@ -11,8 +7,11 @@ package jcue.domain;
 public enum CueState {
     PLAYING,
     STOPPED,
+    PAUSED,
     FADING_IN,
     FADING_OUT,
     WAITING,
     DONE;
+    
+    //TODO: toString()
 }

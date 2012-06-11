@@ -23,6 +23,7 @@ public class JCue {
     private static boolean initBass() {
         BassInit.loadLibraries();
         boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
+        //TODO: initialize all devices?
         
         if (!BASS_Init) {
             System.out.println("Error initializing BASS: " + Bass.BASS_ErrorGetCode());

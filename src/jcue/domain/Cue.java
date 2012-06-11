@@ -57,6 +57,8 @@ public abstract class Cue {
     public void setStartMode(StartMode startMode) {
         this.startMode = startMode;
     }
+    
+    //TODO: toString() ie. "Q1 asd (Audio)"
 
     public abstract void start();
 
