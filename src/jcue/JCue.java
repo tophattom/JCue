@@ -19,13 +19,22 @@ public class JCue {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        if (initBass()) {
+            SwingUtilities.invokeLater(new MainWindow());
+        }
+    }
+    
+    private static boolean initBass() {
         BassInit.loadLibraries();
         boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
         
-        if (BASS_Init) {
-            SwingUtilities.invokeLater(new MainWindow());
-        } else {
-            System.out.println("BASS error: " + Bass.BASS_ErrorGetCode());
+        if (!BASS_Init) {
+            System.out.println("Error initializing BASS: " + Bass.BASS_ErrorGetCode());
+            return false;
         }
+        
+        System.out.println("BASS initialized using default output device!");
+        
+        return true;
     }
 }
