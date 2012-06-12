@@ -1,6 +1,7 @@
 package jcue.domain;
 
 /**
+ * 
  *
  * @author Jaakko
  */

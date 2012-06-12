@@ -6,6 +6,7 @@ import jouvieje.bass.defines.BASS_POS;
 import jouvieje.bass.structures.HSTREAM;
 
 /**
+ * Handles audio playback.
  *
  * @author Jaakko
  */
