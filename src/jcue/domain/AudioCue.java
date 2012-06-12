@@ -17,6 +17,12 @@ public class AudioCue extends Cue {
 
         this.state = CueState.STOPPED;
         this.audio = new AudioStream();
+        
+        this.volume = 1.0;
+        this.pan = 0.0;
+        
+        this.fadeIn = 0.0;
+        this.fadeOut = 0.0;
     }
 
     public void loadAudio(String filePath) {
@@ -32,14 +38,20 @@ public class AudioCue extends Cue {
     @Override
     public void start() {
         if (this.audio != null) {
+            //Set audio position to start if the cue is not paused
             if (this.state == CueState.STOPPED) {
                 this.audio.setPosition(this.inPos);
+                this.audio.setVolume(this.volume);
             }
             
-            //TODO: fade in
+            //Fade in, if there is fade in time specified
+            if (this.fadeIn != 0) {
+                this.audio.setVolume(0);    //Start fading from silent
+                this.audio.startVolumeChange(this.volume, this.fadeIn);
+            }
             
-            this.audio.play();
-            this.state = CueState.PLAYING;
+            this.audio.play();              //Start playing the audio
+            this.state = CueState.PLAYING;  //Set state to playing
             
             //TODO: start automatic cues
         }
