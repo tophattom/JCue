@@ -21,6 +21,26 @@ public class JCue {
     }
     
     private static boolean initBass() {
+        setLibraryPath();
+        
+        //Load the libraries
+        BassInit.loadLibraries();
+        
+        //Initialize default sound device with 44100 sample rate
+        boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
+        //TODO: initialize all devices?
+        
+        if (!BASS_Init) {
+            System.out.println("Error initializing BASS: " + Bass.BASS_ErrorGetCode());
+            return false;
+        }
+        
+        System.out.println("BASS initialized using default output device!");
+        
+        return true;
+    }
+    
+    private static boolean setLibraryPath() {
         //Get OS name and architecture
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch");
@@ -45,22 +65,9 @@ public class JCue {
         //Set the BASS library location according to the os type
         if (libPath != null) {
             System.setProperty("java.library.path", libPath);
+            return true;
         }
         
-        //Load the libraries
-        BassInit.loadLibraries();
-        
-        //Initialize default sound device with 44100 sample rate
-        boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
-        //TODO: initialize all devices?
-        
-        if (!BASS_Init) {
-            System.out.println("Error initializing BASS: " + Bass.BASS_ErrorGetCode());
-            return false;
-        }
-        
-        System.out.println("BASS initialized using default output device!");
-        
-        return true;
+        return false;
     }
 }
