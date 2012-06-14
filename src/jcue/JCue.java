@@ -21,7 +21,36 @@ public class JCue {
     }
     
     private static boolean initBass() {
+        //Get OS name and architecture
+        String os = System.getProperty("os.name").toLowerCase();
+        String arch = System.getProperty("os.arch");
+        String libPath = null;
+        
+        if (os.contains("windows")) {       //Is Windows
+            if (arch.equals("x86")) {
+                libPath = "lib/win32";
+            } else if (arch.equals("x64")) {
+                libPath = "lib/win64";
+            }
+        } else if (os.contains("linux")) {  //Is Linux
+            if (arch.equals("x86")) {
+                libPath = "lib/linux32";
+            } else if (arch.equals("x64")) {
+                libPath = "lib/linux64";
+            }
+        } else if (os.contains("mac")) {    //Is Mac
+            libPath = "lib/mac";
+        }
+        
+        //Set the BASS library location according to the os type
+        if (libPath != null) {
+            System.setProperty("java.library.path", libPath);
+        }
+        
+        //Load the libraries
         BassInit.loadLibraries();
+        
+        //Initialize default sound device with 44100 sample rate
         boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
         //TODO: initialize all devices?
         
