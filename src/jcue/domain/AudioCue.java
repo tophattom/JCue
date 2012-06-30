@@ -5,7 +5,7 @@ package jcue.domain;
  *
  * @author Jaakko
  */
-public class AudioCue extends Cue {
+public class AudioCue extends AbstractCue {
 
     private AudioStream audio;
     private double inPos, outPos;

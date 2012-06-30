@@ -9,14 +9,14 @@ import java.util.ArrayList;
  *
  * @author Jaakko
  */
-public abstract class Cue {
+public abstract class AbstractCue {
 
     private String name, description;
     private StartMode startMode;
     private double startDelay;
     private CueType type;
 
-    public Cue(String name, String description, CueType type) {
+    public AbstractCue(String name, String description, CueType type) {
         this.name = name;
         this.description = description;
         this.type = type;

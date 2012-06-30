@@ -20,6 +20,11 @@ public class JCue {
         }
     }
     
+    /**
+     * Initializes BASS and loads necessary plugins.
+     * 
+     * @return Returns true if everything went smoothly
+     */
     private static boolean initBass() {
         setLibraryPath();
         
@@ -40,6 +45,11 @@ public class JCue {
         return true;
     }
     
+    /**
+     * Sets the library path based on the operating system.
+     * 
+     * @return Returns true if path succesfully set
+     */
     private static boolean setLibraryPath() {
         //Get OS name and architecture
         String os = System.getProperty("os.name").toLowerCase();
