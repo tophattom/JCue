@@ -1,6 +1,8 @@
 package jcue.ui;
 
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -9,19 +11,24 @@ import javax.swing.*;
  */
 public class MainWindow implements Runnable {
 
-    JFrame frame;
+    private JFrame frame;
     
-    JMenuBar menuBar;
-    JMenu fileMenu, aboutMenu;
+    private JMenuBar menuBar;
+    private JMenu fileMenu, aboutMenu;
     
-    JPanel topPanel;
-    JList mainCueList;
+    private JPanel topPanel;
+    private JList mainCueList;
     
-    JButton playButton, pauseButton, stopButton;
-    JButton editorButton;
+    private JButton playButton, pauseButton, stopButton;
+    private JButton editorButton;
     
     @Override
     public void run() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) { 
+        }
+        
         frame = new JFrame("Cue");
         frame.setPreferredSize(new Dimension(1024, 768));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -50,6 +57,14 @@ public class MainWindow implements Runnable {
     private void createComponents(Container container) {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         
+        //UI testing shit: REMOVE
+        JPanel center = new JPanel();
+        AbstractCueUI ui = new AbstractCueUI();
+        ui.showUI(center);
+        AudioCueUI aui = new AudioCueUI();
+        aui.showUI(center);
+        //**********
+        
         mainCueList = new JList();
         
         //Buttons for playback
@@ -74,6 +89,6 @@ public class MainWindow implements Runnable {
         
         //Add panel to top and list to center
         container.add(topPanel, BorderLayout.NORTH);
-        container.add(mainCueList, BorderLayout.CENTER);
+        container.add(center, BorderLayout.CENTER); //REMOVE center panel
     }
 }
