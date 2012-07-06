@@ -2,6 +2,7 @@ package jcue.ui;
 
 import java.awt.*;
 import javax.swing.*;
+import jcue.ui.event.MainButtonListener;
 
 /**
  *
@@ -20,6 +21,10 @@ public class MainWindow implements Runnable {
     private JButton playButton, pauseButton, stopButton;
     private JButton editorButton;
     
+    private EditorWindow editor;
+    
+    private MainButtonListener buttonListener;
+    
     @Override
     public void run() {
         try {
@@ -33,6 +38,10 @@ public class MainWindow implements Runnable {
         
         createMenus();
         createComponents(frame.getContentPane());
+        
+        this.editor = new EditorWindow();
+        
+        this.buttonListener = new MainButtonListener(this);
         
         frame.pack();
         frame.setVisible(true);
@@ -78,6 +87,8 @@ public class MainWindow implements Runnable {
         //Opens the editor
         editorButton = new JButton("Editor");
         editorButton.setMargin(new Insets(10, 10, 10, 10));
+        editorButton.setActionCommand("editor");
+        editorButton.addActionListener(this.buttonListener);
         
         //Add to panel
         topPanel.add(playButton);
@@ -88,5 +99,9 @@ public class MainWindow implements Runnable {
         //Add panel to top and list to center
         container.add(topPanel, BorderLayout.NORTH);
         container.add(center, BorderLayout.CENTER); //REMOVE center panel
+    }
+    
+    public void showEditorWindow() {
+        this.editor.setVisible(true);
     }
 }
