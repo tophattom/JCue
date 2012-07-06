@@ -13,7 +13,7 @@ import java.awt.GridBagConstraints;
 public class UtilsUI {
     
     public static void setGBC(GridBagConstraints c, int gridx, int gridy,
-            int weightx, int weighty, int gridwidth, int gridheight, int fill) {
+            double weightx, double weighty, int gridwidth, int gridheight, int fill) {
         c.gridx = gridx;
         c.gridy = gridy;
         

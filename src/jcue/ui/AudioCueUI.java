@@ -55,6 +55,11 @@ public class AudioCueUI {
         this.volumeSlider = new JSlider(0, 1000);
         this.volumeField = new JTextField();
         
+        this.fadeInLabel = new JLabel("Fade in:");
+        this.fadeInField = new JTextField();
+        this.fadeOutLabel = new JLabel("Fade out:");
+        this.fadeOutField = new JTextField();
+        
         this.panLabel = new JLabel("Panning:");
         this.panSlider = new JSlider(-1000, 1000);
         this.panField = new JTextField();
@@ -78,66 +83,93 @@ public class AudioCueUI {
     public void showUI(JPanel container) {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 3, 5, 3);
-        c.fill = GridBagConstraints.HORIZONTAL;
         
         //File field
-        c.gridx = 0;
-        c.gridy = 4;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 4, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.fileLabel, c);
         
-        c.gridx = 1;
-        c.weightx = 0.5;
-        c.gridwidth = 3;
+        UtilsUI.setGBC(c, 1, 4, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.fileField, c);
         
-        c.gridx = 4;
-        c.weightx = 0;
-        c.gridwidth = 1;
+        UtilsUI.setGBC(c, 4, 4, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.fileButton, c);
         //************
         
         //Length field
-        c.gridy = 5;
-        c.gridx = 0;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 5, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.lengthLabel, c);
         
-        c.gridx = 1;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 1, 5, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.lengthField, c);
         //*********
         
         //In, out and volume
-        c.gridy = 6;
-        c.gridx = 0;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.inLabel, c);
         
-        c.gridx = 1;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.inField, c);
         
-        c.gridx = 2;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 2, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.outLabel, c);
         
-        c.gridx = 3;
-        c.weightx = 0.5;
+        UtilsUI.setGBC(c, 3, 6, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.outField, c);
         
-        c.gridx = 4;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 4, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.volumeLabel, c);
         
-        c.gridx = 5;
-        c.weightx = 0.5;
+        UtilsUI.setGBC(c, 5, 6, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.volumeSlider, c);
         
-        c.gridx = 6;
+        UtilsUI.setGBC(c, 6, 6, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.volumeField, c);
         //***********
         
+        //Fade in, fade out and panning
+        UtilsUI.setGBC(c, 0, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.fadeInLabel, c);
         
+        UtilsUI.setGBC(c, 1, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.fadeInField, c);
+        
+        UtilsUI.setGBC(c, 2, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.fadeOutLabel, c);
+        
+        UtilsUI.setGBC(c, 3, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.fadeOutField, c);
+        
+        UtilsUI.setGBC(c, 4, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.panLabel, c);
+        
+        UtilsUI.setGBC(c, 5, 7, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.panSlider, c);
+        
+        UtilsUI.setGBC(c, 6, 7, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.panField, c);
+        //*************
+        
+        //Looping controls
+        UtilsUI.setGBC(c, 0, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopStartLabel, c);
+        
+        UtilsUI.setGBC(c, 1, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopStartField, c);
+        
+        UtilsUI.setGBC(c, 2, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopEndLabel, c);
+        
+        UtilsUI.setGBC(c, 3, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopEndField, c);
+        
+        UtilsUI.setGBC(c, 4, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopCountLabel, c);
+        
+        UtilsUI.setGBC(c, 5, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopCountField, c);
+        
+        UtilsUI.setGBC(c, 6, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        container.add(this.loopCheck, c);
+        //**********
     }
 }

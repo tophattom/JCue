@@ -52,60 +52,41 @@ public class AbstractCueUI {
         c.insets = new Insets(5, 3, 5, 3);
         
         //Name field
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 0, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.nameLabel, c);
         
-        c.gridx = 1;
-        c.gridy = 0;
-        c.gridwidth = 3;
-        c.weightx = 0.5;
+        UtilsUI.setGBC(c, 1, 0, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.nameField, c);
         
         //Description field
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 1, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.descLabel, c);
         
-        c.gridx = 1;
-        c.weightx = 0.5;
-        c.gridwidth = 3;
+        UtilsUI.setGBC(c, 1, 1, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.descField, c);
         
         //Start mode select line
         //Start mode
         c.insets = new Insets(5, 3, 20, 3);
         
-        c.gridwidth = 1;
-        c.gridx = 0;
-        c.gridy = 3;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 0, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.startModeLabel, c);
         
-        c.gridx = 1;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 1, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.startModeSelect, c);
         
         //Cue
-        c.gridx = 2;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 2, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.cueLabel, c);
         
-        c.gridx = 3;
-        c.weightx = 0.5;
+        UtilsUI.setGBC(c, 3, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.cueSelect, c);
         
         //Delay
-        c.gridx = 4;
-        c.weightx = 0;
+        UtilsUI.setGBC(c, 4, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.delayLabel, c);
         
-        c.gridx = 5;
-        c.weightx = 0.5;
+        UtilsUI.setGBC(c, 5, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.delayField, c);
         
         container.revalidate();
