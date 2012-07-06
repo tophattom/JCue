@@ -36,12 +36,12 @@ public class MainWindow implements Runnable {
         frame.setPreferredSize(new Dimension(1024, 768));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        createMenus();
-        createComponents(frame.getContentPane());
-        
         this.editor = new EditorWindow();
         
         this.buttonListener = new MainButtonListener(this);
+        
+        createMenus();
+        createComponents(frame.getContentPane());
         
         frame.pack();
         frame.setVisible(true);
@@ -63,15 +63,7 @@ public class MainWindow implements Runnable {
     
     private void createComponents(Container container) {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        
-        //UI testing shit: REMOVE
-        JPanel center = new JPanel();
-        AbstractCueUI ui = new AbstractCueUI();
-        ui.showUI(center);
-        AudioCueUI aui = new AudioCueUI();
-        aui.showUI(center);
-        //**********
-        
+
         mainCueList = new JList();
         
         //Buttons for playback
@@ -98,7 +90,6 @@ public class MainWindow implements Runnable {
         
         //Add panel to top and list to center
         container.add(topPanel, BorderLayout.NORTH);
-        container.add(center, BorderLayout.CENTER); //REMOVE center panel
     }
     
     public void showEditorWindow() {

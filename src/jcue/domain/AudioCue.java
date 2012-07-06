@@ -1,5 +1,7 @@
 package jcue.domain;
 
+import jcue.ui.AudioCueUI;
+
 /**
  * 
  *
@@ -12,6 +14,8 @@ public class AudioCue extends AbstractCue {
     private double fadeIn, fadeOut;
     private CueState state;
     private double volume, pan;
+    
+    private static AudioCueUI ui = new AudioCueUI();
 
     public AudioCue(String name, String description) {
         super(name, description, CueType.AUDIO);

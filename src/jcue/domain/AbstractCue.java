@@ -1,6 +1,7 @@
 package jcue.domain;
 
 import java.util.ArrayList;
+import jcue.ui.AbstractCueUI;
 
 /**
  * Base class for all different types of cues. Defines properties common to all
@@ -15,6 +16,8 @@ public abstract class AbstractCue {
     private StartMode startMode;
     private double startDelay;
     private CueType type;
+    
+    private static AbstractCueUI ui = new AbstractCueUI();
 
     public AbstractCue(String name, String description, CueType type) {
         this.name = name;
