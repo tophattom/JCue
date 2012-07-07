@@ -54,10 +54,8 @@ public class EditorWindow extends JFrame {
         
         //Panels for cue controls
         this.basicPanel = new JPanel();
-        this.basicPanel.setBackground(Color.WHITE);
         
         this.effectPanel = new JPanel();
-        this.effectPanel.setBackground(Color.WHITE);
         //**********
         
         //UI testing shit: REMOVE

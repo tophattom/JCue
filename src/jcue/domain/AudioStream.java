@@ -1,8 +1,10 @@
 package jcue.domain;
 
+import java.awt.image.BufferedImage;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.BASS_ATTRIB;
 import jouvieje.bass.defines.BASS_POS;
+import jouvieje.bass.defines.BASS_STREAM;
 import jouvieje.bass.structures.HSTREAM;
 
 /**
@@ -16,6 +18,10 @@ public class AudioStream {
     private String filePath;
     
     private double length;
+    
+    private BufferedImage waveImg;
+    public static final int WAVEFORM_W = 500;
+    public static final int WAVEFORM_H = 120;
 
     public boolean loadFile(String path) {
         if (this.stream != null) {
@@ -110,5 +116,14 @@ public class AudioStream {
 
     public String getFilePath() {
         return filePath;
+    }
+    
+    private void createWaveform() {
+        HSTREAM tmpStream = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE);
+        
+        if (this.waveImg == null) {
+            //TODO: draw waveform to image
+        }
+        
     }
 }

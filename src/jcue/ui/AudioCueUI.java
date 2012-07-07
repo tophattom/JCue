@@ -4,6 +4,7 @@
  */
 package jcue.ui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.*;
@@ -37,33 +38,46 @@ public class AudioCueUI {
     private JButton playButton, pauseButton, stopButton;
 
     public AudioCueUI() {
+        //File field
         this.fileLabel = new JLabel("File:");
         this.fileField = new JTextField();
         this.fileField.setEditable(false);
         this.fileButton = new JButton("...");
+        //********
         
+        //Length field
         this.lengthLabel = new JLabel("Length:");
         this.lengthField = new JTextField();
         this.lengthField.setEditable(false);
+        //*******
         
+        //In and out fields
         this.inLabel = new JLabel("Start:");
         this.outLabel = new JLabel("End:");
         this.inField = new JTextField();
         this.outField = new JTextField();
+        //**********
         
+        //VOlume control
         this.volumeLabel = new JLabel("Volume:");
         this.volumeSlider = new JSlider(0, 1000);
         this.volumeField = new JTextField();
+        //********
         
+        //Fade in and fade out
         this.fadeInLabel = new JLabel("Fade in:");
         this.fadeInField = new JTextField();
         this.fadeOutLabel = new JLabel("Fade out:");
         this.fadeOutField = new JTextField();
+        //********
         
+        //Pan control
         this.panLabel = new JLabel("Panning:");
         this.panSlider = new JSlider(-1000, 1000);
         this.panField = new JTextField();
+        //********
         
+        //Loop controls
         this.loopStartLabel = new JLabel("Loop start:");
         this.loopStartField = new JTextField();
         this.loopEndLabel = new JLabel("Loop end:");
@@ -71,6 +85,7 @@ public class AudioCueUI {
         this.loopCountLabel = new JLabel("Loop count:");
         this.loopCountField = new JTextField();
         this.loopCheck = new JCheckBox("Loop");
+        //*********
         
         //Waveform
         
@@ -107,7 +122,7 @@ public class AudioCueUI {
         UtilsUI.setGBC(c, 0, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.inLabel, c);
         
-        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.NONE);
         container.add(this.inField, c);
         
         UtilsUI.setGBC(c, 2, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
