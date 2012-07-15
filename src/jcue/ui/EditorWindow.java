@@ -6,6 +6,8 @@ package jcue.ui;
 
 import java.awt.*;
 import javax.swing.*;
+import jcue.domain.AudioCue;
+import jcue.ui.event.EditorListListener;
 
 /**
  *
@@ -32,6 +34,13 @@ public class EditorWindow extends JFrame {
     }
 
     private void createComponents(Container container) {
+        //Panels for cue controls
+        this.basicPanel = new JPanel();
+        
+        this.effectPanel = new JPanel();
+        //**********
+        
+        
         //Buttons for adding new cues
         this.audioButton = new JButton("Audio cue");
         this.audioButton.setMargin(new Insets(10, 10, 10, 10));
@@ -41,9 +50,15 @@ public class EditorWindow extends JFrame {
         
         this.changeButton = new JButton("Level change cue");
         this.changeButton.setMargin(new Insets(10, 10, 10, 10));
+        //*************
         
-        this.cueList = new JList();
+        //Cue list
+        DefaultListModel lm = new DefaultListModel();
+        lm.addElement(new AudioCue("Q1", "Testicue"));  //TODO: Remove audio cue creation
+        
+        this.cueList = new JList(lm);
         this.cueList.setPreferredSize(new Dimension(200, 100));
+        this.cueList.addListSelectionListener(new EditorListListener(cueList, this.basicPanel));
         //**********
         
         //Buttons for managing cue list
@@ -52,18 +67,14 @@ public class EditorWindow extends JFrame {
         this.deleteButton = new JButton("X");
         //**********
         
-        //Panels for cue controls
-        this.basicPanel = new JPanel();
         
-        this.effectPanel = new JPanel();
-        //**********
         
-        //UI testing shit: REMOVE
-        AbstractCueUI ui = new AbstractCueUI();
-        ui.showUI(basicPanel);
-        AudioCueUI aui = new AudioCueUI();
-        aui.showUI(basicPanel);
-        //**********
+//        //UI testing shit: REMOVE
+//        AbstractCueUI ui = new AbstractCueUI();
+//        ui.showUI(basicPanel);
+//        AudioCueUI aui = new AudioCueUI();
+//        aui.showUI(basicPanel);
+//        //**********
         
         //Tabs for cue controls
         this.editorTabs = new JTabbedPane();

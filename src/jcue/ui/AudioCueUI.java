@@ -187,4 +187,14 @@ public class AudioCueUI {
         container.add(this.loopCheck, c);
         //**********
     }
+    
+    public void setVolumeControlValue(double value) {
+        this.volumeField.setText(String.valueOf((1000 * value) / 10));
+        this.volumeSlider.setValue((int) (1000 * value));
+    }
+    
+    public void setPanControlValue(double value) {
+        this.panField.setText(String.valueOf((1000 * value) / 10));
+        this.panSlider.setValue((int) (1000 * value));
+    }
 }

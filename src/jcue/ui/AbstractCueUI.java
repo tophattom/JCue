@@ -17,7 +17,7 @@ import javax.swing.JTextField;
  * @author Jaakko
  */
 public class AbstractCueUI {
-    
+
     private JLabel nameLabel, descLabel;
     private JTextField nameField, descField;
     
@@ -28,67 +28,79 @@ public class AbstractCueUI {
     public AbstractCueUI() {
         this.nameLabel = new JLabel("Name:");
         this.nameField = new JTextField();
-        
+
         this.descLabel = new JLabel("Description:");
         this.descField = new JTextField();
-        
+
         this.startModeLabel = new JLabel("Start mode:");
         String[] modes = {"Manual", "After start of cue", "After end of cue", "Hotkey"};
         this.startModeSelect = new JComboBox(modes);
-        
+
         this.cueLabel = new JLabel("Cue:");
         this.cueSelect = new JComboBox();
-        
+
         this.delayLabel = new JLabel("Delay:");
         this.delayField = new JTextField();
     }
-    
+
     public void showUI(JPanel container) {
         container.removeAll();
-        
+
         container.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        
+
         c.insets = new Insets(5, 3, 5, 3);
-        
+
         //Name field
         UtilsUI.setGBC(c, 0, 0, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.nameLabel, c);
-        
+
         UtilsUI.setGBC(c, 1, 0, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.nameField, c);
-        
+
         //Description field
         UtilsUI.setGBC(c, 0, 1, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.descLabel, c);
-        
+
         UtilsUI.setGBC(c, 1, 1, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.descField, c);
-        
+
         //Start mode select line
         //Start mode
         c.insets = new Insets(5, 3, 20, 3);
-        
+
         UtilsUI.setGBC(c, 0, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.startModeLabel, c);
-        
+
         UtilsUI.setGBC(c, 1, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.startModeSelect, c);
-        
+
         //Cue
         UtilsUI.setGBC(c, 2, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.cueLabel, c);
-        
+
         UtilsUI.setGBC(c, 3, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.cueSelect, c);
-        
+
         //Delay
         UtilsUI.setGBC(c, 4, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.delayLabel, c);
-        
+
         UtilsUI.setGBC(c, 5, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.delayField, c);
-        
+
         container.revalidate();
+    }
+
+    public void setNameFieldText(String text) {
+        this.nameField.setText(text);
+    }
+
+    public void setDescFieldText(String text) {
+        this.descField.setText(text);
+    }
+
+    public void setDelayFieldValue(double value) {
+        this.delayField.setText(UtilsUI.secondsToString(value));
     }
 }

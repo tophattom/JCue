@@ -1,7 +1,9 @@
 package jcue.domain;
 
 import java.util.ArrayList;
+import javax.swing.JPanel;
 import jcue.ui.AbstractCueUI;
+import jcue.ui.UtilsUI;
 
 /**
  * Base class for all different types of cues. Defines properties common to all
@@ -62,6 +64,13 @@ public abstract class AbstractCue {
     }
     
     //TODO: toString() ie. "Q1 asd (Audio)"
+    
+    public void updateUI(JPanel panel) {
+        ui.showUI(panel);
+        ui.setNameFieldText(this.name);
+        ui.setDescFieldText(this.description);
+        ui.setDelayFieldValue(this.startDelay);
+    }
 
     public abstract void start();
 

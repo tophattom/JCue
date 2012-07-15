@@ -1,5 +1,6 @@
 package jcue.domain;
 
+import javax.swing.JPanel;
 import jcue.ui.AudioCueUI;
 
 /**
@@ -133,5 +134,15 @@ public class AudioCue extends AbstractCue {
 
     public void setVolume(double volume) {
         this.volume = volume;
+    }
+    
+    @Override
+    public void updateUI(JPanel panel) {
+        super.updateUI(panel);
+        
+        ui.showUI(panel);
+        
+        ui.setVolumeControlValue(this.volume);
+        ui.setPanControlValue(this.pan);
     }
 }
