@@ -122,7 +122,7 @@ public class AudioCueUI {
         UtilsUI.setGBC(c, 0, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.inLabel, c);
         
-        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.NONE);
+        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.inField, c);
         
         UtilsUI.setGBC(c, 2, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
