@@ -10,6 +10,45 @@
 <project name="JCue" default="default" basedir=".">
     <description>Builds, tests, and runs the project JCue.</description>
     <import file="nbproject/build-impl.xml"/>
+
+    <!-- **************************************** -->
+    <!-- Detect operating system and architecture -->
+    <!-- **************************************** -->
+    <condition property="libDir" value="lib/win32/">
+      <os family="windows" arch="x86" />
+    </condition>
+
+    <condition property="libDir" value="lib/win64/">
+      <os family="windows" arch="x64" />
+    </condition>
+
+    <condition property="libDir" value="lib/mac/">
+      <os family="mac" />
+    </condition>
+
+    <condition property="libDir" value="lib/linux32/">
+      <os family="unix" arch="x86" />
+    </condition>
+
+    <condition property="libDir" value="lib/linux64/">
+      <os family="unix" arch="x64" />
+    </condition>
+    <!-- ****************** -->
+
+    <!-- ************************************ -->
+    <!-- Copy necessary .dll/.so/.dylib files -->
+    <!-- based on the operating system -->
+    <!-- ************************************ -->
+
+    <!-- Windows 32bit -->
+    <target name="-post-jar">
+        <copy todir="${dist.dir}/${libDir}">
+          <fileset dir="${libDir}" />
+        </copy>
+    </target>
+    <!-- ****************** -->
+
+
     <!--
 
     There exist several targets which are by default empty and which can be 
