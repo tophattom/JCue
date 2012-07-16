@@ -197,4 +197,20 @@ public class AudioCueUI {
         this.panField.setText(String.valueOf((1000 * value) / 10));
         this.panSlider.setValue((int) (1000 * value));
     }
+    
+    public void setFadeInFieldValue(double value) {
+        this.fadeInField.setText(String.valueOf(value));
+    }
+    
+    public void setFadeOutFieldValue(double value) {
+        this.fadeOutField.setText(String.valueOf(value));
+    }
+    
+    public void setInFieldValue(double value) {
+        this.inField.setText(UtilsUI.secondsToString(value));
+    }
+    
+    public void setOutFieldValue(double value) {
+        this.outField.setText(UtilsUI.secondsToString(value));
+    }
 }

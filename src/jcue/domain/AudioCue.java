@@ -142,6 +142,12 @@ public class AudioCue extends AbstractCue {
         
         ui.showUI(panel);
         
+        ui.setInFieldValue(this.inPos);
+        ui.setOutFieldValue(this.outPos);
+        
+        ui.setFadeInFieldValue(this.fadeIn);
+        ui.setFadeOutFieldValue(this.fadeOut);
+        
         ui.setVolumeControlValue(this.volume);
         ui.setPanControlValue(this.pan);
     }

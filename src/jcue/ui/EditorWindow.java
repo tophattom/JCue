@@ -54,11 +54,13 @@ public class EditorWindow extends JFrame {
         
         //Cue list
         DefaultListModel lm = new DefaultListModel();
-        lm.addElement(new AudioCue("Q1", "Testicue"));  //TODO: Remove audio cue creation
+        AudioCue c = new AudioCue("Q1", "testicue");
+        c.loadAudio("G:\\Musiikki\\Adele\\11 Someone Like You.mp3");
+        lm.addElement(c);  //TODO: Remove audio cue creation
         
         this.cueList = new JList(lm);
         this.cueList.setPreferredSize(new Dimension(200, 100));
-        this.cueList.addListSelectionListener(new EditorListListener(cueList, this.basicPanel));
+        this.cueList.addListSelectionListener(new EditorListListener(this.cueList, this.basicPanel));
         //**********
         
         //Buttons for managing cue list
