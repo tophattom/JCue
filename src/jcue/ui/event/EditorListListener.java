@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jcue.ui.event;
 
 import javax.swing.JList;
@@ -23,8 +19,6 @@ public class EditorListListener implements ListSelectionListener {
         this.list = list;
         this.panel = panel;
     }
-    
-    
 
     @Override
     public void valueChanged(ListSelectionEvent lse) {

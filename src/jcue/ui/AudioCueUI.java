@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.*;
+import jcue.domain.AudioStream;
 
 /**
  *
@@ -33,7 +34,7 @@ public class AudioCueUI {
     private JTextField loopStartField, loopEndField, loopCountField;
     private JCheckBox loopCheck;
     
-    //private WaveformPanel waveform;
+    private WaveformPanel waveform;
     
     private JButton playButton, pauseButton, stopButton;
 
@@ -88,6 +89,8 @@ public class AudioCueUI {
         //*********
         
         //Waveform
+        this.waveform = new WaveformPanel(100, 100);
+        //***********
         
         //TODO: change texts to icons
         this.playButton = new JButton("Play");
@@ -186,7 +189,13 @@ public class AudioCueUI {
         UtilsUI.setGBC(c, 6, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.loopCheck, c);
         //**********
+        
+        //Waveform panel and transport controls
+        UtilsUI.setGBC(c, 0, 9, 1, 0.5, 7, 1, GridBagConstraints.BOTH);
+        container.add(this.waveform, c);
+        //**********
     }
+    
     
     public void setVolumeControlValue(double value) {
         this.volumeField.setText(String.format("%.2f", (1000 * value) / 10));
@@ -212,5 +221,9 @@ public class AudioCueUI {
     
     public void setOutFieldValue(double value) {
         this.outField.setText(UtilsUI.secondsToString(value));
+    }
+    
+    public void setWaveformData(AudioStream as) {
+        this.waveform.setAudioStream(as);
     }
 }

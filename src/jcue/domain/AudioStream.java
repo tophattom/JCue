@@ -1,11 +1,15 @@
 package jcue.domain;
 
 import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.BASS_ATTRIB;
 import jouvieje.bass.defines.BASS_POS;
+import jouvieje.bass.defines.BASS_SAMPLE;
 import jouvieje.bass.defines.BASS_STREAM;
 import jouvieje.bass.structures.HSTREAM;
+import jouvieje.bass.utils.BufferUtils;
 
 /**
  * Handles audio playback.
@@ -116,6 +120,18 @@ public class AudioStream {
 
     public String getFilePath() {
         return filePath;
+    }
+    
+    public FloatBuffer getStreamData() {
+        HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
+        long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
+        int size = (int) (dataLength / 4);
+        
+        ByteBuffer buffer = BufferUtils.newByteBuffer(size);
+        
+        Bass.BASS_ChannelGetData(tmp.asInt(), buffer, size);
+
+        return buffer.asFloatBuffer();
     }
     
     private void createWaveform() {

@@ -150,5 +150,7 @@ public class AudioCue extends AbstractCue {
         
         ui.setVolumeControlValue(this.volume);
         ui.setPanControlValue(this.pan);
+        
+        ui.setWaveformData(this.audio);
     }
 }
