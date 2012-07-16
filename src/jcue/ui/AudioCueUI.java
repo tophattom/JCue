@@ -189,21 +189,21 @@ public class AudioCueUI {
     }
     
     public void setVolumeControlValue(double value) {
-        this.volumeField.setText(String.valueOf((1000 * value) / 10));
+        this.volumeField.setText(String.format("%.2f", (1000 * value) / 10));
         this.volumeSlider.setValue((int) (1000 * value));
     }
     
     public void setPanControlValue(double value) {
-        this.panField.setText(String.valueOf((1000 * value) / 10));
+        this.panField.setText(String.format("%.2f", (1000 * value) / 10));
         this.panSlider.setValue((int) (1000 * value));
     }
     
     public void setFadeInFieldValue(double value) {
-        this.fadeInField.setText(String.valueOf(value));
+        this.fadeInField.setText(String.format("%.2f", value));
     }
     
     public void setFadeOutFieldValue(double value) {
-        this.fadeOutField.setText(String.valueOf(value));
+        this.fadeOutField.setText(String.format("%.2f", value));
     }
     
     public void setInFieldValue(double value) {

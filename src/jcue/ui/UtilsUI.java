@@ -32,9 +32,9 @@ public class UtilsUI {
         String secs;
         
         if (tmp < 10) {
-            secs = "0" + tmp;
+            secs = "0" + String.format("%.2f", tmp);
         } else {
-            secs = String.valueOf(tmp);
+            secs = String.format("%.2f", tmp);
         }
         
         return "" + mins + ":" + secs;

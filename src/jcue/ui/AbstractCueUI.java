@@ -101,6 +101,6 @@ public class AbstractCueUI {
     }
 
     public void setDelayFieldValue(double value) {
-        this.delayField.setText(UtilsUI.secondsToString(value));
+        this.delayField.setText(String.format("%.2f", value));
     }
 }
