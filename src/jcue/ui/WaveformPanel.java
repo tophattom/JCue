@@ -57,7 +57,7 @@ public class WaveformPanel extends JPanel {
         for (int i = 0; i < width; i++) {
             float maxValue = 0.0f;
             
-            for (int k = Math.min(this.streamData.capacity(), i * step); k <= Math.min(this.streamData.capacity(), i * step + step); k++) {
+            for (int k = (i * step); k < (i * step + step); k++) {
                 if (this.streamData.get(k) > maxValue) {
                     maxValue = this.streamData.get(k);
                 }
