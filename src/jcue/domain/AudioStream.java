@@ -24,6 +24,8 @@ public class AudioStream {
     private double length;
     
     private BufferedImage waveImg;
+    
+    private FloatBuffer streamData;
     public static final int WAVEFORM_W = 500;
     public static final int WAVEFORM_H = 120;
 
@@ -46,6 +48,8 @@ public class AudioStream {
         this.length = Bass.BASS_ChannelBytes2Seconds(this.stream.asInt(), (long) bytePos);
 
         this.filePath = path;
+        
+        loadStreamData();
 
         return true;
     }
@@ -123,15 +127,7 @@ public class AudioStream {
     }
     
     public FloatBuffer getStreamData() {
-        HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
-        long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
-        int size = (int) (dataLength / 4);
-        
-        ByteBuffer buffer = BufferUtils.newByteBuffer(size);
-        
-        Bass.BASS_ChannelGetData(tmp.asInt(), buffer, size);
-
-        return buffer.asFloatBuffer();
+        return this.streamData;
     }
     
     private void createWaveform() {
@@ -141,5 +137,19 @@ public class AudioStream {
             //TODO: draw waveform to image
         }
         
+    }
+    
+    private void loadStreamData() {
+        HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
+        long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
+        int size = (int) (dataLength / 4);
+        
+        ByteBuffer buffer = BufferUtils.newByteBuffer(size);
+        
+        Bass.BASS_ChannelGetData(tmp.asInt(), buffer, size);
+
+        this.streamData = buffer.asFloatBuffer();
+        
+        System.gc();
     }
 }

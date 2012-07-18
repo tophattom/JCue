@@ -45,8 +45,6 @@ public class MainWindow implements Runnable {
         
         frame.pack();
         frame.setVisible(true);
-        
-        //TODO: whole ui
     }
     
     private void createMenus() {

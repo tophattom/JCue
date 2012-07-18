@@ -6,8 +6,8 @@ package jcue.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import javax.swing.JPanel;
 import jcue.domain.AudioStream;
@@ -20,6 +20,7 @@ public class WaveformPanel extends JPanel {
 
     private int maxWidth, maxHeight;
     private BufferedImage waveImg;
+    private BufferedImage cacheImg;
     
     private FloatBuffer streamData;
 
@@ -49,6 +50,11 @@ public class WaveformPanel extends JPanel {
         int width = this.getWidth();
         int height = this.getHeight();
         int step = (int) Math.ceil(this.streamData.capacity() / width);
+        
+        //TODO: Cache image
+        if (this.cacheImg == null) {
+            this.cacheImg = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
+        }
         
         g.setColor(new Color(64, 64, 64));
         g.fillRect(0, 0, width, height);
