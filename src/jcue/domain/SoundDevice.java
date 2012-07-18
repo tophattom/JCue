@@ -8,7 +8,7 @@ import jouvieje.bass.structures.BASS_DEVICEINFO;
  *
  * @author Jaakko
  */
-public class SoundDevice {
+public class SoundDevice implements Comparable<SoundDevice> {
     
     private String name;
     private int id;
@@ -96,6 +96,35 @@ public class SoundDevice {
     public String toString() {
         return this.id + " " + this.name;
     }
-    
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SoundDevice other = (SoundDevice) obj;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 29 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public int compareTo(SoundDevice t) {
+        return this.id - t.id;
+    }
 }

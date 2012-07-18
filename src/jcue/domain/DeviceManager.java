@@ -22,22 +22,24 @@ public class DeviceManager {
         
         //Get information on system devices
         while (Bass.BASS_GetDeviceInfo(i, info)) {
-            SoundDevice sd = new SoundDevice(info.getName(), i);
-            
-            //By default init all enabled device
-            if (sd.isEnabled()) {
-                try {
-                    sd.init(44100);
-                } catch (Exception ex) {
+            if (!info.getName().equals("No sound")) {   //Don't include no sound -device
+                SoundDevice sd = new SoundDevice(info.getName(), i);
+
+                //By default init all enabled device
+                if (sd.isEnabled()) {
+                    try {
+                        sd.init(44100);
+                    } catch (Exception ex) {
+                    }
                 }
+
+                //System default device should be automatically added to all cues
+                if (sd.isDefault()) {
+                    sd.setAutoInclude(true);
+                }
+
+                this.devices.add(sd);
             }
-            
-            //System default device should be automatically added to all cues
-            if (sd.isDefault()) {
-                sd.setAutoInclude(true);
-            }
-            
-            this.devices.add(sd);
             
             i++;
         }

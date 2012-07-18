@@ -1,8 +1,11 @@
 package jcue.domain;
 
-import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.BASS_ATTRIB;
 import jouvieje.bass.defines.BASS_POS;
@@ -18,76 +21,154 @@ import jouvieje.bass.utils.BufferUtils;
  */
 public class AudioStream {
 
-    private HSTREAM stream;
+    private TreeMap<SoundDevice, HSTREAM> streams;
+    private HSTREAM stream; //TODO: remove when multi-device stuff fully functional
     private String filePath;
     
     private double length;
     
-    private BufferedImage waveImg;
-    
     private FloatBuffer streamData;
-    public static final int WAVEFORM_W = 500;
-    public static final int WAVEFORM_H = 120;
 
-    public boolean loadFile(String path) {
-        if (this.stream != null) {
-            Bass.BASS_StreamFree(this.stream);
-            this.stream = null;
-            this.filePath = "";
+    public AudioStream(List<SoundDevice> outputs) {
+        this.streams = new TreeMap<SoundDevice, HSTREAM>();
+
+        for (SoundDevice sd : outputs) {
+            this.streams.put(sd, null);
+        }
+    }
+
+    //Creates a new stream from file for specified SoundDevice
+    private void loadFile(String path, SoundDevice sd) throws Exception {
+        Bass.BASS_SetDevice(sd.getId());    //Change currently used device
+        HSTREAM newStream = Bass.BASS_StreamCreateFile(false, path, 0, 0, 0);   //Create the stream
+
+        //Stream creation failed -> throw an exception
+        if (newStream == null) {
+            throw new Exception("Error! Loading audio file " + path + " failed! Device: " + sd.getName());
         }
 
-        this.stream = Bass.BASS_StreamCreateFile(false, path, 0, 0, 0);
-
-        if (this.stream == null) {
-            return false;
+        //Add the stream to the hashmap
+        this.streams.put(sd, newStream);
+    }
+    
+    //Links all streams together
+    private void linkStreams() {
+        //Loop through all streams
+        Iterator<SoundDevice> it = this.streams.keySet().iterator();
+        while (it.hasNext()) {
+            SoundDevice sd = it.next();
+            
+            //Link the stream to all of the other streams
+            Iterator<SoundDevice> it2 = this.streams.keySet().iterator();
+            while(it2.hasNext()) {
+                SoundDevice sd2 = it2.next();
+                
+                if (!sd.equals(sd2)) {
+                    HSTREAM stream1 = this.streams.get(sd);
+                    HSTREAM stream2 = this.streams.get(sd2);
+                    
+                    Bass.BASS_ChannelSetLink(stream1.asInt(), stream2.asInt());
+                }
+            }
         }
+    }
 
-        //TODO: create waveform image
+    //Used to load a new audio file for use
+    public void loadFile(String path) throws Exception {
+        //Free possible existing streams
+        for (SoundDevice sd : this.streams.keySet()) {
+            HSTREAM tmp = this.streams.get(sd);
 
-        double bytePos = Bass.BASS_ChannelGetLength(this.stream.asInt(), BASS_POS.BASS_POS_BYTE);
-        this.length = Bass.BASS_ChannelBytes2Seconds(this.stream.asInt(), (long) bytePos);
-
-        this.filePath = path;
+            if (tmp != null) {
+                Bass.BASS_StreamFree(tmp);
+                this.streams.put(sd, null);
+            }
+        }
         
-        loadStreamData();
+        //Create a new stream for every device used
+        for (SoundDevice sd : this.streams.keySet()) {
+            loadFile(path, sd);
+        }
+        
+        //Get information on the stream
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM tmpStream = firstEntry.getValue();
+        if (tmpStream != null) {
+            double bytePos = Bass.BASS_ChannelGetLength(tmpStream.asInt(), BASS_POS.BASS_POS_BYTE);
+            this.length = Bass.BASS_ChannelBytes2Seconds(tmpStream.asInt(), (long) bytePos);
 
-        return true;
+            this.filePath = path;
+
+            loadStreamData();   //Get data for waveform
+        }
+
+        //Finally link all streams together and load stream data for thw waveform
+        linkStreams();
+    }
+
+    //Adds a new output for this stream
+    public void addOutput(SoundDevice sd) {
+        this.streams.put(sd, null);
+        
+        if (this.filePath != null && !this.filePath.isEmpty()) {
+            try {
+                loadFile(this.filePath, sd);
+                linkStreams();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void play() {
-        if (this.stream != null) {
-            Bass.BASS_ChannelPlay(this.stream.asInt(), false);
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM firstStream = firstEntry.getValue();
+        
+        if (firstStream != null) {
+            Bass.BASS_ChannelPlay(firstStream.asInt(), false);
         }
     }
 
     public void pause() {
-        if (this.stream != null) {
-            Bass.BASS_ChannelPause(this.stream.asInt());
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM firstStream = firstEntry.getValue();
+        
+        if (firstStream != null) {
+            Bass.BASS_ChannelPause(firstStream.asInt());
         }
     }
 
     public void stop() {
-        if (this.stream != null) {
-            Bass.BASS_ChannelStop(this.stream.asInt());
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM firstStream = firstEntry.getValue();
+        
+        if (firstStream != null) {
+            Bass.BASS_ChannelStop(firstStream.asInt());
         }
     }
 
     public void setPosition(double pos) {
-        if (this.stream != null) {
-            long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.stream.asInt(), pos);
-            Bass.BASS_ChannelSetPosition(this.stream.asInt(), bytePos, BASS_POS.BASS_POS_BYTE);
+        for (HSTREAM stream : this.streams.values()) {
+            if (stream != null) {
+                long bytePos = Bass.BASS_ChannelSeconds2Bytes(stream.asInt(), pos);
+                Bass.BASS_ChannelSetPosition(stream.asInt(), bytePos, BASS_POS.BASS_POS_BYTE);
+            }
         }
     }
 
     public double getPosition() {
-        if (this.stream != null) {
-            long bytePos = Bass.BASS_ChannelGetPosition(this.stream.asInt(), BASS_POS.BASS_POS_BYTE);
-            return Bass.BASS_ChannelBytes2Seconds(this.stream.asInt(), bytePos);
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM stream = firstEntry.getValue();
+        
+        if (stream != null) {
+            long bytePos = Bass.BASS_ChannelGetPosition(stream.asInt(), BASS_POS.BASS_POS_BYTE);
+            return Bass.BASS_ChannelBytes2Seconds(stream.asInt(), bytePos);
         }
 
         return -1;
     }
 
+    //TODO: change to work with multi-device shit
     public void startVolumeChange(double newVolume, double duration) {
         if (this.stream != null) {
             Bass.BASS_ChannelSlideAttribute(this.stream.asInt(),
@@ -96,7 +177,7 @@ public class AudioStream {
                     (int) (duration * 1000));
         }
     }
-    
+
     public void startPanChange(double newPan, double duration) {
         if (this.stream != null) {
             Bass.BASS_ChannelSlideAttribute(this.stream.asInt(),
@@ -105,13 +186,13 @@ public class AudioStream {
                     (int) (duration * 1000));
         }
     }
-    
+
     public void setVolume(double volume) {
-        Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
-                BASS_ATTRIB.BASS_ATTRIB_VOL,
-                (float) volume);
+//        Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
+//                BASS_ATTRIB.BASS_ATTRIB_VOL,
+//                (float) volume);
     }
-    
+
     public void setPan(double pan) {
         Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
                 BASS_ATTRIB.BASS_ATTRIB_PAN,
@@ -125,31 +206,22 @@ public class AudioStream {
     public String getFilePath() {
         return filePath;
     }
-    
+
     public FloatBuffer getStreamData() {
         return this.streamData;
     }
-    
-    private void createWaveform() {
-        HSTREAM tmpStream = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE);
-        
-        if (this.waveImg == null) {
-            //TODO: draw waveform to image
-        }
-        
-    }
-    
+
     private void loadStreamData() {
         HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
         long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
         int size = (int) (dataLength / 4);
-        
+
         ByteBuffer buffer = BufferUtils.newByteBuffer(size);
-        
+
         Bass.BASS_ChannelGetData(tmp.asInt(), buffer, size);
 
         this.streamData = buffer.asFloatBuffer();
-        
+
         System.gc();
     }
 }

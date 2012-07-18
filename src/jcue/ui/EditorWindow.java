@@ -7,6 +7,7 @@ package jcue.ui;
 import java.awt.*;
 import javax.swing.*;
 import jcue.domain.AudioCue;
+import jcue.domain.DeviceManager;
 import jcue.ui.event.EditorListListener;
 
 /**
@@ -54,8 +55,11 @@ public class EditorWindow extends JFrame {
         
         //Cue list
         DefaultListModel lm = new DefaultListModel();
-        AudioCue c = new AudioCue("Q1", "testicue");
-        c.loadAudio("G:\\Musiikki\\Adele\\11 Someone Like You.mp3");
+        
+        DeviceManager dm = new DeviceManager();
+        AudioCue c = new AudioCue("Q1", "testicue", dm.getEnabledDevices());
+        c.loadAudio("G:\\Musiikki\\Don Johnson Big Band\\Records Are Forever\\04 Dirt.mp3");
+        c.start();
         lm.addElement(c);  //TODO: Remove audio cue creation
         
         this.cueList = new JList(lm);

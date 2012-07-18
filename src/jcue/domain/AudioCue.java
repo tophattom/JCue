@@ -1,5 +1,6 @@
 package jcue.domain;
 
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import jcue.ui.AudioCueUI;
 
@@ -16,13 +17,17 @@ public class AudioCue extends AbstractCue {
     private CueState state;
     private double volume, pan;
     
+    private ArrayList<SoundDevice> outputs;
+    
     private static AudioCueUI ui = new AudioCueUI();
 
-    public AudioCue(String name, String description) {
+    public AudioCue(String name, String description, ArrayList<SoundDevice> outputs) {
         super(name, description, CueType.AUDIO);
+        
+        this.outputs = outputs;
 
         this.state = CueState.STOPPED;
-        this.audio = new AudioStream();
+        this.audio = new AudioStream(this.outputs);
         
         this.volume = 1.0;
         this.pan = 0.0;
@@ -35,8 +40,13 @@ public class AudioCue extends AbstractCue {
         if (filePath == null) {
             return;
         }
-
-        this.audio.loadFile(filePath);
+        
+        try {
+            this.audio.loadFile(filePath);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        
         this.inPos = 0;
         this.outPos = this.audio.getLength();
     }
@@ -44,17 +54,18 @@ public class AudioCue extends AbstractCue {
     @Override
     public void start() {
         if (this.audio != null) {
-            //Set audio position to start if the cue is not paused
-            if (this.state == CueState.STOPPED) {
-                this.audio.setPosition(this.inPos);
-                this.audio.setVolume(this.volume);
-            }
-            
-            //Fade in, if there is fade in time specified
-            if (this.fadeIn != 0) {
-                this.audio.setVolume(0);    //Start fading from silent
-                this.audio.startVolumeChange(this.volume, this.fadeIn);
-            }
+            //TODO: uncomment when multi-device shit works
+//            //Set audio position to start if the cue is not paused
+//            if (this.state == CueState.STOPPED) {
+//                this.audio.setPosition(this.inPos);
+//                this.audio.setVolume(this.volume);
+//            }
+//            
+//            //Fade in, if there is fade in time specified
+//            if (this.fadeIn != 0) {
+//                this.audio.setVolume(0);    //Start fading from silent
+//                this.audio.startVolumeChange(this.volume, this.fadeIn);
+//            }
             
             this.audio.play();              //Start playing the audio
             this.state = CueState.PLAYING;  //Set state to playing
