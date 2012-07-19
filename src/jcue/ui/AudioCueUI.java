@@ -226,4 +226,12 @@ public class AudioCueUI {
     public void setWaveformData(AudioStream as) {
         this.waveform.setAudioStream(as);
     }
+    
+    public void setFileFieldText(String text) {
+        this.fileField.setText(text);
+    }
+    
+    public void setLengthFieldValue(double value) {
+        this.lengthField.setText(UtilsUI.secondsToString(value));
+    }
 }

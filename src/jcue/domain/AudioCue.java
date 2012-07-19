@@ -153,6 +153,9 @@ public class AudioCue extends AbstractCue {
         
         ui.showUI(panel);
         
+        ui.setFileFieldText(this.audio.getFilePath());
+        ui.setLengthFieldValue(this.audio.getLength());
+        
         ui.setInFieldValue(this.inPos);
         ui.setOutFieldValue(this.outPos);
         
