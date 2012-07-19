@@ -56,12 +56,6 @@ public class EditorWindow extends JFrame {
         //Cue list
         DefaultListModel lm = new DefaultListModel();
         
-        DeviceManager dm = new DeviceManager();
-        AudioCue c = new AudioCue("Q1", "testicue", dm.getEnabledDevices());
-        c.loadAudio("G:\\Musiikki\\Don Johnson Big Band\\Records Are Forever\\04 Dirt.mp3");
-        c.start();
-        lm.addElement(c);  //TODO: Remove audio cue creation
-        
         this.cueList = new JList(lm);
         this.cueList.setPreferredSize(new Dimension(200, 100));
         this.cueList.addListSelectionListener(new EditorListListener(this.cueList, this.basicPanel));
