@@ -1,8 +1,9 @@
 package jcue;
 
 import javax.swing.SwingUtilities;
+import jcue.domain.CueList;
+import jcue.domain.DeviceManager;
 import jcue.ui.MainWindow;
-import jouvieje.bass.Bass;
 import jouvieje.bass.BassInit;
 
 /**
@@ -15,8 +16,13 @@ public class JCue {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if (initBass()) {
-            SwingUtilities.invokeLater(new MainWindow());
+        loadBASS();
+        
+        DeviceManager dm = new DeviceManager();
+        CueList cueList = new CueList(dm); 
+        
+        if (dm.isInitialized()) {
+            SwingUtilities.invokeLater(new MainWindow(cueList));
         }
     }
     
@@ -25,24 +31,11 @@ public class JCue {
      * 
      * @return Returns true if everything went smoothly
      */
-    private static boolean initBass() {
+    private static void loadBASS() {
         setLibraryPath();
         
         //Load the libraries
         BassInit.loadLibraries();
-        
-        //Initialize default sound device with 44100 sample rate
-        boolean BASS_Init = Bass.BASS_Init(-1, 44100, 0, null, null);
-        //TODO: initialize all devices?
-        
-        if (!BASS_Init) {
-            System.out.println("Error initializing BASS: " + Bass.BASS_ErrorGetCode());
-            return false;
-        }
-        
-        System.out.println("BASS initialized using default output device!");
-        
-        return true;
     }
     
     /**

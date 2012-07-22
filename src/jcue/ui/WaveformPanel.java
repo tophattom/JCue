@@ -49,30 +49,32 @@ public class WaveformPanel extends JPanel {
         
         int width = this.getWidth();
         int height = this.getHeight();
-        int step = (int) Math.ceil(this.streamData.capacity() / width);
-        
-        //TODO: Cache image
-        if (this.cacheImg == null) {
-            this.cacheImg = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
-        }
         
         g.setColor(new Color(64, 64, 64));
         g.fillRect(0, 0, width, height);
         
-        g.setColor(new Color(200, 200, 250));
-        for (int i = 0; i < width; i++) {
-            float maxValue = 0.0f;
-            
-            for (int k = (i * step); k < (i * step + step); k++) {
-                if (this.streamData.get(k) > maxValue) {
-                    maxValue = this.streamData.get(k);
-                }
+        if (this.streamData != null) {
+            int step = (int) Math.ceil(this.streamData.capacity() / width);
+
+            //TODO: Cache image
+            if (this.cacheImg == null) {
+                this.cacheImg = new BufferedImage(width, height, ColorSpace.TYPE_RGB);
             }
-            
-            g.drawLine(i, height / 2, i, (int) ((height / 2) + (height / 2) * maxValue));
-            g.drawLine(i, height / 2, i, (int) ((height / 2) - (height / 2) * maxValue));
+
+            g.setColor(new Color(200, 200, 250));
+            for (int i = 0; i < width; i++) {
+                float maxValue = 0.0f;
+
+                for (int k = (i * step); k < (i * step + step); k++) {
+                    if (this.streamData.get(k) > maxValue) {
+                        maxValue = this.streamData.get(k);
+                    }
+                }
+
+                g.drawLine(i, height / 2, i, (int) ((height / 2) + (height / 2) * maxValue));
+                g.drawLine(i, height / 2, i, (int) ((height / 2) - (height / 2) * maxValue));
+            }
         }
-        
     }
     
     

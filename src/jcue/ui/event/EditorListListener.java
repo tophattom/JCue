@@ -11,7 +11,7 @@ import jcue.domain.AbstractCue;
  * @author Jaakko
  */
 public class EditorListListener implements ListSelectionListener {
-    
+
     private JList list;
     private JPanel panel;
 
@@ -23,9 +23,12 @@ public class EditorListListener implements ListSelectionListener {
     @Override
     public void valueChanged(ListSelectionEvent lse) {
         if (!lse.getValueIsAdjusting()) {
-            AbstractCue cue = (AbstractCue) list.getSelectedValue();
-            cue.updateUI(panel);
+            Object selection = list.getSelectedValue();
+
+            if (selection instanceof AbstractCue) {
+                AbstractCue cue = (AbstractCue) list.getSelectedValue();
+                cue.updateUI(panel);
+            }
         }
     }
-    
 }

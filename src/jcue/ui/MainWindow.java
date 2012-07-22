@@ -2,6 +2,7 @@ package jcue.ui;
 
 import java.awt.*;
 import javax.swing.*;
+import jcue.domain.CueList;
 import jcue.ui.event.MainButtonListener;
 
 /**
@@ -25,6 +26,12 @@ public class MainWindow implements Runnable {
     
     private MainButtonListener buttonListener;
     
+    private CueList cues;
+    
+    public MainWindow(CueList cues) {
+        this.cues = cues;
+    }
+    
     @Override
     public void run() {
         try {
@@ -36,7 +43,7 @@ public class MainWindow implements Runnable {
         frame.setPreferredSize(new Dimension(1024, 768));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        this.editor = new EditorWindow();
+        this.editor = new EditorWindow(this.cues);
         
         this.buttonListener = new MainButtonListener(this);
         

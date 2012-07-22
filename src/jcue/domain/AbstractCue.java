@@ -62,8 +62,13 @@ public abstract class AbstractCue {
     public void setStartMode(StartMode startMode) {
         this.startMode = startMode;
     }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.description + " (" + this.type + ")";
+    }
     
-    //TODO: toString() ie. "Q1 asd (Audio)"
+    
     
     public void updateUI(JPanel panel) {
         ui.showUI(panel);

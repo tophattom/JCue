@@ -99,4 +99,18 @@ public class DeviceManager {
         
         return result;
     }
+    
+    /**
+     * 
+     * @return True if at least one device has been initialized
+     */
+    public boolean isInitialized() {
+        for (SoundDevice sd : this.devices) {
+            if (sd.isInitialized()) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }

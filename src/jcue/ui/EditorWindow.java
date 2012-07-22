@@ -6,8 +6,8 @@ package jcue.ui;
 
 import java.awt.*;
 import javax.swing.*;
-import jcue.domain.AudioCue;
-import jcue.domain.DeviceManager;
+import jcue.domain.CueList;
+import jcue.ui.event.EditorButtonListener;
 import jcue.ui.event.EditorListListener;
 
 /**
@@ -23,11 +23,15 @@ public class EditorWindow extends JFrame {
     
     private JTabbedPane editorTabs;
     private JPanel basicPanel, effectPanel;
+
+    private CueList cues;
     
-    public EditorWindow() {
+    public EditorWindow(CueList cues) {
         super("Cue - Editor");
         this.setPreferredSize(new Dimension(960, 720));
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        
+        this.cues = cues;
         
         createComponents(this.getContentPane());
         
@@ -41,18 +45,6 @@ public class EditorWindow extends JFrame {
         this.effectPanel = new JPanel();
         //**********
         
-        
-        //Buttons for adding new cues
-        this.audioButton = new JButton("Audio cue");
-        this.audioButton.setMargin(new Insets(10, 10, 10, 10));
-        
-        this.eventButton = new JButton("Event cue");
-        this.eventButton.setMargin(new Insets(10, 10, 10, 10));
-        
-        this.changeButton = new JButton("Level change cue");
-        this.changeButton.setMargin(new Insets(10, 10, 10, 10));
-        //*************
-        
         //Cue list
         DefaultListModel lm = new DefaultListModel();
         
@@ -61,6 +53,25 @@ public class EditorWindow extends JFrame {
         this.cueList.addListSelectionListener(new EditorListListener(this.cueList, this.basicPanel));
         //**********
         
+        //Buttons for adding new cues
+        EditorButtonListener buttonListener = new EditorButtonListener(this.cues, lm);
+        
+        this.audioButton = new JButton("Audio cue");
+        this.audioButton.setMargin(new Insets(10, 10, 10, 10));  
+        this.audioButton.setActionCommand("audio");
+        this.audioButton.addActionListener(buttonListener);
+        
+        this.eventButton = new JButton("Event cue");
+        this.eventButton.setMargin(new Insets(10, 10, 10, 10));
+        this.eventButton.setActionCommand("event");
+        this.eventButton.addActionListener(buttonListener);
+        
+        this.changeButton = new JButton("Level change cue");
+        this.changeButton.setMargin(new Insets(10, 10, 10, 10));
+        this.changeButton.setActionCommand("change");
+        this.changeButton.addActionListener(buttonListener);
+        //*************
+
         //Buttons for managing cue list
         this.upButton = new JButton("^");
         this.downButton = new JButton("V");
