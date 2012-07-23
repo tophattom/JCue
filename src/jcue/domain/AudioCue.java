@@ -1,5 +1,6 @@
 package jcue.domain;
 
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import jcue.ui.AudioCueUI;
@@ -49,6 +50,13 @@ public class AudioCue extends AbstractCue {
         
         this.inPos = 0;
         this.outPos = this.audio.getLength();
+        
+        if (this.getDescription().isEmpty()) {
+            File audioFile = new File(filePath);
+            String desc = audioFile.getName();
+            
+            this.setDescription(desc);
+        }
     }
 
     @Override
@@ -152,6 +160,7 @@ public class AudioCue extends AbstractCue {
         super.updateUI(panel);
         
         ui.showUI(panel);
+        ui.setCurrentCue(this);
         
         ui.setFileFieldText(this.audio.getFilePath());
         ui.setLengthFieldValue(this.audio.getLength());
@@ -166,5 +175,11 @@ public class AudioCue extends AbstractCue {
         ui.setPanControlValue(this.pan);
         
         ui.setWaveformData(this.audio);
+        
+        AudioCueUI.lastPanel = panel;
+    }
+    
+    public void updateUI() {
+        updateUI(AudioCueUI.lastPanel);
     }
 }

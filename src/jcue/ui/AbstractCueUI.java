@@ -40,7 +40,7 @@ public class AbstractCueUI {
         this.cueSelect = new JComboBox();
 
         this.delayLabel = new JLabel("Delay:");
-        this.delayField = new JTextField();
+        this.delayField = new JTextField(6);
     }
 
     public void showUI(JPanel container) {
@@ -86,7 +86,8 @@ public class AbstractCueUI {
         UtilsUI.setGBC(c, 4, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
         container.add(this.delayLabel, c);
 
-        UtilsUI.setGBC(c, 5, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
+        UtilsUI.setGBC(c, 5, 3, 0.5, 0, 1, 1, GridBagConstraints.NONE);
+        c.anchor = GridBagConstraints.WEST;
         container.add(this.delayField, c);
 
         container.revalidate();
