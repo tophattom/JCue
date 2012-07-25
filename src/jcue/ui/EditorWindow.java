@@ -7,8 +7,7 @@ package jcue.ui;
 import java.awt.*;
 import javax.swing.*;
 import jcue.domain.CueList;
-import jcue.ui.event.EditorButtonListener;
-import jcue.ui.event.EditorListListener;
+import jcue.ui.event.EditorListener;
 
 /**
  *
@@ -34,6 +33,7 @@ public class EditorWindow extends JFrame {
         this.cues = cues;
         
         createComponents(this.getContentPane());
+        createEventListeners();
         
         this.pack();
     }
@@ -46,30 +46,22 @@ public class EditorWindow extends JFrame {
         //**********
         
         //Cue list
-        DefaultListModel lm = new DefaultListModel();
-        
-        this.cueList = new JList(lm);
+        this.cueList = new JList(this.cues);
         this.cueList.setPreferredSize(new Dimension(200, 100));
-        this.cueList.addListSelectionListener(new EditorListListener(this.cueList, this.basicPanel));
         //**********
         
         //Buttons for adding new cues
-        EditorButtonListener buttonListener = new EditorButtonListener(this.cues, lm);
-        
         this.audioButton = new JButton("Audio cue");
         this.audioButton.setMargin(new Insets(10, 10, 10, 10));  
         this.audioButton.setActionCommand("audio");
-        this.audioButton.addActionListener(buttonListener);
         
         this.eventButton = new JButton("Event cue");
         this.eventButton.setMargin(new Insets(10, 10, 10, 10));
         this.eventButton.setActionCommand("event");
-        this.eventButton.addActionListener(buttonListener);
         
         this.changeButton = new JButton("Level change cue");
         this.changeButton.setMargin(new Insets(10, 10, 10, 10));
         this.changeButton.setActionCommand("change");
-        this.changeButton.addActionListener(buttonListener);
         //*************
 
         //Buttons for managing cue list
@@ -77,15 +69,6 @@ public class EditorWindow extends JFrame {
         this.downButton = new JButton("V");
         this.deleteButton = new JButton("X");
         //**********
-        
-        
-        
-//        //UI testing shit: REMOVE
-//        AbstractCueUI ui = new AbstractCueUI();
-//        ui.showUI(basicPanel);
-//        AudioCueUI aui = new AudioCueUI();
-//        aui.showUI(basicPanel);
-//        //**********
         
         //Tabs for cue controls
         this.editorTabs = new JTabbedPane();
@@ -104,5 +87,18 @@ public class EditorWindow extends JFrame {
         container.add(top, BorderLayout.NORTH);
         container.add(this.cueList, BorderLayout.WEST);
         container.add(this.editorTabs, BorderLayout.CENTER);
+    }
+
+    private void createEventListeners() {
+        //Event listener for editor
+        EditorListener editorListener = new EditorListener(this.cues, this.basicPanel, this.cueList);
+        
+        //Buttons for adding cues
+        this.audioButton.addActionListener(editorListener);
+        this.eventButton.addActionListener(editorListener);
+        this.changeButton.addActionListener(editorListener);
+        
+        //Editor list
+        this.cueList.addListSelectionListener(editorListener);
     }
 }

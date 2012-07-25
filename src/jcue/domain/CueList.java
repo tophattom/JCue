@@ -1,12 +1,13 @@
 package jcue.domain;
 
 import java.util.ArrayList;
+import javax.swing.AbstractListModel;
 
 /**
  *
  * @author Jaakko
  */
-public class CueList {
+public class CueList extends AbstractListModel {
     
     private ArrayList<AbstractCue> cues;
     
@@ -36,10 +37,22 @@ public class CueList {
         }
         
         this.cues.add(cue);
+        
+        //Notify JList about new element
+        super.fireIntervalAdded(cue, getSize() - 1,  getSize());
+        
+        //Increment the "id" counter
+        this.counter++;
     }
     
     public void addCue(AbstractCue cue) {
         this.cues.add(cue);
+        
+        //Notify JList about new element
+        super.fireIntervalAdded(cue, getSize() - 1,  getSize());
+        
+        //Increment the "id" counter
+        this.counter++;
     }
     
     public AbstractCue getCue(int pos) {
@@ -48,5 +61,15 @@ public class CueList {
     
     public int size() {
         return this.cues.size();
+    }
+
+    @Override
+    public int getSize() {
+        return this.cues.size();
+    }
+
+    @Override
+    public Object getElementAt(int i) {
+        return this.cues.get(i);
     }
 }

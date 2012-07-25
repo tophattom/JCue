@@ -4,7 +4,6 @@
  */
 package jcue.ui;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.*;
@@ -45,7 +44,7 @@ public class AudioCueUI {
 
     public AudioCueUI() {
         this.eventListener = new AudioCueUIListener();
-        
+
         //File field
         this.fileLabel = new JLabel("File:");
         this.fileField = new JTextField();
@@ -204,6 +203,7 @@ public class AudioCueUI {
         //Waveform panel and transport controls
         UtilsUI.setGBC(c, 0, 9, 1, 0.5, 7, 1, GridBagConstraints.BOTH);
         container.add(this.waveform, c);
+        this.waveform.repaint();
         //**********
     }
 
