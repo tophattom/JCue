@@ -48,6 +48,7 @@ public class EditorWindow extends JFrame {
         //Cue list
         this.cueList = new JList(this.cues);
         this.cueList.setPreferredSize(new Dimension(200, 100));
+        this.cueList.setCellRenderer(new EditorListRenderer());
         //**********
         
         //Buttons for adding new cues

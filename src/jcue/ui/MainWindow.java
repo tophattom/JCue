@@ -17,7 +17,7 @@ public class MainWindow implements Runnable {
     private JMenu fileMenu, aboutMenu;
     
     private JPanel topPanel;
-    private JList mainCueList;
+    private JTable mainCueList;
     
     private JButton playButton, pauseButton, stopButton;
     private JButton editorButton;
@@ -69,7 +69,7 @@ public class MainWindow implements Runnable {
     private void createComponents(Container container) {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
-        mainCueList = new JList();
+        mainCueList = new JTable(this.cues);
         
         //Buttons for playback
         playButton = new JButton("Play next");
@@ -95,6 +95,7 @@ public class MainWindow implements Runnable {
         
         //Add panel to top and list to center
         container.add(topPanel, BorderLayout.NORTH);
+        container.add(mainCueList, BorderLayout.CENTER);
     }
     
     public void showEditorWindow() {
