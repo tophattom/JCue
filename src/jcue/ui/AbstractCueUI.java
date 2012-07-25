@@ -11,6 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import jcue.domain.StartMode;
 
 /**
  *
@@ -33,7 +34,12 @@ public class AbstractCueUI {
         this.descField = new JTextField();
 
         this.startModeLabel = new JLabel("Start mode:");
-        String[] modes = {"Manual", "After start of cue", "After end of cue", "Hotkey"};
+        StartMode[] modes = {
+            StartMode.MANUAL,
+            StartMode.AFTER_START,
+            StartMode.AFTER_END,
+            StartMode.HOTKEY
+        };
         this.startModeSelect = new JComboBox(modes);
 
         this.cueLabel = new JLabel("Cue:");
@@ -103,5 +109,9 @@ public class AbstractCueUI {
 
     public void setDelayFieldValue(double value) {
         this.delayField.setText(String.format("%.2f", value));
+    }
+    
+    public void setStartModeSelectValue(StartMode value) {
+        this.startModeSelect.setSelectedItem(value);
     }
 }

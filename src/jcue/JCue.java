@@ -27,7 +27,7 @@ public class JCue {
     }
     
     /**
-     * Initializes BASS and loads necessary plugins.
+     * Loads BASS and necessary plugins.
      * 
      * @return Returns true if everything went smoothly
      */

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jcue.domain;
 
 /**
@@ -9,8 +5,19 @@ package jcue.domain;
  * @author Jaakko
  */
 public enum StartMode {
-    MANUAL,
-    AFTER_START,
-    AFTER_END,
-    HOTKEY;
+    MANUAL("Manual"),
+    AFTER_START("After start of cue"),
+    AFTER_END("After end of cue"),
+    HOTKEY("Hotkey");
+    
+    String displayName;
+
+    private StartMode(String displayName) {
+        this.displayName = displayName;
+    }
+    
+    @Override
+    public String toString() {
+        return this.displayName;
+    }
 }
