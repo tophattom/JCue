@@ -1,5 +1,7 @@
 package jcue.ui;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -126,10 +128,26 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
         this.waveform = new WaveformPanel(100, 100);
         //***********
 
-        //TODO: change texts to icons
-        this.playButton = new JButton("Play");
-        this.pauseButton = new JButton("Pause");
-        this.stopButton = new JButton("Stop");
+        //Transport controls
+        ImageIcon playIcon = new ImageIcon("images/editor_play.png");
+        ImageIcon pauseIcon = new ImageIcon("images/editor_pause.png");
+        ImageIcon stopIcon = new ImageIcon("images/editor_stop.png");
+        
+        this.playButton = new JButton(playIcon);
+        this.playButton.setPreferredSize(new Dimension(40, 40));
+        this.playButton.setActionCommand("play");
+        this.playButton.addActionListener(this);
+        
+        this.pauseButton = new JButton(pauseIcon);
+        this.pauseButton.setPreferredSize(new Dimension(40, 40));
+        this.pauseButton.setActionCommand("pause");
+        this.pauseButton.addActionListener(this);
+        
+        this.stopButton = new JButton(stopIcon);
+        this.stopButton.setPreferredSize(new Dimension(40, 40));
+        this.stopButton.setActionCommand("stop");
+        this.stopButton.addActionListener(this);
+        //**************
     }
 
     public void showUI(JPanel container) {
@@ -226,9 +244,18 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
         //**********
 
         //Waveform panel and transport controls
-        UtilsUI.setGBC(c, 0, 9, 1, 0.5, 7, 1, GridBagConstraints.BOTH);
+        UtilsUI.setGBC(c, 0, 9, 1, 0.5, 8, 1, GridBagConstraints.BOTH);
         container.add(this.waveform, c);
         this.waveform.repaint();
+        
+        //Create a panel for laying out buttons
+        JPanel transportPanel = new JPanel(new FlowLayout());
+        transportPanel.add(this.playButton);
+        transportPanel.add(this.pauseButton);
+        transportPanel.add(this.stopButton);
+        
+        UtilsUI.setGBC(c, 0, 10, 0, 0, 2, 1, GridBagConstraints.NONE);
+        container.add(transportPanel, c);
         //**********
     }
 
@@ -279,7 +306,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
     public void actionPerformed(ActionEvent ae) {
         String command = ae.getActionCommand();
         
-        if (command.equals("loadAudio")) {
+        if (command.equals("loadAudio")) {  //File choose button was pressed
             JFileChooser chooser = new JFileChooser();
             int result = chooser.showOpenDialog(null);
             
@@ -288,6 +315,12 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
                 this.cue.loadAudio(file.getAbsolutePath());
                 this.cue.updateUI();
             }
+        } else if (command.equals("play")) {
+            this.cue.start();
+        } else if (command.equals("pause")) {
+            this.cue.pause();
+        } else if (command.equals("stop")) {
+            this.cue.stop();
         }
     }
 
