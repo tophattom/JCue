@@ -1,21 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jcue.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.text.NumberFormat;
 import javax.swing.*;
 import jcue.domain.AudioCue;
 import jcue.domain.AudioStream;
-import jcue.ui.event.AudioCueUIListener;
 
 /**
  *
  * @author Jaakko
  */
-public class AudioCueUI {
+public class AudioCueUI implements ActionListener, PropertyChangeListener {
 
     public static JPanel lastPanel;
     
@@ -24,14 +25,14 @@ public class AudioCueUI {
     private JButton fileButton;
     
     private JLabel lengthLabel;
-    private JTextField lengthField;
+    private JFormattedTextField lengthField;
     
     private JLabel inLabel, outLabel, fadeInLabel, fadeOutLabel;
-    private JTextField inField, outField, fadeInField, fadeOutField;
+    private JFormattedTextField inField, outField, fadeInField, fadeOutField;
     
     private JLabel volumeLabel, panLabel;
     private JSlider volumeSlider, panSlider;
-    private JTextField volumeField, panField;
+    private JFormattedTextField volumeField, panField;
     
     private JLabel loopStartLabel, loopEndLabel, loopCountLabel;
     private JTextField loopStartField, loopEndField, loopCountField;
@@ -40,11 +41,9 @@ public class AudioCueUI {
     private WaveformPanel waveform;
     
     private JButton playButton, pauseButton, stopButton;
-    private AudioCueUIListener eventListener;
+    private AudioCue cue;
 
     public AudioCueUI() {
-        this.eventListener = new AudioCueUIListener();
-
         //File field
         this.fileLabel = new JLabel("File:");
         this.fileField = new JTextField();
@@ -52,39 +51,65 @@ public class AudioCueUI {
 
         this.fileButton = new JButton("...");
         this.fileButton.setActionCommand("loadAudio");
-        this.fileButton.addActionListener(this.eventListener);
+        this.fileButton.addActionListener(this);
         //********
 
         //Length field
         this.lengthLabel = new JLabel("Length:");
-        this.lengthField = new JTextField(7);
+        
+        this.lengthField = new JFormattedTextField(new TimeFormatter());
+        this.lengthField.setColumns(8);
         this.lengthField.setEditable(false);
         //*******
 
         //In and out fields
         this.inLabel = new JLabel("Start:");
         this.outLabel = new JLabel("End:");
-        this.inField = new JTextField(7);
-        this.outField = new JTextField(7);
+        
+        this.inField = new JFormattedTextField(new TimeFormatter());
+        this.inField.setColumns(8);
+        this.inField.addPropertyChangeListener(this);
+        
+        this.outField = new JFormattedTextField(new TimeFormatter());
+        this.outField.setColumns(8);
+        this.outField.addPropertyChangeListener(this);
         //**********
 
-        //VOlume control
+        //Volume control
         this.volumeLabel = new JLabel("Volume:");
         this.volumeSlider = new JSlider(0, 1000);
-        this.volumeField = new JTextField(6);
+        
+        NumberFormat volumeFormat = NumberFormat.getNumberInstance();
+        volumeFormat.setMaximumFractionDigits(2);
+        volumeFormat.setMinimumFractionDigits(2);
+        
+        this.volumeField = new JFormattedTextField(volumeFormat);
+        this.volumeField.setColumns(5);
         //********
 
         //Fade in and fade out
+        NumberFormat fadeInFormat = NumberFormat.getNumberInstance();
+        fadeInFormat.setMaximumFractionDigits(2);
+        fadeInFormat.setMinimumFractionDigits(2);
+        
         this.fadeInLabel = new JLabel("Fade in:");
-        this.fadeInField = new JTextField(7);
+        this.fadeInField = new JFormattedTextField(fadeInFormat);
+        this.fadeInField.setColumns(5);
+        
+        NumberFormat fadeOutFormat = (NumberFormat) fadeInFormat.clone();
+        
         this.fadeOutLabel = new JLabel("Fade out:");
-        this.fadeOutField = new JTextField(7);
+        this.fadeOutField = new JFormattedTextField(fadeOutFormat);
+        this.fadeOutField.setColumns(5);
         //********
 
         //Pan control
         this.panLabel = new JLabel("Panning:");
         this.panSlider = new JSlider(-1000, 1000);
-        this.panField = new JTextField(6);
+        
+        NumberFormat panFormat = (NumberFormat) volumeFormat.clone();
+        this.panField = new JFormattedTextField(panFormat);
+        this.panField.setColumns(5);
         //********
 
         //Loop controls
@@ -209,29 +234,29 @@ public class AudioCueUI {
 
     
     public void setVolumeControlValue(double value) {
-        this.volumeField.setText(String.format("%.2f", (1000 * value) / 10));
+        this.volumeField.setValue((1000 * value) / 10);
         this.volumeSlider.setValue((int) (1000 * value));
     }
 
     public void setPanControlValue(double value) {
-        this.panField.setText(String.format("%.2f", (1000 * value) / 10));
+        this.panField.setValue((1000 * value) / 10);
         this.panSlider.setValue((int) (1000 * value));
     }
 
     public void setFadeInFieldValue(double value) {
-        this.fadeInField.setText(String.format("%.2f", value));
+        this.fadeInField.setValue(value);
     }
 
     public void setFadeOutFieldValue(double value) {
-        this.fadeOutField.setText(String.format("%.2f", value));
+        this.fadeOutField.setValue(value);
     }
 
     public void setInFieldValue(double value) {
-        this.inField.setText(UtilsUI.secondsToString(value));
+        this.inField.setValue(value);
     }
 
     public void setOutFieldValue(double value) {
-        this.outField.setText(UtilsUI.secondsToString(value));
+        this.outField.setValue(value);
     }
 
     public void setWaveformData(AudioStream as) {
@@ -243,10 +268,41 @@ public class AudioCueUI {
     }
 
     public void setLengthFieldValue(double value) {
-        this.lengthField.setText(UtilsUI.secondsToString(value));
+        this.lengthField.setValue(value);
     }
 
     public void setCurrentCue(AudioCue cue) {
-        this.eventListener.setCue(cue);
+        this.cue = cue;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        String command = ae.getActionCommand();
+        
+        if (command.equals("loadAudio")) {
+            JFileChooser chooser = new JFileChooser();
+            int result = chooser.showOpenDialog(null);
+            
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                this.cue.loadAudio(file.getAbsolutePath());
+                this.cue.updateUI();
+            }
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        Object source = pce.getSource();
+        
+        if (source == this.inField) {
+            if (this.inField.getValue() != null) {
+                this.cue.setInPos((Double) this.inField.getValue());
+            }
+        } else if (source == this.outField) {
+            if (this.outField.getValue() != null) {
+                this.cue.setOutPos((Double) this.outField.getValue());
+            }
+        }
     }
 }
