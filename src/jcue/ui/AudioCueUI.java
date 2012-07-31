@@ -125,7 +125,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
         //*********
 
         //Waveform
-        this.waveform = new WaveformPanel(100, 100);
+        this.waveform = new WaveformPanel();
         //***********
 
         //Transport controls
@@ -286,8 +286,8 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
         this.outField.setValue(value);
     }
 
-    public void setWaveformData(AudioStream as) {
-        this.waveform.setAudioStream(as);
+    public void setWaveformData(AudioCue cue) {
+        this.waveform.setCue(cue);
     }
 
     public void setFileFieldText(String text) {
@@ -346,5 +346,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
                 this.cue.setOutPos((Double) this.outField.getValue());
             }
         }
+        
+        this.waveform.repaint();
     }
 }

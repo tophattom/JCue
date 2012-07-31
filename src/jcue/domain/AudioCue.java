@@ -51,6 +51,8 @@ public class AudioCue extends AbstractCue {
         this.inPos = 0;
         this.outPos = this.audio.getLength();
         
+        ui.setOutFieldValue(this.outPos);
+        
         if (this.getDescription().isEmpty()) {
             File audioFile = new File(filePath);
             String desc = audioFile.getName();
@@ -63,11 +65,11 @@ public class AudioCue extends AbstractCue {
     public void start() {
         if (this.audio != null) {
             //TODO: uncomment when multi-device shit works
-//            //Set audio position to start if the cue is not paused
-//            if (this.state == CueState.STOPPED) {
-//                this.audio.setPosition(this.inPos);
-//                this.audio.setVolume(this.volume);
-//            }
+            //Set audio position to start if the cue is not paused
+            if (this.state == CueState.STOPPED) {
+                this.audio.setPosition(this.inPos);
+                this.audio.setVolume(this.volume);
+            }
 //            
 //            //Fade in, if there is fade in time specified
 //            if (this.fadeIn != 0) {
@@ -131,6 +133,10 @@ public class AudioCue extends AbstractCue {
         return state;
     }
 
+    public AudioStream getAudio() {
+        return audio;
+    }
+    
     public void setFadeIn(double fadeIn) {
         this.fadeIn = fadeIn;
     }
@@ -145,6 +151,7 @@ public class AudioCue extends AbstractCue {
 
     public void setOutPos(double outPos) {
         this.outPos = outPos;
+        this.audio.setOutPosition(outPos);
     }
 
     public void setPan(double pan) {
@@ -174,7 +181,7 @@ public class AudioCue extends AbstractCue {
         ui.setVolumeControlValue(this.volume);
         ui.setPanControlValue(this.pan);
         
-        ui.setWaveformData(this.audio);
+        ui.setWaveformData(this);
         
         AudioCueUI.lastPanel = panel;
     }

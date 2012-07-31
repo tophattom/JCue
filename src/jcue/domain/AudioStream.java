@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import jouvieje.bass.Bass;
-import jouvieje.bass.defines.BASS_ATTRIB;
-import jouvieje.bass.defines.BASS_POS;
-import jouvieje.bass.defines.BASS_SAMPLE;
-import jouvieje.bass.defines.BASS_STREAM;
+import jouvieje.bass.defines.*;
 import jouvieje.bass.structures.HSTREAM;
+import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.BufferUtils;
 
 /**
@@ -22,6 +20,7 @@ import jouvieje.bass.utils.BufferUtils;
 public class AudioStream {
 
     private TreeMap<SoundDevice, HSTREAM> streams;
+    private HSYNC stopSync;
     private HSTREAM stream; //TODO: remove when multi-device stuff fully functional
     private String filePath;
     
@@ -50,23 +49,23 @@ public class AudioStream {
         //Add the stream to the hashmap
         this.streams.put(sd, newStream);
     }
-    
+
     //Links all streams together
     private void linkStreams() {
         //Loop through all streams
         Iterator<SoundDevice> it = this.streams.keySet().iterator();
         while (it.hasNext()) {
             SoundDevice sd = it.next();
-            
+
             //Link the stream to all of the other streams
             Iterator<SoundDevice> it2 = this.streams.keySet().iterator();
-            while(it2.hasNext()) {
+            while (it2.hasNext()) {
                 SoundDevice sd2 = it2.next();
-                
+
                 if (!sd.equals(sd2)) {
                     HSTREAM stream1 = this.streams.get(sd);
                     HSTREAM stream2 = this.streams.get(sd2);
-                    
+
                     Bass.BASS_ChannelSetLink(stream1.asInt(), stream2.asInt());
                 }
             }
@@ -84,12 +83,12 @@ public class AudioStream {
                 this.streams.put(sd, null);
             }
         }
-        
+
         //Create a new stream for every device used
         for (SoundDevice sd : this.streams.keySet()) {
             loadFile(path, sd);
         }
-        
+
         //Get information on the stream
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM tmpStream = firstEntry.getValue();
@@ -109,7 +108,7 @@ public class AudioStream {
     //Adds a new output for this stream
     public void addOutput(SoundDevice sd) {
         this.streams.put(sd, null);
-        
+
         if (this.filePath != null && !this.filePath.isEmpty()) {
             try {
                 loadFile(this.filePath, sd);
@@ -123,7 +122,7 @@ public class AudioStream {
     public void play() {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM firstStream = firstEntry.getValue();
-        
+
         if (firstStream != null) {
             Bass.BASS_ChannelPlay(firstStream.asInt(), false);
         }
@@ -132,7 +131,7 @@ public class AudioStream {
     public void pause() {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM firstStream = firstEntry.getValue();
-        
+
         if (firstStream != null) {
             Bass.BASS_ChannelPause(firstStream.asInt());
         }
@@ -141,7 +140,7 @@ public class AudioStream {
     public void stop() {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM firstStream = firstEntry.getValue();
-        
+
         if (firstStream != null) {
             Bass.BASS_ChannelStop(firstStream.asInt());
         }
@@ -159,7 +158,7 @@ public class AudioStream {
     public double getPosition() {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM stream = firstEntry.getValue();
-        
+
         if (stream != null) {
             long bytePos = Bass.BASS_ChannelGetPosition(stream.asInt(), BASS_POS.BASS_POS_BYTE);
             return Bass.BASS_ChannelBytes2Seconds(stream.asInt(), bytePos);
@@ -197,6 +196,21 @@ public class AudioStream {
         Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
                 BASS_ATTRIB.BASS_ATTRIB_PAN,
                 (float) pan);
+    }
+
+    public void setOutPosition(double seconds) {
+        Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
+        HSTREAM firstStream = firstEntry.getValue();
+
+        if (firstStream != null) {
+            if (this.stopSync != null) {
+                Bass.BASS_ChannelRemoveSync(firstStream.asInt(), this.stopSync);
+                this.stopSync = null;
+            }
+
+            long bytePos = Bass.BASS_ChannelSeconds2Bytes(firstStream.asInt(), seconds);
+            this.stopSync = Bass.BASS_ChannelSetSync(firstStream.asInt(), BASS_SYNC.BASS_SYNC_POS, bytePos, new StopCallback(), null);
+        }
     }
 
     public double getLength() {
