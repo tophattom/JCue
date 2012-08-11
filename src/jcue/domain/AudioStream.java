@@ -2,6 +2,7 @@ package jcue.domain;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -20,6 +21,8 @@ import jouvieje.bass.utils.BufferUtils;
 public class AudioStream {
 
     private TreeMap<SoundDevice, HSTREAM> streams;
+    private HashMap<SoundDevice, Double> deviceVolumes;
+    
     private HSYNC stopSync;
     private HSTREAM stream; //TODO: remove when multi-device stuff fully functional
     private String filePath;
@@ -32,9 +35,14 @@ public class AudioStream {
 
     public AudioStream(List<SoundDevice> outputs) {
         this.streams = new TreeMap<SoundDevice, HSTREAM>();
+        this.deviceVolumes = new HashMap<SoundDevice, Double>();
 
         for (SoundDevice sd : outputs) {
             this.streams.put(sd, null);
+        }
+        
+        for (SoundDevice sd : outputs) {
+            this.deviceVolumes.put(sd, 1.0);
         }
         
         this.volume = 1.0;
@@ -113,6 +121,7 @@ public class AudioStream {
     //Adds a new output for this stream
     public void addOutput(SoundDevice sd) {
         this.streams.put(sd, null);
+        this.deviceVolumes.put(sd, 1.0);
 
         if (this.filePath != null && !this.filePath.isEmpty()) {
             try {
@@ -192,7 +201,9 @@ public class AudioStream {
     }
 
     public void setDeviceVolume(double volume, SoundDevice sd) {
-        double newVolume = volume;
+        this.deviceVolumes.put(sd, volume);
+        
+        double newVolume = volume * this.volume;
         HSTREAM tmp = this.streams.get(sd);
         
         if (tmp != null) {
@@ -204,7 +215,9 @@ public class AudioStream {
         this.volume = volume;
         
         for (SoundDevice sd : this.streams.keySet()) {
-            setDeviceVolume(volume, sd);
+            double deviceVol = this.deviceVolumes.get(sd);
+            
+            setDeviceVolume(deviceVol, sd);
         }
     }
 
@@ -246,18 +259,8 @@ public class AudioStream {
     }
     
     public double getDeviceVolume(SoundDevice sd) {
-        FloatBuffer buf = BufferUtils.newFloatBuffer(1);
-        HSTREAM tmp = this.streams.get(sd);
-        
-        if (tmp != null) {
-            Bass.BASS_ChannelGetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, buf);
-
-            return buf.get();
-        }
-        
-        return 0;
+        return this.deviceVolumes.get(sd);
     }
-
     private void loadStreamData() {
         HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
         long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
@@ -270,5 +273,24 @@ public class AudioStream {
         this.streamData = buffer.asFloatBuffer();
 
         System.gc();
+    }
+    
+    public void printVolumes() {
+        System.out.println("Master: " + this.volume);
+        
+        for (SoundDevice sd : this.streams.keySet()) {
+            System.out.println("+--- " + sd.getName() + ": " + this.deviceVolumes.get(sd));
+            
+            FloatBuffer buf = BufferUtils.newFloatBuffer(1);
+            HSTREAM tmp = this.streams.get(sd);
+            double streamVol = 0;
+            
+            if (tmp != null) {
+                Bass.BASS_ChannelGetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, buf);
+                streamVol = buf.get();
+            }
+            System.out.println("|  +--- Result: " + streamVol);
+        }
+        System.out.println();
     }
 }

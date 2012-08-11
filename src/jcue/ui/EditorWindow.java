@@ -81,6 +81,7 @@ public class EditorWindow extends JFrame {
         top.add(this.changeButton);
         
         //Add everything to window
+        container.setLayout(new BorderLayout(5, 5));
         container.add(top, BorderLayout.NORTH);
         container.add(this.cueList, BorderLayout.WEST);
         container.add(this.editorTabs, BorderLayout.CENTER);
