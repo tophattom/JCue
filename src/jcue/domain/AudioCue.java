@@ -68,7 +68,7 @@ public class AudioCue extends AbstractCue {
             //Set audio position to start if the cue is not paused
             if (this.state == CueState.STOPPED) {
                 this.audio.setPosition(this.inPos);
-                this.audio.setVolume(this.volume);
+                this.audio.setMasterVolume(this.volume);
             }
 //            
 //            //Fade in, if there is fade in time specified
@@ -160,6 +160,7 @@ public class AudioCue extends AbstractCue {
 
     public void setVolume(double volume) {
         this.volume = volume;
+        this.audio.setMasterVolume(volume);
     }
     
     @Override

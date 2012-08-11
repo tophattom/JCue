@@ -26,6 +26,8 @@ public class AudioStream {
     
     private double length;
     
+    private double volume, pan;
+    
     private FloatBuffer streamData;
 
     public AudioStream(List<SoundDevice> outputs) {
@@ -34,6 +36,9 @@ public class AudioStream {
         for (SoundDevice sd : outputs) {
             this.streams.put(sd, null);
         }
+        
+        this.volume = 1.0;
+        this.pan = 0.0;
     }
 
     //Creates a new stream from file for specified SoundDevice
@@ -186,10 +191,21 @@ public class AudioStream {
         }
     }
 
-    public void setVolume(double volume) {
-//        Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
-//                BASS_ATTRIB.BASS_ATTRIB_VOL,
-//                (float) volume);
+    public void setDeviceVolume(double volume, SoundDevice sd) {
+        double newVolume = volume;
+        HSTREAM tmp = this.streams.get(sd);
+        
+        if (tmp != null) {
+            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
+        }
+    }
+    
+    public void setMasterVolume(double volume) {
+        this.volume = volume;
+        
+        for (SoundDevice sd : this.streams.keySet()) {
+            setDeviceVolume(volume, sd);
+        }
     }
 
     public void setPan(double pan) {
@@ -223,6 +239,23 @@ public class AudioStream {
 
     public FloatBuffer getStreamData() {
         return this.streamData;
+    }
+    
+    public double getMasterVolume() {
+        return this.volume;
+    }
+    
+    public double getDeviceVolume(SoundDevice sd) {
+        FloatBuffer buf = BufferUtils.newFloatBuffer(1);
+        HSTREAM tmp = this.streams.get(sd);
+        
+        if (tmp != null) {
+            Bass.BASS_ChannelGetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, buf);
+
+            return buf.get();
+        }
+        
+        return 0;
     }
 
     private void loadStreamData() {

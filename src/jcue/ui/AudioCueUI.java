@@ -11,14 +11,15 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.NumberFormat;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import jcue.domain.AudioCue;
-import jcue.domain.AudioStream;
 
 /**
  *
  * @author Jaakko
  */
-public class AudioCueUI implements ActionListener, PropertyChangeListener {
+public class AudioCueUI implements ActionListener, PropertyChangeListener, ChangeListener {
 
     public static JPanel lastPanel;
     
@@ -79,7 +80,9 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
 
         //Volume control
         this.volumeLabel = new JLabel("Volume:");
+        
         this.volumeSlider = new JSlider(0, 1000);
+        this.volumeSlider.addChangeListener(this);
         
         NumberFormat volumeFormat = NumberFormat.getNumberInstance();
         volumeFormat.setMaximumFractionDigits(2);
@@ -348,5 +351,19 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener {
         }
         
         this.waveform.repaint();
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent ce) {
+        Object source = ce.getSource();
+        
+        if (source == this.volumeSlider) {
+            int value = this.volumeSlider.getValue();
+            double newVolume = value / 1000.0;
+            
+            this.cue.setVolume(newVolume);
+            
+            this.volumeField.setValue(value / 10.0);
+        }
     }
 }
