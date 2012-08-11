@@ -261,7 +261,7 @@ public class AudioStream {
     private void loadStreamData() {
         HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
         long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
-        int size = (int) (dataLength / 4);
+        int size = (int) (dataLength);
 
         ByteBuffer buffer = BufferUtils.newByteBuffer(size);
 
