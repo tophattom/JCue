@@ -71,6 +71,8 @@ public abstract class AbstractCue {
     
     public void updateUI(JPanel panel) {
         ui.showUI(panel);
+        ui.setCurrentCue(this);
+        
         ui.setNameFieldText(this.name);
         ui.setDescFieldText(this.description);
         ui.setDelayFieldValue(this.startDelay);

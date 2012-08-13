@@ -3,31 +3,42 @@ package jcue.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.NumberFormat;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import jcue.domain.AbstractCue;
 import jcue.domain.StartMode;
 
 /**
  *
  * @author Jaakko
  */
-public class AbstractCueUI {
+public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
 
     private JLabel nameLabel, descLabel;
     private JTextField nameField, descField;
     
     private JLabel startModeLabel, delayLabel, cueLabel;
     private JComboBox startModeSelect, cueSelect;
-    private JTextField delayField;
+    private JFormattedTextField delayField;
+    
+    private AbstractCue cue;
 
     public AbstractCueUI() {
         this.nameLabel = new JLabel("Name:");
         this.nameField = new JTextField();
+        this.nameField.addActionListener(this);
 
         this.descLabel = new JLabel("Description:");
         this.descField = new JTextField();
+        this.descField.addActionListener(this);
 
         this.startModeLabel = new JLabel("Start mode:");
         StartMode[] modes = {
@@ -37,12 +48,20 @@ public class AbstractCueUI {
             StartMode.HOTKEY
         };
         this.startModeSelect = new JComboBox(modes);
+        this.startModeSelect.addActionListener(this);
 
         this.cueLabel = new JLabel("Cue:");
         this.cueSelect = new JComboBox();
 
         this.delayLabel = new JLabel("Delay:");
-        this.delayField = new JTextField(6);
+        
+        NumberFormat delayFormat = NumberFormat.getNumberInstance();
+        delayFormat.setMinimumFractionDigits(2);
+        delayFormat.setMaximumFractionDigits(2);
+        
+        this.delayField = new JFormattedTextField(delayFormat);
+        this.delayField.setColumns(5);
+        this.delayField.addPropertyChangeListener(this);
     }
 
     public void showUI(JPanel container) {
@@ -104,10 +123,43 @@ public class AbstractCueUI {
     }
 
     public void setDelayFieldValue(double value) {
-        this.delayField.setText(String.format("%.2f", value));
+        this.delayField.setValue(value);
     }
     
     public void setStartModeSelectValue(StartMode value) {
         this.startModeSelect.setSelectedItem(value);
+    }
+
+    public void setCurrentCue(AbstractCue cue) {
+        this.cue = cue;
+    }
+    
+    @Override
+    public void propertyChange(PropertyChangeEvent pce) {
+        Object source = pce.getSource();
+        
+        if (source == this.delayField) {
+            Number value = (Number) this.delayField.getValue();
+            
+            if (this.cue != null) {
+                this.cue.setStartDelay(value.doubleValue());
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        Object source = ae.getSource();
+        
+        if (source == this.startModeSelect) {
+            JComboBox cb = (JComboBox) source;
+            StartMode mode = (StartMode) cb.getSelectedItem();
+            
+            this.cue.setStartMode(mode);
+        } else if (source == this.nameField) {
+            this.cue.setName(this.nameField.getText());
+        } else if (source == this.descField) {
+            this.cue.setDescription(this.descField.getText());
+        }
     }
 }
