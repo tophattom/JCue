@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import jcue.domain.AbstractCue;
 import jcue.domain.StartMode;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -64,7 +65,28 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
         this.delayField.addPropertyChangeListener(this);
     }
 
-    public void showUI(JPanel container) {
+    public void showUI(JPanel panel) {
+        panel.removeAll();
+        
+        panel.setLayout(new MigLayout("fillx"));
+        
+        panel.add(this.nameLabel);
+        panel.add(this.nameField, "span 4, growx, wrap");
+        
+        panel.add(this.descLabel);
+        panel.add(this.descField, "span 4, growx, wrap");
+        
+        panel.add(this.startModeLabel);
+        panel.add(this.startModeSelect);
+        panel.add(this.cueLabel);
+        panel.add(this.cueSelect, "span 2, growx, wmin 200");
+        panel.add(this.delayLabel);
+        panel.add(this.delayField, "wrap");
+        
+        panel.revalidate();
+    }
+    
+    public void showUI2(JPanel container) {
         container.removeAll();
 
         container.setLayout(new GridBagLayout());

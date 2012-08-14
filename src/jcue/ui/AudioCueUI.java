@@ -153,7 +153,48 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         //**************
     }
 
-    public void showUI(JPanel container) {
+    public void showUI(JPanel panel) {
+        panel.add(this.fileLabel);
+        panel.add(this.fileField, "span 4, growx, split 2");
+        panel.add(this.fileButton, "wrap");
+        
+        panel.add(this.lengthLabel);
+        panel.add(this.lengthField, "wrap");
+        
+        panel.add(this.inLabel);
+        panel.add(this.inField);
+        panel.add(this.fadeInLabel);
+        panel.add(this.fadeInField, "wrap");
+        
+        panel.add(this.outLabel);
+        panel.add(this.outField);
+        panel.add(this.fadeOutLabel);
+        panel.add(this.fadeOutField, "wrap");
+        
+        panel.add(this.waveform, "span, grow, hmin 170, wrap");
+        this.waveform.repaint();
+        
+        //Create a panel for laying out buttons
+        JPanel transportPanel = new JPanel();
+        transportPanel.setLayout(new BoxLayout(transportPanel, BoxLayout.X_AXIS));
+        transportPanel.add(this.playButton);
+        transportPanel.add(this.pauseButton);
+        transportPanel.add(this.stopButton);
+        
+        panel.add(transportPanel, "span 3, wrap");
+        
+        panel.add(this.volumeLabel);
+        panel.add(this.volumeSlider, "span 3, growx");
+        panel.add(this.volumeField, "wrap");
+        
+        panel.add(this.panLabel);
+        panel.add(this.panSlider, "span 3, growx");
+        panel.add(this.panField, "wrap");
+        
+        panel.revalidate();
+    }
+    
+    public void showUI2(JPanel container) {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 3, 5, 3);
 
@@ -262,7 +303,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         //**********
     }
 
-    
+
     public void setVolumeControlValue(double value) {
         this.volumeField.setValue((1000 * value) / 10);
         this.volumeSlider.setValue((int) (1000 * value));
