@@ -128,6 +128,10 @@ public class AudioCue extends AbstractCue {
     public double getVolume() {
         return volume;
     }
+    
+    public double getDeviceVolume(SoundDevice sd) {
+        return this.audio.getDeviceVolume(sd);
+    }
 
     public CueState getState() {
         return state;
@@ -161,6 +165,10 @@ public class AudioCue extends AbstractCue {
     public void setVolume(double volume) {
         this.volume = volume;
         this.audio.setMasterVolume(volume);
+    }
+    
+    public void setDeviceVolume(SoundDevice sd, double volume) {
+        this.audio.setDeviceVolume(volume, sd);
     }
     
     @Override
