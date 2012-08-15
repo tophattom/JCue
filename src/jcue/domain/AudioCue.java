@@ -170,13 +170,17 @@ public class AudioCue extends AbstractCue {
     public void setDeviceVolume(SoundDevice sd, double volume) {
         this.audio.setDeviceVolume(volume, sd);
     }
+
+    public ArrayList<SoundDevice> getOutputs() {
+        return outputs;
+    }
     
     @Override
     public void updateUI(JPanel panel) {
         super.updateUI(panel);
         
-        ui.showUI(panel);
         ui.setCurrentCue(this);
+        ui.showUI(panel);
         
         ui.setFileFieldText(this.audio.getFilePath());
         ui.setLengthFieldValue(this.audio.getLength());

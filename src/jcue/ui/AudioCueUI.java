@@ -10,10 +10,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import jcue.domain.AudioCue;
+import jcue.domain.SoundDevice;
 
 /**
  *
@@ -190,6 +192,11 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         panel.add(this.panLabel);
         panel.add(this.panSlider, "span 3, growx");
         panel.add(this.panField, "wrap");
+        
+        ArrayList<SoundDevice> outputs = this.cue.getOutputs();
+        for (SoundDevice sd : outputs) {
+            panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
+        }
         
         panel.revalidate();
     }
