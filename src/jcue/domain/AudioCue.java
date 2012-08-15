@@ -175,6 +175,14 @@ public class AudioCue extends AbstractCue {
         return outputs;
     }
     
+    public void removeOutput(SoundDevice sd) {
+        if (!this.outputs.contains(sd)) {
+            return;
+        }
+        
+        this.audio.removeOutput(sd);
+        this.outputs.remove(sd);
+    }
     @Override
     public void updateUI(JPanel panel) {
         super.updateUI(panel);

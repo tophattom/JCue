@@ -8,6 +8,8 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -23,7 +25,8 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Jaakko
  */
-public class DeviceControlPanel extends JPanel implements ChangeListener, ItemListener {
+public class DeviceControlPanel extends JPanel implements ChangeListener, 
+        ItemListener, ActionListener {
     
     private JLabel deviceLabel, volumeLabel, panLabel;
     
@@ -32,11 +35,15 @@ public class DeviceControlPanel extends JPanel implements ChangeListener, ItemLi
     
     private JCheckBox muteCheck;
     
+    private JButton removeButton;
+    
     private SoundDevice targetDevice;
     private AudioCue targetCue;
+    
+    private static final ImageIcon removeIcon = new ImageIcon("Images/remove_small.png");
 
     public DeviceControlPanel(AudioCue targetCue, SoundDevice targetDevice) {
-        super(new MigLayout());
+        super(new MigLayout("fillx"));
         super.setBorder(BorderFactory.createTitledBorder(targetDevice.getName()));
         
         this.targetCue = targetCue;
@@ -68,6 +75,9 @@ public class DeviceControlPanel extends JPanel implements ChangeListener, ItemLi
         this.muteCheck = new JCheckBox("Mute");
         this.muteCheck.addItemListener(this);
         
+        this.removeButton = new JButton(removeIcon);
+        this.removeButton.addActionListener(this);
+        
         addComponents();
     }
     
@@ -78,11 +88,13 @@ public class DeviceControlPanel extends JPanel implements ChangeListener, ItemLi
         
         this.add(this.volumeLabel);
         this.add(this.volumeSlider, "span, growx, split 2");
-        this.add(this.volumeField);
+        this.add(this.volumeField, "wrap");
         
-        this.add(this.panLabel, "cell 1 1");
+        this.add(this.removeButton);
+        
+        this.add(this.panLabel);
         this.add(this.panSlider, "span, growx, split 2");
-        this.add(this.panField, "wrap");
+        this.add(this.panField);
     }
     
     @Override
@@ -119,6 +131,17 @@ public class DeviceControlPanel extends JPanel implements ChangeListener, ItemLi
         this.panLabel.setEnabled(!muted);
         this.panSlider.setEnabled(!muted);
         this.panField.setEnabled(!muted);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        Object source = ae.getSource();
+        
+        if (source == this.removeButton) {
+            this.targetCue.removeOutput(this.targetDevice);
+            
+            this.targetCue.updateUI();
+        }
     }
     
 }

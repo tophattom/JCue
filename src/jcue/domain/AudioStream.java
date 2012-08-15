@@ -85,6 +85,16 @@ public class AudioStream {
         }
     }
 
+    private void unlinkStream(HSTREAM stream) {
+        for (SoundDevice sd : this.streams.keySet()) {
+            HSTREAM tmp = this.streams.get(sd);
+            
+            if (tmp != stream) {
+                Bass.BASS_ChannelRemoveLink(stream.asInt(), tmp.asInt());
+            }
+        }
+    }
+    
     //Used to load a new audio file for use
     public void loadFile(String path) throws Exception {
         //Free possible existing streams
@@ -133,6 +143,18 @@ public class AudioStream {
         }
     }
 
+    public void removeOutput(SoundDevice sd) {
+        if (!this.streams.containsKey(sd)) {
+            return;
+        }
+        
+        HSTREAM stream = this.streams.get(sd);
+        
+        unlinkStream(stream);
+        Bass.BASS_StreamFree(stream);
+        this.streams.remove(sd);
+    }
+    
     public void play() {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM firstStream = firstEntry.getValue();
@@ -261,6 +283,7 @@ public class AudioStream {
     public double getDeviceVolume(SoundDevice sd) {
         return this.deviceVolumes.get(sd);
     }
+    
     private void loadStreamData() {
         HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
         long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
