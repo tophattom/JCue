@@ -130,15 +130,17 @@ public class AudioStream {
 
     //Adds a new output for this stream
     public void addOutput(SoundDevice sd) {
-        this.streams.put(sd, null);
-        this.deviceVolumes.put(sd, 1.0);
+        if (!this.streams.containsKey(sd)) {
+            this.streams.put(sd, null);
+            this.deviceVolumes.put(sd, 1.0);
 
-        if (this.filePath != null && !this.filePath.isEmpty()) {
-            try {
-                loadFile(this.filePath, sd);
-                linkStreams();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (this.filePath != null && !this.filePath.isEmpty()) {
+                try {
+                    loadFile(this.filePath, sd);
+                    linkStreams();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

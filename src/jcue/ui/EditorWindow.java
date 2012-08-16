@@ -37,6 +37,8 @@ public class EditorWindow extends JFrame {
     private void createComponents(Container container) {
         //Panels for cue controls
         this.basicPanel = new JPanel();
+        JScrollPane basicScroll = new JScrollPane(this.basicPanel);
+        basicScroll.setBorder(null);
         
         this.effectPanel = new JPanel();
         //**********
@@ -70,7 +72,7 @@ public class EditorWindow extends JFrame {
         //Tabs for cue controls
         this.editorTabs = new JTabbedPane();
         
-        this.editorTabs.addTab("Basic", this.basicPanel);
+        this.editorTabs.addTab("Basic", basicScroll);
         this.editorTabs.addTab("Effects", this.effectPanel);
         //**********
         
