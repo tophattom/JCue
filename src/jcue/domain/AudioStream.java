@@ -242,7 +242,21 @@ public class AudioStream {
             setDeviceVolume(deviceVol, sd);
         }
     }
+    
+    public void muteOutput(SoundDevice sd) {
+        if (this.streams.containsKey(sd)) {
+            HSTREAM tmp = this.streams.get(sd);
+            
+            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, 0);
+        }
+    }
 
+    public void unmuteOutput(SoundDevice sd) {
+        if (this.streams.containsKey(sd)) {
+            setDeviceVolume(getDeviceVolume(sd), sd);
+        }
+    }
+    
     public void setPan(double pan) {
         Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
                 BASS_ATTRIB.BASS_ATTRIB_PAN,

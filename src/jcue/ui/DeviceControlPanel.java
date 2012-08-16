@@ -120,8 +120,10 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
         if (source == this.muteCheck) {
             if (ie.getStateChange() == ItemEvent.SELECTED) {
                 muted = true;
+                this.targetCue.getAudio().muteOutput(this.targetDevice);
             } else if (ie.getStateChange() == ItemEvent.DESELECTED) {
                 muted = false;
+                this.targetCue.getAudio().unmuteOutput(this.targetDevice);
             }
         }
         
@@ -143,7 +145,7 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
             
             //Last output cannot be removed
             if (!removeOutput) {
-               JOptionPane.showMessageDialog(this, "Audio cues must have at least one output!", "Error", JOptionPane.ERROR_MESSAGE);
+               JOptionPane.showMessageDialog(this, "Cannot delete output.\nAudio cues must have at least one output.", "Error", JOptionPane.ERROR_MESSAGE);
             }
             
             this.targetCue.updateUI();
