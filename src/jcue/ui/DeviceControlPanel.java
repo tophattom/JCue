@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -138,7 +139,12 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
         Object source = ae.getSource();
         
         if (source == this.removeButton) {
-            this.targetCue.removeOutput(this.targetDevice);
+            boolean removeOutput = this.targetCue.removeOutput(this.targetDevice);
+            
+            //Last output cannot be removed
+            if (!removeOutput) {
+               JOptionPane.showMessageDialog(this, "Audio cues must have at least one output!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             
             this.targetCue.updateUI();
         }
