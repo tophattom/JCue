@@ -10,11 +10,12 @@ import jouvieje.bass.structures.BASS_DEVICEINFO;
  * @author Jaakko
  */
 public class DeviceManager {
+    private static volatile DeviceManager instance = null;;
     
     //List for all of the devices
     private ArrayList<SoundDevice> devices;
     
-    public DeviceManager() {
+    private DeviceManager() {
         this.devices = new ArrayList<SoundDevice>();
         
         BASS_DEVICEINFO info = BASS_DEVICEINFO.allocate();
@@ -43,6 +44,18 @@ public class DeviceManager {
             
             i++;
         }
+    }
+    
+    public static DeviceManager getInstansce() {
+        if (instance == null) {
+            synchronized (DeviceManager.class) {
+                if (instance == null) {
+                    instance = new DeviceManager();
+                }
+            }
+        }
+        
+        return instance;
     }
 
     /**

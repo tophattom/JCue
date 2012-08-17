@@ -18,7 +18,7 @@ public class JCue {
     public static void main(String[] args) {
         loadBASS();
         
-        DeviceManager dm = new DeviceManager();
+        DeviceManager dm = DeviceManager.getInstansce();
         CueList cueList = new CueList(dm); 
         
         if (dm.isInitialized()) {

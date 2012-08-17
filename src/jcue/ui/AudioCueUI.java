@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -46,6 +47,12 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
     private WaveformPanel waveform;
     
     private JButton playButton, pauseButton, stopButton;
+    
+    private JLabel deviceLabel;
+    private JComboBox deviceSelect;
+    private ComboBoxModel deviceSelectModel;
+    private JButton addDeviceButton;
+    
     private AudioCue cue;
 
     public AudioCueUI() {
@@ -153,6 +160,13 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         this.stopButton.setActionCommand("stop");
         this.stopButton.addActionListener(this);
         //**************
+        
+        this.deviceLabel = new JLabel("Device:");
+        this.deviceSelect = new JComboBox();
+        
+        ImageIcon addIcon = new ImageIcon("images/add_small.png");
+        this.addDeviceButton = new JButton(addIcon);
+                
     }
 
     public void showUI(JPanel panel) {
@@ -197,6 +211,14 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         for (SoundDevice sd : outputs) {
             panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
         }
+        
+        panel.add(this.deviceLabel);
+        
+
+        ComboBoxModel cbm = new DefaultComboBoxModel();
+        panel.add(this.deviceSelect);
+        panel.add(this.addDeviceButton, "wrap");
+                
         
         panel.revalidate();
     }
