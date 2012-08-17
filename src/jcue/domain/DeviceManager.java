@@ -46,7 +46,7 @@ public class DeviceManager {
         }
     }
     
-    public static DeviceManager getInstansce() {
+    public static DeviceManager getInstance() {
         if (instance == null) {
             synchronized (DeviceManager.class) {
                 if (instance == null) {

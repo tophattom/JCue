@@ -175,6 +175,13 @@ public class AudioCue extends AbstractCue {
         return outputs;
     }
     
+    public void addOutput(SoundDevice sd) {
+        if (!this.outputs.contains(sd)) {
+            this.outputs.add(sd);
+            this.audio.addOutput(sd);
+        }
+    }
+    
     public boolean removeOutput(SoundDevice sd) {
         if (!this.outputs.contains(sd)) {
             return true;

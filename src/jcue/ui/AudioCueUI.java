@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import jcue.domain.AudioCue;
+import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
 
 /**
@@ -161,11 +162,15 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         this.stopButton.addActionListener(this);
         //**************
         
+        //Adding outputs
         this.deviceLabel = new JLabel("Device:");
         this.deviceSelect = new JComboBox();
         
         ImageIcon addIcon = new ImageIcon("images/add_small.png");
         this.addDeviceButton = new JButton(addIcon);
+        this.addDeviceButton.setActionCommand("addDevice");
+        this.addDeviceButton.addActionListener(this);
+        //*************
                 
     }
 
@@ -212,10 +217,18 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
             panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
         }
         
+        
         panel.add(this.deviceLabel);
         
-
-        ComboBoxModel cbm = new DefaultComboBoxModel();
+        //Update device selection combo box
+        DeviceManager dm = DeviceManager.getInstance();
+        ArrayList<SoundDevice> enabledDevices = dm.getEnabledDevices();
+        SoundDevice[] tmpArray = new SoundDevice[enabledDevices.size()];
+        SoundDevice[] deviceArray = enabledDevices.toArray(tmpArray);
+        
+        ComboBoxModel cbm = new DefaultComboBoxModel(deviceArray);
+        this.deviceSelect.setModel(cbm);
+        
         panel.add(this.deviceSelect);
         panel.add(this.addDeviceButton, "wrap");
                 
@@ -403,6 +416,11 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
             
             this.playButton.setSelected(false);
             this.pauseButton.setSelected(false);
+        } else if (command.equals("addDevice")) {
+            SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
+            
+            this.cue.addOutput(sd);
+            this.cue.updateUI();
         }
     }
 
