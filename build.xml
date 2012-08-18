@@ -40,18 +40,80 @@
     <!-- based on the operating system -->
     <!-- ************************************ -->
 
-    <!-- Windows 32bit -->
     <target name="-post-jar">
-        <copy todir="${dist.dir}/${libDir}">
-          <fileset dir="${libDir}" />
-        </copy>
-
+        <!-- Copy images to dist folder -->
         <copy todir="${dist.dir}/images">
           <fileset dir="images/" />
         </copy>
-    </target>
-    <!-- ****************** -->
 
+        <!-- Create temporary Windows directory -->
+        <copy todir="${dist.dir}/win">
+          <fileset dir="${dist.dir}">
+            <exclude name="win" />
+            <exclude name="mac" />
+            <exclude name="linux" />
+          </fileset>
+        </copy>
+
+        <copy todir="${dist.dir}/win/lib/win32">
+          <fileset dir="lib/win32" />
+        </copy>
+        <copy todir="${dist.dir}/win/lib/win64">
+          <fileset dir="lib/win64" />
+        </copy>
+        <!-- ***************** -->
+
+        <!-- Create temporary Linux directory
+        <copy todir="${dist.dir}/linux">
+          <fileset dir="${dist.dir}">
+            <exclude name="win" />
+            <exclude name="mac" />
+            <exclude name="linux" />
+          </fileset>
+        </copy>
+
+        <copy todir="${dist.dir}/linux32/lib/linux32">
+          <fileset dir="lib/linux32" />
+        </copy>
+        <copy todir="${dist.dir}/linux64/lib/linux64">
+          <fileset dir="lib/linux64" />
+        </copy>
+        ***************** -->
+
+        <!-- Create temporary Mac directory -->
+        <copy todir="${dist.dir}/mac">
+          <fileset dir="${dist.dir}">
+            <exclude name="win/" />
+            <exclude name="mac/" />
+            <exclude name="linux/" />
+          </fileset>
+        </copy>
+
+        <copy todir="${dist.dir}/mac/lib/mac">
+          <fileset dir="lib/mac" />
+        </copy>
+        <!-- ************* -->
+
+
+        <!-- Prompt for package version -->
+        <input message="Enter package version:" addproperty="version" />
+
+        <!-- Create zip files -->
+        <zip destfile="${dist.dir}/JCue_win_${version}.zip" basedir="${dist.dir}/win" />
+        <!-- <zip destfile="${dist.dir}/JCue_linux_${version}.zip" basedir="${dist.dir}/linux" /> -->
+        <zip destfile="${dist.dir}/JCue_mac_${version}.zip" basedir="${dist.dir}/mac" />
+
+        <!-- Delete temporary directories -->
+        <delete dir="${dist.dir}/win" />
+        <!-- <delete dir="${dist.dir}/linux" /> -->
+        <delete dir="${dist.dir}/mac" />
+
+
+        <!-- Copy correct libraires for this platform -->
+        <copy todir="${dist.dir}/${libDir}">
+          <fileset dir="${libDir}" />
+        </copy>
+    </target>
 
     <!--
 
