@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -393,7 +394,9 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         String command = ae.getActionCommand();
         
         if (command.equals("loadAudio")) {  //File choose button was pressed
+            
             JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new AudioFileFilter());
             int result = chooser.showOpenDialog(null);
             
             if (result == JFileChooser.APPROVE_OPTION) {
