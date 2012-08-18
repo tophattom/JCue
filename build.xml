@@ -45,6 +45,10 @@
         <copy todir="${dist.dir}/${libDir}">
           <fileset dir="${libDir}" />
         </copy>
+
+        <copy todir="${dist.dir}/images">
+          <fileset dir="images/" />
+        </copy>
     </target>
     <!-- ****************** -->
 
