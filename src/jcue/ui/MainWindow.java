@@ -3,7 +3,8 @@ package jcue.ui;
 import java.awt.*;
 import javax.swing.*;
 import jcue.domain.CueList;
-import jcue.ui.event.MainButtonListener;
+import jcue.domain.CuePlayer;
+import jcue.ui.event.MainWindowListener;
 
 /**
  *
@@ -24,12 +25,14 @@ public class MainWindow implements Runnable {
     
     private EditorWindow editor;
     
-    private MainButtonListener buttonListener;
+    private MainWindowListener eventListener;
     
     private CueList cues;
+    private CuePlayer player;
     
     public MainWindow(CueList cues) {
         this.cues = cues;
+        this.player = new CuePlayer(cues);
     }
     
     @Override
@@ -45,7 +48,7 @@ public class MainWindow implements Runnable {
         
         this.editor = new EditorWindow(this.cues);
         
-        this.buttonListener = new MainButtonListener(this);
+        this.eventListener = new MainWindowListener(this);
         
         createMenus();
         createComponents(frame.getContentPane());
@@ -73,19 +76,23 @@ public class MainWindow implements Runnable {
         
         //Buttons for playback
         playButton = new JButton("Play next");
+        playButton.setActionCommand("play");
+        playButton.addActionListener(this.eventListener);
         playButton.setMargin(new Insets(10, 10, 10, 10));
         
         pauseButton = new JButton("Pause all");
         pauseButton.setMargin(new Insets(10, 10, 10, 10));
         
         stopButton = new JButton("Stop all");
+        stopButton.setActionCommand("stop");
+        stopButton.addActionListener(this.eventListener);
         stopButton.setMargin(new Insets(10, 10, 10, 10));
         
         //Opens the editor
         editorButton = new JButton("Editor");
         editorButton.setMargin(new Insets(10, 10, 10, 10));
         editorButton.setActionCommand("editor");
-        editorButton.addActionListener(this.buttonListener);
+        editorButton.addActionListener(this.eventListener);
         
         //Add to panel
         topPanel.add(playButton);
@@ -100,5 +107,13 @@ public class MainWindow implements Runnable {
     
     public void showEditorWindow() {
         this.editor.setVisible(true);
+    }
+
+    public CuePlayer getPlayer() {
+        return player;
+    }
+    
+    public void setSelectedRow(int row) {
+        this.mainCueList.setRowSelectionInterval(row, row);
     }
 }
