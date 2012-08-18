@@ -1,5 +1,6 @@
 package jcue.domain;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -39,13 +40,37 @@ public class CuePlayer implements Runnable {
     }
     
     public void startNext() {
-        this.currentCue.start();
+        double delay = this.currentCue.getStartDelay();
+        
+        if (delay > 0) {
+            this.currentCue.setStartTime(System.nanoTime());
+            this.waitList.add(currentCue);
+        } else {
+            this.currentCue.start();
+            this.playingList.add(currentCue);
+        }
     }
 
     @Override
     public void run() {
         while (running) {
-            
+            //Check delayed cues
+            Iterator<AbstractCue> it = this.waitList.iterator();
+            while (it.hasNext()) {
+                AbstractCue ac = it.next();
+                
+                double delay = ac.getStartDelay();
+                long lDelay = (long) (delay * 1000000000);
+                long startTime = ac.getStartTime();
+                
+                //Wait time over, start cue
+                if (System.nanoTime() > (startTime + lDelay)) {
+                    ac.start();
+                    this.playingList.add(ac);   //Add to playing list
+                    
+                    it.remove();    //Remove from wait list
+                }
+            }
             
             //Sleep a bit
             try {

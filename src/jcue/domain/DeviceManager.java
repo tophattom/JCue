@@ -10,8 +10,8 @@ import jouvieje.bass.structures.BASS_DEVICEINFO;
  * @author Jaakko
  */
 public class DeviceManager {
-    private static volatile DeviceManager instance = null;;
     
+    private static volatile DeviceManager instance = null;
     //List for all of the devices
     private ArrayList<SoundDevice> devices;
     

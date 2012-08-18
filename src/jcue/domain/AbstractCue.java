@@ -14,7 +14,10 @@ public abstract class AbstractCue {
 
     private String name, description;
     private StartMode startMode;
+    
     private double startDelay;
+    private long startTime;
+    
     private CueType type;
     
     private static AbstractCueUI ui = new AbstractCueUI();
@@ -61,6 +64,16 @@ public abstract class AbstractCue {
     public void setStartMode(StartMode startMode) {
         this.startMode = startMode;
     }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+    
+    
 
     @Override
     public String toString() {
