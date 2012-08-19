@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import jcue.domain.CueList;
 import jcue.ui.event.EditorListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -47,6 +48,7 @@ public class EditorWindow extends JFrame {
         this.cueList = new JList(this.cues);
         this.cueList.setPreferredSize(new Dimension(200, 100));
         this.cueList.setCellRenderer(new EditorListRenderer());
+        this.cueList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         //**********
         
         //Buttons for adding new cues
@@ -83,10 +85,10 @@ public class EditorWindow extends JFrame {
         top.add(this.changeButton);
         
         //Add everything to window
-        container.setLayout(new BorderLayout(5, 5));
-        container.add(top, BorderLayout.NORTH);
-        container.add(this.cueList, BorderLayout.WEST);
-        container.add(this.editorTabs, BorderLayout.CENTER);
+        container.setLayout(new MigLayout("fill, insets panel"));
+        container.add(top, "dock north");
+        container.add(this.cueList, "dock west, gap 6px 0 0 6px");
+        container.add(this.editorTabs, "grow");
     }
 
     private void createEventListeners() {

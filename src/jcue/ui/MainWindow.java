@@ -5,6 +5,7 @@ import javax.swing.*;
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
 import jcue.ui.event.MainWindowListener;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -73,6 +74,7 @@ public class MainWindow implements Runnable {
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
         mainCueList = new JTable(this.cues);
+        mainCueList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         
         //Buttons for playback
         playButton = new JButton("Play next");
@@ -101,8 +103,9 @@ public class MainWindow implements Runnable {
         topPanel.add(editorButton);
         
         //Add panel to top and list to center
-        container.add(topPanel, BorderLayout.NORTH);
-        container.add(mainCueList, BorderLayout.CENTER);
+        container.setLayout(new MigLayout("fill, insets panel"));
+        container.add(topPanel, "dock north");
+        container.add(mainCueList, "grow");
     }
     
     public void showEditorWindow() {
