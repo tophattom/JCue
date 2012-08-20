@@ -1,5 +1,7 @@
 package jcue.domain;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import javax.swing.JPanel;
 import jcue.ui.AbstractCueUI;
 
@@ -20,6 +22,9 @@ public abstract class AbstractCue {
     
     private CueType type;
     
+    private AbstractCue parentCue;
+    private LinkedHashSet<AbstractCue> childCues;
+    
     private static AbstractCueUI ui = new AbstractCueUI();
 
     public AbstractCue(String name, String description, CueType type) {
@@ -27,6 +32,9 @@ public abstract class AbstractCue {
         this.description = description;
         this.type = type;
         this.startMode = StartMode.MANUAL;
+        
+        this.parentCue = null;
+        this.childCues = new LinkedHashSet<AbstractCue>();
     }
 
     public String getDescription() {
@@ -63,6 +71,10 @@ public abstract class AbstractCue {
 
     public void setStartMode(StartMode startMode) {
         this.startMode = startMode;
+        
+        if (startMode == StartMode.MANUAL && this.parentCue != null) {
+            this.setParentCue(null);
+        }
     }
 
     public long getStartTime() {
@@ -72,7 +84,36 @@ public abstract class AbstractCue {
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
+
+    public LinkedHashSet<AbstractCue> getChildCues() {
+        return childCues;
+    }
+
+    public AbstractCue getParentCue() {
+        return parentCue;
+    }
+
+    public void setParentCue(AbstractCue parentCue) {
+        if (this.parentCue != null) {
+            this.parentCue.removeChildCue(this);
+        }
+        
+        this.parentCue = parentCue;
+        
+        if (this.parentCue != null) {
+            this.parentCue.addChildCue(this);
+        }
+    }
     
+    public void addChildCue(AbstractCue cue) {
+        this.childCues.add(cue);
+    }
+    
+    public void removeChildCue(AbstractCue cue) {
+        if (this.childCues.contains(cue)) {
+            this.childCues.remove(cue);
+        }
+    }
     
 
     @Override
@@ -90,6 +131,13 @@ public abstract class AbstractCue {
         ui.setDescFieldText(this.description);
         ui.setDelayFieldValue(this.startDelay);
         ui.setStartModeSelectValue(this.startMode);
+        ui.setCueSelectValue(this.parentCue);
+        
+        AbstractCueUI.lastPanel = panel;
+    }
+    
+    public void updateUI() {
+        this.updateUI(AbstractCueUI.lastPanel);
     }
 
     public abstract void start();

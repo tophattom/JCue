@@ -8,12 +8,16 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import jcue.domain.AbstractCue;
+import jcue.domain.CueList;
 import jcue.domain.StartMode;
 import net.miginfocom.swing.MigLayout;
 
@@ -31,6 +35,8 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
     private JFormattedTextField delayField;
     
     private AbstractCue cue;
+    
+    public static JPanel lastPanel = null;
 
     public AbstractCueUI() {
         this.nameLabel = new JLabel("Name:");
@@ -53,6 +59,7 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
 
         this.cueLabel = new JLabel("Cue:");
         this.cueSelect = new JComboBox();
+        this.cueSelect.addActionListener(this);
 
         this.delayLabel = new JLabel("Delay:");
         
@@ -78,8 +85,18 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
         
         panel.add(this.startModeLabel);
         panel.add(this.startModeSelect);
+        
         panel.add(this.cueLabel);
+        
+        ArrayList<AbstractCue> cues = CueList.getInstance().getCues();
+        AbstractCue[] tmpArray = new AbstractCue[cues.size() + 1];
+        AbstractCue[] cueArray = cues.toArray(tmpArray);
+        ComboBoxModel cbm = new DefaultComboBoxModel(cueArray);
+        
+        this.cueSelect.setModel(cbm);
+        this.cueSelect.setSelectedItem(null);
         panel.add(this.cueSelect, "span 2, growx, wmin 200");
+        
         panel.add(this.delayLabel);
         panel.add(this.delayField, "wrap");
         
@@ -151,6 +168,10 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
     public void setStartModeSelectValue(StartMode value) {
         this.startModeSelect.setSelectedItem(value);
     }
+    
+    public void setCueSelectValue(AbstractCue ac) {
+        this.cueSelect.setSelectedItem(ac);
+    }
 
     public void setCurrentCue(AbstractCue cue) {
         this.cue = cue;
@@ -178,6 +199,19 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
             StartMode mode = (StartMode) cb.getSelectedItem();
             
             this.cue.setStartMode(mode);
+        } else if (source == this.cueSelect) {
+            JComboBox cb = (JComboBox) source;
+            AbstractCue ac = (AbstractCue) cb.getSelectedItem();
+            
+            if (ac != null) {
+                StartMode sm = this.cue.getStartMode();
+                
+                if (sm == StartMode.AFTER_START || sm == StartMode.AFTER_END) {
+                    this.cue.setParentCue(ac);
+                } else {
+                    this.cueSelect.setSelectedItem(null);
+                }
+            }
         } else if (source == this.nameField) {
             this.cue.setName(this.nameField.getText());
         } else if (source == this.descField) {

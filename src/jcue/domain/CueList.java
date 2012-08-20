@@ -13,6 +13,8 @@ import javax.swing.table.AbstractTableModel;
  * @author Jaakko
  */
 public class CueList extends AbstractTableModel implements ListModel {
+    
+    private static volatile CueList instance = null;
 
     protected EventListenerList listListenerList = new EventListenerList();
     private ArrayList<AbstractCue> cues;
@@ -20,7 +22,7 @@ public class CueList extends AbstractTableModel implements ListModel {
     private int counter;
     private DeviceManager dm;
 
-    public CueList(DeviceManager dm) {
+    private CueList() {
         super();
         
         this.cues = new ArrayList<AbstractCue>();
@@ -28,7 +30,19 @@ public class CueList extends AbstractTableModel implements ListModel {
 
         this.counter = 1;
 
-        this.dm = dm;
+        this.dm = DeviceManager.getInstance();
+    }
+    
+    public static CueList getInstance() {
+        if (instance == null) {
+            synchronized (CueList.class) {
+                if (instance == null) {
+                    instance = new CueList();
+                }
+            }
+        }
+        
+        return instance;
     }
 
     public void addCue(CueType cueType) {
@@ -74,6 +88,11 @@ public class CueList extends AbstractTableModel implements ListModel {
         return this.cues.lastIndexOf(cue);
     }
 
+    public ArrayList<AbstractCue> getCues() {
+        return cues;
+    }
+
+    
     
     //<editor-fold defaultstate="collapsed" desc="Model stuff">
     @Override

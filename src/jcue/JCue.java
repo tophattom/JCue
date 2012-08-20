@@ -19,7 +19,7 @@ public class JCue {
         loadBASS();
         
         DeviceManager dm = DeviceManager.getInstance();
-        CueList cueList = new CueList(dm); 
+        CueList cueList = CueList.getInstance();
         
         if (dm.isInitialized()) {
             SwingUtilities.invokeLater(new MainWindow(cueList));

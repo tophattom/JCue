@@ -1,6 +1,7 @@
 package jcue.domain;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -49,8 +50,7 @@ public class CuePlayer implements Runnable {
             this.currentCue.setStartTime(System.nanoTime());
             this.waitList.add(currentCue);
         } else {
-            this.currentCue.start();
-            this.playingList.add(currentCue);
+            this.startCue(this.currentCue);
         }
 
         this.currentCue = getNextManualCue();
@@ -59,6 +59,31 @@ public class CuePlayer implements Runnable {
     public void stopAll() {
         for (AbstractCue ac : this.playingList) {
             ac.stop();
+        }
+        
+        this.currentCue = this.cues.getCue(0);
+    }
+    
+    private void startCue(AbstractCue ac) {
+        ac.start();
+        this.playingList.add(ac);
+        
+        LinkedHashSet<AbstractCue> childCues = ac.getChildCues();
+        if (!childCues.isEmpty()) {
+            for (AbstractCue child : childCues) {
+                StartMode sm = child.getStartMode();
+                
+                if (sm == StartMode.AFTER_START) {
+                    double delay = child.getStartDelay();
+                    
+                    if (delay > 0) {
+                        child.setStartTime(System.nanoTime());
+                        this.waitList.add(child);
+                    } else {
+                        this.startCue(child);
+                    }
+                }
+            }
         }
     }
     
@@ -76,8 +101,7 @@ public class CuePlayer implements Runnable {
 
                 //Wait time over, start cue
                 if (System.nanoTime() > (startTime + lDelay)) {
-                    ac.start();
-                    this.playingList.add(ac);   //Add to playing list
+                    this.startCue(ac);
 
                     it.remove();    //Remove from wait list
                 }
