@@ -29,7 +29,7 @@ public class CuePlayer implements Runnable {
 
     public void start() {
         if (this.updater == null || !this.running) {
-            this.updater = new Thread(this);
+            this.updater = new Thread(this, "CuePlayer");
         }
 
         this.updater.start();
@@ -43,15 +43,8 @@ public class CuePlayer implements Runnable {
     }
 
     public void startNext() {
-        double delay = this.currentCue.getStartDelay();
-
-        if (delay > 0) {
-            this.currentCue.setStartTime(System.nanoTime());
-            this.waitList.add(currentCue);
-        } else {
-            this.currentCue.start();
-            this.playingList.add(currentCue);
-        }
+        this.currentCue.start(true);
+        this.playingList.add(currentCue);
 
         this.currentCue = getNextManualCue();
     }
@@ -60,28 +53,13 @@ public class CuePlayer implements Runnable {
         for (AbstractCue ac : this.playingList) {
             ac.stop();
         }
+        
+        this.running = false;
     }
     
     @Override
     public void run() {
         while (running) {
-            //Check delayed cues
-            Iterator<AbstractCue> it = this.waitList.iterator();
-            while (it.hasNext()) {
-                AbstractCue ac = it.next();
-
-                double delay = ac.getStartDelay();
-                long lDelay = (long) (delay * 1000000000);
-                long startTime = ac.getStartTime();
-
-                //Wait time over, start cue
-                if (System.nanoTime() > (startTime + lDelay)) {
-                    ac.start();
-                    this.playingList.add(ac);   //Add to playing list
-
-                    it.remove();    //Remove from wait list
-                }
-            }
 
             //Sleep a bit
             try {

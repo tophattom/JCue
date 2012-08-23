@@ -405,7 +405,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
                 this.cue.updateUI();
             }
         } else if (command.equals("play")) {
-            this.cue.start();
+            this.cue.start(false);
             
             this.playButton.setSelected(true);
             this.pauseButton.setSelected(false);

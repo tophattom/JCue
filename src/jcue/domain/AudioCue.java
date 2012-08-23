@@ -62,25 +62,29 @@ public class AudioCue extends AbstractCue {
     }
 
     @Override
-    public void start() {
-        if (this.audio != null) {
-            //TODO: uncomment when multi-device shit works
-            //Set audio position to start if the cue is not paused
-            if (this.state == CueState.STOPPED) {
-                this.audio.setPosition(this.inPos);
-                this.audio.setMasterVolume(this.volume);
+    public void start(boolean delay) {
+        super.start(delay);
+        
+        if (!delay || super.getStartDelay() == 0) {
+            if (this.audio != null) {
+                //TODO: uncomment when multi-device shit works
+                //Set audio position to start if the cue is not paused
+                if (this.state == CueState.STOPPED) {
+                    this.audio.setPosition(this.inPos);
+                    this.audio.setMasterVolume(this.volume);
+                }
+    //            
+    //            //Fade in, if there is fade in time specified
+    //            if (this.fadeIn != 0) {
+    //                this.audio.setVolume(0);    //Start fading from silent
+    //                this.audio.startVolumeChange(this.volume, this.fadeIn);
+    //            }
+
+                this.audio.play();              //Start playing the audio
+                this.state = CueState.PLAYING;  //Set state to playing
+
+                //TODO: start automatic cues
             }
-//            
-//            //Fade in, if there is fade in time specified
-//            if (this.fadeIn != 0) {
-//                this.audio.setVolume(0);    //Start fading from silent
-//                this.audio.startVolumeChange(this.volume, this.fadeIn);
-//            }
-            
-            this.audio.play();              //Start playing the audio
-            this.state = CueState.PLAYING;  //Set state to playing
-            
-            //TODO: start automatic cues
         }
     }
 
