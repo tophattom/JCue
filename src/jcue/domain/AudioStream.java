@@ -22,6 +22,7 @@ public class AudioStream {
 
     private TreeMap<SoundDevice, HSTREAM> streams;
     private HashMap<SoundDevice, Double> deviceVolumes;
+    private HashMap<SoundDevice, Boolean> deviceMuted;
     
     private HSYNC stopSync;
     private HSTREAM stream; //TODO: remove when multi-device stuff fully functional
@@ -36,13 +37,12 @@ public class AudioStream {
     public AudioStream(List<SoundDevice> outputs) {
         this.streams = new TreeMap<SoundDevice, HSTREAM>();
         this.deviceVolumes = new HashMap<SoundDevice, Double>();
+        this.deviceMuted = new HashMap<SoundDevice, Boolean>();
 
         for (SoundDevice sd : outputs) {
             this.streams.put(sd, null);
-        }
-        
-        for (SoundDevice sd : outputs) {
             this.deviceVolumes.put(sd, 1.0);
+            this.deviceMuted.put(sd, false);
         }
         
         this.volume = 1.0;
@@ -156,6 +156,7 @@ public class AudioStream {
         if (!this.streams.containsKey(sd)) {
             this.streams.put(sd, null);         //Add output to the map
             this.deviceVolumes.put(sd, 1.0);    //Device volume defaults to 1
+            this.deviceMuted.put(sd, false);    //Device not muted by default
 
             //If there's already a file loaded, load it to the new output also
             if (this.filePath != null && !this.filePath.isEmpty()) {
@@ -184,6 +185,8 @@ public class AudioStream {
         unlinkStream(stream);           //Unlink from other streams
         Bass.BASS_StreamFree(stream);   //Release stream
         this.streams.remove(sd);        //Remove from the collection
+        this.deviceVolumes.remove(sd);
+        this.deviceMuted.remove(sd);
     }
     
     /**
@@ -286,8 +289,9 @@ public class AudioStream {
         
         double newVolume = volume * this.volume;
         HSTREAM tmp = this.streams.get(sd);
+        boolean muted = this.deviceMuted.get(sd);
         
-        if (tmp != null) {
+        if (!muted && tmp != null) {
             Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
         }
     }
@@ -316,7 +320,11 @@ public class AudioStream {
         if (this.streams.containsKey(sd)) {
             HSTREAM tmp = this.streams.get(sd);
             
-            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, 0);
+            if (tmp != null) {
+                Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, 0);
+            }
+            
+            this.deviceMuted.put(sd, true);
         }
     }
 
@@ -327,6 +335,7 @@ public class AudioStream {
      */
     public void unmuteOutput(SoundDevice sd) {
         if (this.streams.containsKey(sd)) {
+            this.deviceMuted.put(sd, false);
             setDeviceVolume(getDeviceVolume(sd), sd);
         }
     }
