@@ -351,7 +351,7 @@ public class AudioStream {
      * 
      * @param seconds New out position in seconds
      */
-    public void setOutPosition(double seconds) {
+    public void setOutPosition(double seconds, AbstractCue cue) {
         Entry<SoundDevice, HSTREAM> firstEntry = this.streams.firstEntry();
         HSTREAM firstStream = firstEntry.getValue();
 
@@ -362,7 +362,7 @@ public class AudioStream {
             }
 
             long bytePos = Bass.BASS_ChannelSeconds2Bytes(firstStream.asInt(), seconds);
-            this.stopSync = Bass.BASS_ChannelSetSync(firstStream.asInt(), BASS_SYNC.BASS_SYNC_POS, bytePos, new StopCallback(), null);
+            this.stopSync = Bass.BASS_ChannelSetSync(firstStream.asInt(), BASS_SYNC.BASS_SYNC_POS, bytePos, new StopCallback(cue), null);
         }
     }
 

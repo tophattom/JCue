@@ -1,7 +1,6 @@
 package jcue.domain;
 
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import javax.swing.JPanel;
 import jcue.ui.AbstractCueUI;
 
@@ -154,5 +153,11 @@ public abstract class AbstractCue {
 
     public abstract void pause();
 
-    public abstract void stop();
+    public void stop() {
+        for (AbstractCue child : this.childCues) {
+            if (child.getStartMode() == StartMode.AFTER_END) {
+                child.start(true);
+            }
+        }
+    }
 }

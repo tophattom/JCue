@@ -10,9 +10,15 @@ import jouvieje.bass.utils.Pointer;
  * @author Jaakko
  */
 public class StopCallback implements SYNCPROC {
+    
+    private AbstractCue target;
+
+    public StopCallback(AbstractCue target) {
+        this.target = target;
+    }
 
     @Override
     public void SYNCPROC(HSYNC arg0, int arg1, int arg2, Pointer arg3) {
-        Bass.BASS_ChannelStop(arg1);
+        this.target.stop();
     }
 }

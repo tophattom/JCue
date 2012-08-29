@@ -82,8 +82,6 @@ public class AudioCue extends AbstractCue {
 
                 this.audio.play();              //Start playing the audio
                 this.state = CueState.PLAYING;  //Set state to playing
-
-                //TODO: start automatic cues
             }
         }
     }
@@ -99,12 +97,12 @@ public class AudioCue extends AbstractCue {
 
     @Override
     public void stop() {
+        super.stop();
+        
         if (this.audio != null) {
             this.audio.stop();
             this.audio.setPosition(this.inPos);
             this.state = CueState.STOPPED;
-            
-            //TODO: start automatic cues
         }
     }
 
@@ -159,7 +157,7 @@ public class AudioCue extends AbstractCue {
 
     public void setOutPos(double outPos) {
         this.outPos = outPos;
-        this.audio.setOutPosition(outPos);
+        this.audio.setOutPosition(outPos, this);
     }
 
     public void setPan(double pan) {
