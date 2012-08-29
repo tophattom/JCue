@@ -203,9 +203,8 @@ public class AudioCue extends AbstractCue {
     public void updateUI(JPanel panel) {
         super.updateUI(panel);
         
-        
-        ui.showUI(panel);
         ui.setCurrentCue(this);
+        ui.showUI(panel);
         
         ui.setFileFieldText(this.audio.getFilePath());
         ui.setLengthFieldValue(this.audio.getLength());
@@ -220,6 +219,8 @@ public class AudioCue extends AbstractCue {
         ui.setPanControlValue(this.pan);
         
         ui.setWaveformData(this);
+        
+        ui.correctCue();
         
         AudioCueUI.lastPanel = panel;
     }

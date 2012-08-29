@@ -56,6 +56,8 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
     private JButton addDeviceButton;
     
     private AudioCue cue;
+    
+    private boolean correctCue;
 
     public AudioCueUI() {
         //File field
@@ -388,6 +390,11 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
 
     public void setCurrentCue(AudioCue cue) {
         this.cue = cue;
+        this.correctCue = false;
+    }
+    
+    public void correctCue() {
+        this.correctCue = true;
     }
 
     @Override
@@ -432,17 +439,19 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
     public void propertyChange(PropertyChangeEvent pce) {
         Object source = pce.getSource();
         
-        if (source == this.inField) {
-            if (this.inField.getValue() != null) {
-                this.cue.setInPos((Double) this.inField.getValue());
+        if (this.correctCue) {
+            if (source == this.inField) {
+                if (this.inField.getValue() != null) {
+                    this.cue.setInPos((Double) this.inField.getValue());
+                }
+            } else if (source == this.outField) {
+                if (this.outField.getValue() != null) {
+                    this.cue.setOutPos((Double) this.outField.getValue());
+                }
             }
-        } else if (source == this.outField) {
-            if (this.outField.getValue() != null) {
-                this.cue.setOutPos((Double) this.outField.getValue());
-            }
-        }
         
-        this.waveform.repaint();
+            this.waveform.repaint();
+        }
     }
 
     @Override
