@@ -140,7 +140,13 @@ public abstract class AbstractCue {
         this.updateUI(AbstractCueUI.lastPanel);
     }
 
-    public abstract void start();
+    public void start(boolean delay) {
+        if (delay && this.startDelay > 0) {
+            new CueDelayHandler(System.nanoTime(), startDelay, this);
+        } else {
+            //Start automatic cues
+        }
+    }
 
     public abstract void pause();
 

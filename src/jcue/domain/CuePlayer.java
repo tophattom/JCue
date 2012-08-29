@@ -1,7 +1,5 @@
 package jcue.domain;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 /**
@@ -12,7 +10,6 @@ public class CuePlayer implements Runnable {
 
     private CueList cues;
     
-    private LinkedList<AbstractCue> waitList;
     private LinkedList<AbstractCue> playingList;
     
     private AbstractCue currentCue;
@@ -21,7 +18,6 @@ public class CuePlayer implements Runnable {
     private Thread updater;
 
     public CuePlayer(CueList cues) {
-        this.waitList = new LinkedList<AbstractCue>();
         this.playingList = new LinkedList<AbstractCue>();
 
         this.running = false;
@@ -30,7 +26,7 @@ public class CuePlayer implements Runnable {
 
     public void start() {
         if (this.updater == null || !this.running) {
-            this.updater = new Thread(this);
+            this.updater = new Thread(this, "CuePlayer");
         }
 
         this.updater.start();
@@ -44,14 +40,8 @@ public class CuePlayer implements Runnable {
     }
 
     public void startNext() {
-        double delay = this.currentCue.getStartDelay();
-
-        if (delay > 0) {
-            this.currentCue.setStartTime(System.nanoTime());
-            this.waitList.add(currentCue);
-        } else {
-            this.startCue(this.currentCue);
-        }
+        this.currentCue.start(true);
+        this.playingList.add(currentCue);
 
         this.currentCue = getNextManualCue();
     }
@@ -64,48 +54,9 @@ public class CuePlayer implements Runnable {
         this.currentCue = this.cues.getCue(0);
     }
     
-    private void startCue(AbstractCue ac) {
-        ac.start();
-        this.playingList.add(ac);
-        
-        LinkedHashSet<AbstractCue> childCues = ac.getChildCues();
-        if (!childCues.isEmpty()) {
-            for (AbstractCue child : childCues) {
-                StartMode sm = child.getStartMode();
-                
-                if (sm == StartMode.AFTER_START) {
-                    double delay = child.getStartDelay();
-                    
-                    if (delay > 0) {
-                        child.setStartTime(System.nanoTime());
-                        this.waitList.add(child);
-                    } else {
-                        this.startCue(child);
-                    }
-                }
-            }
-        }
-    }
-    
     @Override
     public void run() {
         while (running) {
-            //Check delayed cues
-            Iterator<AbstractCue> it = this.waitList.iterator();
-            while (it.hasNext()) {
-                AbstractCue ac = it.next();
-
-                double delay = ac.getStartDelay();
-                long lDelay = (long) (delay * 1000000000);
-                long startTime = ac.getStartTime();
-
-                //Wait time over, start cue
-                if (System.nanoTime() > (startTime + lDelay)) {
-                    this.startCue(ac);
-
-                    it.remove();    //Remove from wait list
-                }
-            }
 
             //Sleep a bit
             try {
