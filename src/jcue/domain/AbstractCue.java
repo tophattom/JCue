@@ -144,7 +144,11 @@ public abstract class AbstractCue {
         if (delay && this.startDelay > 0) {
             new CueDelayHandler(System.nanoTime(), startDelay, this);
         } else {
-            //Start automatic cues
+            for (AbstractCue child : this.childCues) {
+                if (child.getStartMode() == StartMode.AFTER_START) {
+                    child.start(true);
+                }
+            }
         }
     }
 

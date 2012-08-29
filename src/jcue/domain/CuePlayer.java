@@ -47,7 +47,7 @@ public class CuePlayer implements Runnable {
     }
 
     public void stopAll() {
-        for (AbstractCue ac : this.playingList) {
+        for (AbstractCue ac : this.cues.getCues()) {
             ac.stop();
         }
         
