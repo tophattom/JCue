@@ -213,11 +213,12 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         panel.add(this.panSlider, "span 3, growx");
         panel.add(this.panField, "wrap");
         
-        ArrayList<SoundDevice> outputs = this.cue.getOutputs();
-        for (SoundDevice sd : outputs) {
-            panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
+        if (this.cue != null) {
+            ArrayList<SoundDevice> outputs = this.cue.getOutputs();
+            for (SoundDevice sd : outputs) {
+                panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
+            }
         }
-        
         
         panel.add(this.deviceLabel);
         
