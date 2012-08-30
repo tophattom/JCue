@@ -1,5 +1,7 @@
 package jcue.domain;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
 import jouvieje.bass.structures.HSTREAM;
@@ -32,7 +35,7 @@ public class AudioStream {
     
     private double volume, pan;
     
-    private FloatBuffer streamData;
+    private BufferedImage waveformImg;
 
     public AudioStream(List<SoundDevice> outputs) {
         this.streams = new TreeMap<SoundDevice, HSTREAM>();
@@ -44,17 +47,17 @@ public class AudioStream {
             this.deviceVolumes.put(sd, 1.0);
             this.deviceMuted.put(sd, false);
         }
-        
+
         this.volume = 1.0;
         this.pan = 0.0;
     }
 
     /**
      * Creates a new stream from file for specified SoundDevice.
-     * 
+     *
      * @param path Path to a file
      * @param sd SoundDevice used
-     * @throws Exception 
+     * @throws Exception
      */
     private void loadFile(String path, SoundDevice sd) throws Exception {
         Bass.BASS_SetDevice(sd.getId());    //Change currently used device
@@ -95,24 +98,24 @@ public class AudioStream {
 
     /**
      * Unlinks a specified stream from other streams.
-     * 
+     *
      * @param stream Stream to be unlinked
      */
     private void unlinkStream(HSTREAM stream) {
         for (SoundDevice sd : this.streams.keySet()) {
             HSTREAM tmp = this.streams.get(sd);
-            
+
             if (tmp != stream) {
                 Bass.BASS_ChannelRemoveLink(stream.asInt(), tmp.asInt());
             }
         }
     }
-    
+
     /**
      * Loads a new audio file to this cue.
-     * 
+     *
      * @param path Path to the file
-     * @throws Exception 
+     * @throws Exception
      */
     public void loadFile(String path) throws Exception {
         //Free possible existing streams
@@ -139,7 +142,7 @@ public class AudioStream {
 
             this.filePath = path;
 
-            loadStreamData();   //Get data for waveform
+            createWaveformImg();
         }
 
         //Finally link all streams together and load stream data for thw waveform
@@ -148,7 +151,7 @@ public class AudioStream {
 
     /**
      * Adds a new output.
-     * 
+     *
      * @param sd Output device to be added
      */
     public void addOutput(SoundDevice sd) {
@@ -172,23 +175,23 @@ public class AudioStream {
 
     /**
      * Removes output if it exists.
-     * 
+     *
      * @param sd Output to be removed
      */
     public void removeOutput(SoundDevice sd) {
         if (!this.streams.containsKey(sd)) {
             return;
         }
-        
+
         HSTREAM stream = this.streams.get(sd);
-        
+
         unlinkStream(stream);           //Unlink from other streams
         Bass.BASS_StreamFree(stream);   //Release stream
         this.streams.remove(sd);        //Remove from the collection
         this.deviceVolumes.remove(sd);
         this.deviceMuted.remove(sd);
     }
-    
+
     /**
      * Starts playing audio through all outputs.
      */
@@ -230,7 +233,7 @@ public class AudioStream {
 
     /**
      * Sets the position of the audio.
-     * 
+     *
      * @param pos New position in seconds
      */
     public void setPosition(double pos) {
@@ -244,7 +247,7 @@ public class AudioStream {
 
     /**
      * Gets the current position of the audio.
-     * 
+     *
      * @return Current audio position in seconds
      */
     public double getPosition() {
@@ -280,57 +283,57 @@ public class AudioStream {
 
     /**
      * Sets the output volume for a specific output device.
-     * 
+     *
      * @param volume New volume from 0 to 1
      * @param sd Output to be adjusted
      */
     public void setDeviceVolume(double volume, SoundDevice sd) {
         this.deviceVolumes.put(sd, volume);
-        
+
         double newVolume = volume * this.volume;
         HSTREAM tmp = this.streams.get(sd);
         boolean muted = this.deviceMuted.get(sd);
-        
+
         if (!muted && tmp != null) {
             Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
         }
     }
-    
+
     /**
      * Sets the master volume for this audio.
-     * 
+     *
      * @param volume New volume from 0 to 1
      */
     public void setMasterVolume(double volume) {
         this.volume = volume;
-        
+
         for (SoundDevice sd : this.streams.keySet()) {
             double deviceVol = this.deviceVolumes.get(sd);
-            
+
             setDeviceVolume(deviceVol, sd);
         }
     }
-    
+
     /**
      * Mutes the specified output.
-     * 
+     *
      * @param sd Output to be muted
      */
     public void muteOutput(SoundDevice sd) {
         if (this.streams.containsKey(sd)) {
             HSTREAM tmp = this.streams.get(sd);
-            
+
             if (tmp != null) {
                 Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, 0);
             }
-            
+
             this.deviceMuted.put(sd, true);
         }
     }
 
     /**
      * Unmutes the specified output.
-     * 
+     *
      * @param sd Output to be unmuted
      */
     public void unmuteOutput(SoundDevice sd) {
@@ -339,7 +342,7 @@ public class AudioStream {
             setDeviceVolume(getDeviceVolume(sd), sd);
         }
     }
-    
+
     public void setPan(double pan) {
         Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
                 BASS_ATTRIB.BASS_ATTRIB_PAN,
@@ -348,7 +351,7 @@ public class AudioStream {
 
     /**
      * Sets the out position for the audio.
-     * 
+     *
      * @param seconds New out position in seconds
      */
     public void setOutPosition(double seconds, AbstractCue cue) {
@@ -368,7 +371,7 @@ public class AudioStream {
 
     /**
      * Returns the length of the audio.
-     * 
+     *
      * @return Length of the audio in seconds
      */
     public double getLength() {
@@ -377,7 +380,7 @@ public class AudioStream {
 
     /**
      * Returns the path to the file currently loaded.
-     * 
+     *
      * @return Path to the file
      */
     public String getFilePath() {
@@ -386,36 +389,10 @@ public class AudioStream {
 
     /**
      * Returns floating point data of the audio.
-     * 
+     *
      * @return Stream data
      */
-    public FloatBuffer getStreamData() {
-        return this.streamData;
-    }
-    
-    /**
-     * Returns the master volume of the audio.
-     * 
-     * @return Master volume from 0 to 1
-     */
-    public double getMasterVolume() {
-        return this.volume;
-    }
-    
-    /**
-     * Returns the volume of a specific output device.
-     * 
-     * @param sd Output device which volume to get
-     * @return Outputs volume from 0 to 1
-     */
-    public double getDeviceVolume(SoundDevice sd) {
-        return this.deviceVolumes.get(sd);
-    }
-    
-    /**
-     * Loads floating point data from the file to a FloatBuffer
-     */
-    private void loadStreamData() {
+    private FloatBuffer getStreamData() {
         HSTREAM tmp = Bass.BASS_StreamCreateFile(false, this.filePath, 0, 0, BASS_STREAM.BASS_STREAM_DECODE | BASS_SAMPLE.BASS_SAMPLE_FLOAT);
         long dataLength = Bass.BASS_ChannelGetLength(tmp.asInt(), BASS_POS.BASS_POS_BYTE);
         int size = (int) (dataLength);
@@ -424,21 +401,78 @@ public class AudioStream {
 
         Bass.BASS_ChannelGetData(tmp.asInt(), buffer, size);
 
-        this.streamData = buffer.asFloatBuffer();
+        FloatBuffer streamData = buffer.asFloatBuffer();
+        
+        return streamData;
+    }
 
-        System.gc();
+    /**
+     * Returns the master volume of the audio.
+     *
+     * @return Master volume from 0 to 1
+     */
+    public double getMasterVolume() {
+        return this.volume;
+    }
+
+    /**
+     * Returns the volume of a specific output device.
+     *
+     * @param sd Output device which volume to get
+     * @return Outputs volume from 0 to 1
+     */
+    public double getDeviceVolume(SoundDevice sd) {
+        return this.deviceVolumes.get(sd);
+    }
+
+    private void createWaveformImg() {
+        FloatBuffer streamData = getStreamData();
+        if (this.waveformImg == null) {
+            int tmpW = Math.min(4000, streamData.capacity());
+            this.waveformImg = new BufferedImage(tmpW, WaveformPanel.PREF_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        }
+        
+        Graphics cg = this.waveformImg.getGraphics();
+        
+        int width = this.waveformImg.getWidth();
+        int height = this.waveformImg.getHeight();
+
+        cg.setColor(WaveformPanel.backgroundColor);
+        cg.fillRect(0, 0, width, height);
+
+        if (streamData != null) {
+            int step = (int) Math.ceil(streamData.capacity() / width);
+
+            cg.setColor(WaveformPanel.waveformColor);
+            for (int i = 0; i < width; i++) {
+                float maxValue = 0.0f;
+
+                for (int k = (i * step); k < (i * step + step); k++) {
+                    if (streamData.get(k) > maxValue) {
+                        maxValue = streamData.get(k);
+                    }
+                }
+
+                cg.drawLine(i, height / 2, i, (int) ((height / 2) + (height / 2) * maxValue));
+                cg.drawLine(i, height / 2, i, (int) ((height / 2) - (height / 2) * maxValue));
+            }
+        }
+    }
+
+    public BufferedImage getWaveformImg() {
+        return waveformImg;
     }
     
     public void printVolumes() {
         System.out.println("Master: " + this.volume);
-        
+
         for (SoundDevice sd : this.streams.keySet()) {
             System.out.println("+--- " + sd.getName() + ": " + this.deviceVolumes.get(sd));
-            
+
             FloatBuffer buf = BufferUtils.newFloatBuffer(1);
             HSTREAM tmp = this.streams.get(sd);
             double streamVol = 0;
-            
+
             if (tmp != null) {
                 Bass.BASS_ChannelGetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, buf);
                 streamVol = buf.get();

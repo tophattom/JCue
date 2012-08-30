@@ -195,7 +195,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         panel.add(this.fadeOutLabel);
         panel.add(this.fadeOutField, "wrap");
         
-        panel.add(this.waveform, "span, grow, hmin 170, wrap");
+        panel.add(this.waveform, "span, grow,  wrap");
         this.waveform.repaint();
         
         //Create a panel for laying out buttons
@@ -233,7 +233,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         ComboBoxModel cbm = new DefaultComboBoxModel(deviceArray);
         this.deviceSelect.setModel(cbm);
         
-        panel.add(this.deviceSelect);
+        panel.add(this.deviceSelect, "span, split 2");
         panel.add(this.addDeviceButton, "wrap");
                 
         
