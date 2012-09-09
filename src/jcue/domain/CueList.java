@@ -1,5 +1,6 @@
 package jcue.domain;
 
+import jcue.domain.audiocue.AudioCue;
 import java.util.ArrayList;
 import java.util.EventListener;
 import javax.swing.ListModel;

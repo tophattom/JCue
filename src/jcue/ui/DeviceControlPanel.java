@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import jcue.domain.AudioCue;
+import jcue.domain.audiocue.AudioCue;
 import jcue.domain.SoundDevice;
 import net.miginfocom.swing.MigLayout;
 

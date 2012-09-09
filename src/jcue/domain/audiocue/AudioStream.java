@@ -1,4 +1,4 @@
-package jcue.domain;
+package jcue.domain.audiocue;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import jcue.domain.AbstractCue;
+import jcue.domain.SoundDevice;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;

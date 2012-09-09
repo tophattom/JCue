@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import jcue.domain.AudioCue;
+import jcue.domain.audiocue.AudioCue;
 
 /**
  *

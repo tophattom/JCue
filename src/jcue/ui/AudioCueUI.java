@@ -16,7 +16,7 @@ import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import jcue.domain.AudioCue;
+import jcue.domain.audiocue.AudioCue;
 import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
 
