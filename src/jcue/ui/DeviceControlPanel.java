@@ -65,11 +65,14 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
         
         this.panLabel = new JLabel("Panning:");
         this.panSlider = new JSlider(-1000, 1000);
+        this.panSlider.setValue((int) (targetCue.getAudio().getDevicePan(targetDevice) * 1000.0));
+        this.panSlider.addChangeListener(this);
         
         NumberFormat panFormat = (NumberFormat) volFormat.clone();
         
         this.panField = new JFormattedTextField(panFormat);
         this.panField.setColumns(5);
+        this.panField.setValue(targetCue.getAudio().getDevicePan(targetDevice) * 100.0);
         
         this.muteCheck = new JCheckBox("Mute");
         this.muteCheck.addItemListener(this);
@@ -107,6 +110,13 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
             this.targetCue.setDeviceVolume(this.targetDevice, newVolume);
             
             this.volumeField.setValue(value / 10.0);
+        } else if (source == this.panSlider) {
+            int value = this.panSlider.getValue();
+            double newPan = value / 1000.0;
+            
+            this.targetCue.getAudio().setDevicePan(newPan, this.targetDevice);
+            
+            this.panField.setValue(value / 10.0);
         }
     }
 

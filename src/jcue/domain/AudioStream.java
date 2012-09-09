@@ -25,6 +25,7 @@ public class AudioStream {
 
     private TreeMap<SoundDevice, HSTREAM> streams;
     private HashMap<SoundDevice, Double> deviceVolumes;
+    private HashMap<SoundDevice, Double> devicePans;
     private HashMap<SoundDevice, Boolean> deviceMuted;
     
     private HSYNC stopSync;
@@ -40,11 +41,13 @@ public class AudioStream {
     public AudioStream(List<SoundDevice> outputs) {
         this.streams = new TreeMap<SoundDevice, HSTREAM>();
         this.deviceVolumes = new HashMap<SoundDevice, Double>();
+        this.devicePans = new HashMap<SoundDevice, Double>();
         this.deviceMuted = new HashMap<SoundDevice, Boolean>();
 
         for (SoundDevice sd : outputs) {
             this.streams.put(sd, null);
             this.deviceVolumes.put(sd, 1.0);
+            this.devicePans.put(sd, 0.0);
             this.deviceMuted.put(sd, false);
         }
 
@@ -159,6 +162,7 @@ public class AudioStream {
         if (!this.streams.containsKey(sd)) {
             this.streams.put(sd, null);         //Add output to the map
             this.deviceVolumes.put(sd, 1.0);    //Device volume defaults to 1
+            this.devicePans.put(sd, 0.0);       //Pan defaults to center
             this.deviceMuted.put(sd, false);    //Device not muted by default
 
             //If there's already a file loaded, load it to the new output also
@@ -282,39 +286,6 @@ public class AudioStream {
     }
 
     /**
-     * Sets the output volume for a specific output device.
-     *
-     * @param volume New volume from 0 to 1
-     * @param sd Output to be adjusted
-     */
-    public void setDeviceVolume(double volume, SoundDevice sd) {
-        this.deviceVolumes.put(sd, volume);
-
-        double newVolume = volume * this.volume;
-        HSTREAM tmp = this.streams.get(sd);
-        boolean muted = this.deviceMuted.get(sd);
-
-        if (!muted && tmp != null) {
-            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
-        }
-    }
-
-    /**
-     * Sets the master volume for this audio.
-     *
-     * @param volume New volume from 0 to 1
-     */
-    public void setMasterVolume(double volume) {
-        this.volume = volume;
-
-        for (SoundDevice sd : this.streams.keySet()) {
-            double deviceVol = this.deviceVolumes.get(sd);
-
-            setDeviceVolume(deviceVol, sd);
-        }
-    }
-
-    /**
      * Mutes the specified output.
      *
      * @param sd Output to be muted
@@ -407,6 +378,39 @@ public class AudioStream {
     }
 
     /**
+     * Sets the output volume for a specific output device.
+     *
+     * @param volume New volume from 0 to 1
+     * @param sd Output to be adjusted
+     */
+    public void setDeviceVolume(double volume, SoundDevice sd) {
+        this.deviceVolumes.put(sd, volume);
+
+        double newVolume = volume * this.volume;
+        HSTREAM tmp = this.streams.get(sd);
+        boolean muted = this.deviceMuted.get(sd);
+
+        if (!muted && tmp != null) {
+            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
+        }
+    }
+
+    /**
+     * Sets the master volume for this audio.
+     *
+     * @param volume New volume from 0 to 1
+     */
+    public void setMasterVolume(double volume) {
+        this.volume = volume;
+
+        for (SoundDevice sd : this.streams.keySet()) {
+            double deviceVol = this.deviceVolumes.get(sd);
+
+            setDeviceVolume(deviceVol, sd);
+        }
+    }
+    
+    /**
      * Returns the master volume of the audio.
      *
      * @return Master volume from 0 to 1
@@ -425,6 +429,32 @@ public class AudioStream {
         return this.deviceVolumes.get(sd);
     }
 
+    /**
+     * Sets the panning for specific output.
+     * 
+     * @param pan New pan value from -1 (left) to 1 (right)
+     * @param sd Output to be adjusted
+     */
+    public void setDevicePan(double pan, SoundDevice sd) {
+        this.devicePans.put(sd, pan);
+        
+        HSTREAM tmp = this.streams.get(sd);
+        
+        if (tmp != null) {
+            Bass.BASS_ChannelSetAttribute(tmp.asInt(), BASS_ATTRIB.BASS_ATTRIB_PAN, (float) pan);
+        }
+    }
+    
+    /**
+     * Return the panning of a specific output.
+     * 
+     * @param sd Output which pan to get
+     * @return Panning of the output
+     */
+    public double getDevicePan(SoundDevice sd) {
+        return this.devicePans.get(sd);
+    }
+    
     private void createWaveformImg() {
         FloatBuffer streamData = getStreamData();
         if (this.waveformImg == null) {
