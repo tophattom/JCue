@@ -316,6 +316,20 @@ public class AudioStream {
         }
     }
 
+    /**
+     * Returns current state of the output.
+     * 
+     * @param output Output which state to get
+     * @return Output's state (muted or not)
+     */
+    public boolean isMuted(SoundDevice output) {
+        if (!this.deviceMuted.containsKey(output)) {
+            return false;
+        }
+        
+        return this.deviceMuted.get(output);
+    }
+    
     public void setPan(double pan) {
         Bass.BASS_ChannelSetAttribute(this.stream.asInt(),
                 BASS_ATTRIB.BASS_ATTRIB_PAN,

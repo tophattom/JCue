@@ -11,12 +11,12 @@ import jcue.domain.CueType;
  */
 public class EventCue extends AbstractCue {
     
-    private ArrayList<Event> events;
+    private ArrayList<AbstractEvent> events;
 
     public EventCue(String name, String description) {
         super(name, description, CueType.EVENT);
         
-        this.events = new ArrayList<Event>();
+        this.events = new ArrayList<AbstractEvent>();
     }
     
     @Override
