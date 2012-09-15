@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import jcue.domain.AbstractCue;
+import jcue.domain.CueList;
 import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.domain.SoundDevice;
@@ -59,6 +60,9 @@ public class AudioCue extends AbstractCue {
             
             this.setDescription(desc);
         }
+        
+        CueList cl = CueList.getInstance();
+        cl.fireContentsChanged(this, cl.getCueIndex(this) - 1, cl.getCueIndex(this));
     }
 
     @Override
@@ -198,35 +202,4 @@ public class AudioCue extends AbstractCue {
         
         return true;
     }
-    
-//    @Override
-//    public void updateUI(JPanel panel) {
-//        super.updateUI(panel);
-//        
-//        ui.setCurrentCue(this);
-//        ui.showUI(panel);
-//        
-//        ui.setFileFieldText(this.audio.getFilePath());
-//        ui.setLengthFieldValue(this.audio.getLength());
-//        
-//        ui.setInFieldValue(this.inPos);
-//        ui.setOutFieldValue(this.outPos);
-//        
-//        ui.setFadeInFieldValue(this.fadeIn);
-//        ui.setFadeOutFieldValue(this.fadeOut);
-//        
-//        ui.setVolumeControlValue(this.volume);
-//        ui.setPanControlValue(this.pan);
-//        
-//        ui.setWaveformData(this);
-//        
-//        ui.correctCue();
-//        
-//        AudioCueUI.lastPanel = panel;
-//    }
-    
-//    @Override
-//    public void updateUI() {
-//        updateUI(AudioCueUI.lastPanel);
-//    }
 }

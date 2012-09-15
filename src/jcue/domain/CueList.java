@@ -122,7 +122,7 @@ public class CueList extends AbstractTableModel implements ListModel {
         return (ListDataListener[]) listListenerList.getListeners(ListDataListener.class);
     }
     
-    protected void fireContentsChanged(Object source, int index0, int index1) {
+    public void fireContentsChanged(Object source, int index0, int index1) {
         Object[] listeners = listListenerList.getListenerList();
         ListDataEvent e = null;
         

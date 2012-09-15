@@ -38,8 +38,6 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
     private JFormattedTextField delayField;
     
     private AbstractCue cue;
-    
-    public static JPanel lastPanel = null;
 
     public AbstractCueUI() {
         super(new MigLayout("fillx, insets panel"));
@@ -104,56 +102,16 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
         ComboBoxModel cbm = new DefaultComboBoxModel(cueArray);
         
         this.cueSelect.setModel(cbm);
-    }
-    
-    public void showUI2(JPanel container) {
-        container.removeAll();
+        
+        if (this.cue != null) {
+            setNameFieldText(cue.getName());
+            setDescFieldText(cue.getDescription());
 
-        container.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
+            setDelayFieldValue(cue.getStartDelay());
 
-        c.insets = new Insets(5, 3, 5, 3);
-
-        //Name field
-        UtilsUI.setGBC(c, 0, 0, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.nameLabel, c);
-
-        UtilsUI.setGBC(c, 1, 0, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.nameField, c);
-
-        //Description field
-        UtilsUI.setGBC(c, 0, 1, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.descLabel, c);
-
-        UtilsUI.setGBC(c, 1, 1, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.descField, c);
-
-        //Start mode select line
-        //Start mode
-        c.insets = new Insets(5, 3, 20, 3);
-
-        UtilsUI.setGBC(c, 0, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.startModeLabel, c);
-
-        UtilsUI.setGBC(c, 1, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.startModeSelect, c);
-
-        //Cue
-        UtilsUI.setGBC(c, 2, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.cueLabel, c);
-
-        UtilsUI.setGBC(c, 3, 3, 0.5, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.cueSelect, c);
-
-        //Delay
-        UtilsUI.setGBC(c, 4, 3, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.delayLabel, c);
-
-        UtilsUI.setGBC(c, 5, 3, 0.5, 0, 1, 1, GridBagConstraints.NONE);
-        c.anchor = GridBagConstraints.WEST;
-        container.add(this.delayField, c);
-
-        container.revalidate();
+            setStartModeSelectValue(cue.getStartMode());
+            setCueSelectValue(cue.getParentCue());
+        }
     }
 
     private void setNameFieldText(String text) {
@@ -178,14 +136,7 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
 
     protected void setCurrentCue(AbstractCue cue) {
         this.cue = cue;
-        
-        setNameFieldText(cue.getName());
-        setDescFieldText(cue.getDescription());
-        
-        setDelayFieldValue(cue.getStartDelay());
-        
-        setStartModeSelectValue(cue.getStartMode());
-        setCueSelectValue(cue.getParentCue());
+        this.update();
     }
     
     @Override

@@ -119,25 +119,6 @@ public abstract class AbstractCue {
     public String toString() {
         return this.name + " " + this.description + " (" + this.type + ")";
     }
-    
-    
-    
-//    public void updateUI(JPanel panel) {
-//        ui.showUI(panel);
-//        ui.setCurrentCue(this);
-//        
-//        ui.setNameFieldText(this.name);
-//        ui.setDescFieldText(this.description);
-//        ui.setDelayFieldValue(this.startDelay);
-//        ui.setStartModeSelectValue(this.startMode);
-//        ui.setCueSelectValue(this.parentCue);
-//        
-//        AbstractCueUI.lastPanel = panel;
-//    }
-    
-//    public void updateUI() {
-//        this.updateUI(AbstractCueUI.lastPanel);
-//    }
 
     public void start(boolean delay) {
         if (delay && this.startDelay > 0) {

@@ -33,13 +33,14 @@ public class WaveformPanel extends JPanel {
 
     public void setCue(AudioCue cue) {
         this.cue = cue;
+        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (this.cue != null) {
+        //if (this.cue != null) {
         int width = this.getWidth();
         int height = this.getHeight();
 
@@ -65,7 +66,7 @@ public class WaveformPanel extends JPanel {
         
         g.drawLine(outX, 0, outX, height);
         g.fillPolygon(this.getMarkerTriangle(outX, DIR_LEFT));
-        }
+        //}
     }
 
     private Polygon getMarkerTriangle(int x, int dir) {

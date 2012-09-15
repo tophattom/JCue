@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListDataEvent;
 import jcue.domain.AbstractCue;
 import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
@@ -23,10 +24,9 @@ import jcue.domain.audiocue.AudioCue;
  *
  * @author Jaakko
  */
-public class AudioCueUI extends AbstractCueUI implements ActionListener, PropertyChangeListener, ChangeListener {
+public class AudioCueUI extends AbstractCueUI implements ActionListener, 
+        PropertyChangeListener, ChangeListener {
 
-    public static JPanel lastPanel;
-    
     private JLabel fileLabel;
     private JTextField fileField;
     private JButton fileButton;
@@ -37,9 +37,9 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
     private JLabel inLabel, outLabel, fadeInLabel, fadeOutLabel;
     private JFormattedTextField inField, outField, fadeInField, fadeOutField;
     
-    private JLabel volumeLabel, panLabel;
-    private JSlider volumeSlider, panSlider;
-    private JFormattedTextField volumeField, panField;
+    private JLabel volumeLabel;
+    private JSlider volumeSlider;
+    private JFormattedTextField volumeField;
     
     private JLabel loopStartLabel, loopEndLabel, loopCountLabel;
     private JTextField loopStartField, loopEndField, loopCountField;
@@ -122,15 +122,6 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
         this.fadeOutField.setColumns(5);
         //********
 
-        //Pan control
-        this.panLabel = new JLabel("Panning:");
-        this.panSlider = new JSlider(-1000, 1000);
-        
-        NumberFormat panFormat = (NumberFormat) volumeFormat.clone();
-        this.panField = new JFormattedTextField(panFormat);
-        this.panField.setColumns(5);
-        //********
-
         //Loop controls
         this.loopStartLabel = new JLabel("Loop start:");
         this.loopStartField = new JTextField(7);
@@ -168,7 +159,16 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
         
         //Adding outputs
         this.deviceLabel = new JLabel("Device:");
-        this.deviceSelect = new JComboBox();
+        
+        //Get array of available devices
+        DeviceManager dm = DeviceManager.getInstance();
+        ArrayList<SoundDevice> enabledDevices = dm.getEnabledDevices();
+        SoundDevice[] tmpArray = new SoundDevice[enabledDevices.size()];
+        SoundDevice[] deviceArray = enabledDevices.toArray(tmpArray);
+        
+        this.deviceSelectModel = new DefaultComboBoxModel(deviceArray);
+        
+        this.deviceSelect = new JComboBox(this.deviceSelectModel);
         
         ImageIcon addIcon = new ImageIcon("images/add_small.png");
         this.addDeviceButton = new JButton(addIcon);
@@ -231,135 +231,28 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
     public void update() {
         super.update();
         
-        //Update device selection combo box
-        DeviceManager dm = DeviceManager.getInstance();
-        ArrayList<SoundDevice> enabledDevices = dm.getEnabledDevices();
-        SoundDevice[] tmpArray = new SoundDevice[enabledDevices.size()];
-        SoundDevice[] deviceArray = enabledDevices.toArray(tmpArray);
+        if (this.cue != null) {
+            setVolumeControlValue(this.cue.getAudio().getMasterVolume());
         
-        ComboBoxModel cbm = new DefaultComboBoxModel(deviceArray);
-        this.deviceSelect.setModel(cbm);
-    }
-    
-    @Override
-    public void showUI2(JPanel container) {
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 3, 5, 3);
+            setFadeInFieldValue(this.cue.getFadeIn());
+            setFadeOutFieldValue(this.cue.getFadeOut());
 
-        //File field
-        UtilsUI.setGBC(c, 0, 4, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.fileLabel, c);
+            setInFieldValue(this.cue.getInPos());
+            setOutFieldValue(this.cue.getOutPos());
 
-        UtilsUI.setGBC(c, 1, 4, 0.5, 0, 3, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.fileField, c);
+            setWaveformData(this.cue);
 
-        UtilsUI.setGBC(c, 4, 4, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.fileButton, c);
-        //************
+            setFileFieldText(this.cue.getAudio().getFilePath());
 
-        //Length field
-        UtilsUI.setGBC(c, 0, 5, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.lengthLabel, c);
-
-        UtilsUI.setGBC(c, 1, 5, 0, 0, 1, 1, GridBagConstraints.NONE);
-        c.anchor = GridBagConstraints.WEST;
-        container.add(this.lengthField, c);
-        //*********
-
-        //In, out and volume
-        UtilsUI.setGBC(c, 0, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.inLabel, c);
-
-        UtilsUI.setGBC(c, 1, 6, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.inField, c);
-
-        UtilsUI.setGBC(c, 2, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.outLabel, c);
-
-        UtilsUI.setGBC(c, 3, 6, 0.5, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.outField, c);
-
-        UtilsUI.setGBC(c, 4, 6, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.volumeLabel, c);
-
-        UtilsUI.setGBC(c, 5, 6, 0.5, 0, 2, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.volumeSlider, c);
-
-        UtilsUI.setGBC(c, 7, 6, 0.5, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.volumeField, c);
-        //***********
-
-        //Fade in, fade out and panning
-        UtilsUI.setGBC(c, 0, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.fadeInLabel, c);
-
-        UtilsUI.setGBC(c, 1, 7, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.fadeInField, c);
-
-        UtilsUI.setGBC(c, 2, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.fadeOutLabel, c);
-
-        UtilsUI.setGBC(c, 3, 7, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.fadeOutField, c);
-
-        UtilsUI.setGBC(c, 4, 7, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.panLabel, c);
-
-        UtilsUI.setGBC(c, 5, 7, 0.5, 0, 2, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.panSlider, c);
-
-        UtilsUI.setGBC(c, 7, 7, 0.5, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.panField, c);
-        //*************
-
-        //Looping controls
-        UtilsUI.setGBC(c, 0, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.loopStartLabel, c);
-
-        UtilsUI.setGBC(c, 1, 8, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.loopStartField, c);
-
-        UtilsUI.setGBC(c, 2, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.loopEndLabel, c);
-
-        UtilsUI.setGBC(c, 3, 8, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.loopEndField, c);
-
-        UtilsUI.setGBC(c, 4, 8, 0, 0, 1, 1, GridBagConstraints.HORIZONTAL);
-        container.add(this.loopCountLabel, c);
-
-        UtilsUI.setGBC(c, 5, 8, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.loopCountField, c);
-
-        UtilsUI.setGBC(c, 6, 8, 0, 0, 1, 1, GridBagConstraints.NONE);
-        container.add(this.loopCheck, c);
-        //**********
-
-        //Waveform panel and transport controls
-        UtilsUI.setGBC(c, 0, 9, 1, 0.5, 8, 1, GridBagConstraints.BOTH);
-        container.add(this.waveform, c);
+            setLengthFieldValue(this.cue.getAudio().getLength());
+        }
+        
         this.waveform.repaint();
-        
-        //Create a panel for laying out buttons
-        JPanel transportPanel = new JPanel(new FlowLayout());
-        transportPanel.add(this.playButton);
-        transportPanel.add(this.pauseButton);
-        transportPanel.add(this.stopButton);
-        
-        UtilsUI.setGBC(c, 0, 10, 0, 0, 2, 1, GridBagConstraints.NONE);
-        container.add(transportPanel, c);
-        //**********
     }
-
 
     private void setVolumeControlValue(double value) {
         this.volumeField.setValue((1000 * value) / 10);
         this.volumeSlider.setValue((int) (1000 * value));
-    }
-
-    private void setPanControlValue(double value) {
-        this.panField.setValue((1000 * value) / 10);
-        this.panSlider.setValue((int) (1000 * value));
     }
 
     private void setFadeInFieldValue(double value) {
@@ -395,20 +288,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
         super.setCurrentCue(cue);
         
         this.cue = (AudioCue) cue;
-        
-        setVolumeControlValue(this.cue.getAudio().getMasterVolume());
-        
-        setFadeInFieldValue(this.cue.getFadeIn());
-        setFadeOutFieldValue(this.cue.getFadeOut());
-        
-        setInFieldValue(this.cue.getInPos());
-        setOutFieldValue(this.cue.getOutPos());
-        
-        setWaveformData(this.cue);
-        
-        setFileFieldText(this.cue.getAudio().getFilePath());
-        
-        setLengthFieldValue(this.cue.getAudio().getLength());
+        this.update();
         
         this.correctCue = false;
     }
@@ -491,4 +371,13 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener, Propert
             this.volumeField.setValue(value / 10.0);
         }
     }
+
+    @Override
+    public void contentsChanged(ListDataEvent lde) {
+        super.contentsChanged(lde);
+        
+        this.update();
+    }
+    
+    
 }
