@@ -1,10 +1,13 @@
 package jcue.ui;
 
+import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import jcue.domain.AbstractCue;
 import jcue.domain.eventcue.AbstractEvent;
 import jcue.domain.eventcue.EventCue;
 
@@ -34,6 +37,7 @@ public class EventCueUI extends AbstractCueUI {
     public EventCueUI() {
         this.listLabel = new JLabel("Events:");
         this.eventsList = new JList();
+        this.eventsList.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         
         this.addTransport = new JButton("Transport event");
         this.addMute = new JButton("Mute event");
@@ -48,11 +52,27 @@ public class EventCueUI extends AbstractCueUI {
         
         this.targetEffectLabel = new JLabel("Target effect:");
         this.selectTargetEffect = new JComboBox();
+        
+        addComponents();
     }
     
-    public void showUI(JPanel panel) {
-        panel.add(this.listLabel);
+    private void addComponents() {
+        this.add(this.listLabel, "wrap");
+        this.add(this.eventsList, "hmin 200, wmin 100, wrap");
         
-        panel.revalidate();
+    }
+
+    @Override
+    protected void update() {
+        super.update();
+        
+        
+    }
+
+    @Override
+    protected void setCurrentCue(AbstractCue cue) {
+        super.setCurrentCue(cue);
+        
+        this.cue = (EventCue) cue;
     }
 }

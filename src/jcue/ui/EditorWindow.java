@@ -6,6 +6,7 @@ import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
 import jcue.domain.CueType;
 import jcue.domain.audiocue.AudioCue;
+import jcue.domain.eventcue.EventCue;
 import jcue.ui.event.EditorListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -136,6 +137,9 @@ public class EditorWindow extends JFrame {
             this.audioPanel.setCurrentCue(ac);
         } else if (type == CueType.EVENT) {
             cl.show(this.uiArea, "event");
+            
+            EventCue ec = (EventCue) cue;
+            this.eventPanel.setCurrentCue(ec);
         }
     }
 }

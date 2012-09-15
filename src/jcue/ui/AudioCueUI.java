@@ -213,13 +213,6 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.add(this.volumeSlider, "span 3, growx");
         this.add(this.volumeField, "wrap");
         
-//        if (this.cue != null) {
-//            ArrayList<SoundDevice> outputs = this.cue.getOutputs();
-//            for (SoundDevice sd : outputs) {
-//                this.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
-//            }
-//        }
-        
         this.add(this.devicesPanel, "growx, span, wrap");
         
         this.add(this.deviceLabel);
