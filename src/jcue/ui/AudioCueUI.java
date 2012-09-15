@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import jcue.domain.AbstractCue;
 import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.AudioCue;
@@ -22,7 +23,7 @@ import jcue.domain.audiocue.AudioCue;
  *
  * @author Jaakko
  */
-public class AudioCueUI implements ActionListener, PropertyChangeListener, ChangeListener {
+public class AudioCueUI extends AbstractCueUI implements ActionListener, PropertyChangeListener, ChangeListener {
 
     public static JPanel lastPanel;
     
@@ -58,6 +59,8 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
     private boolean correctCue;
 
     public AudioCueUI() {
+        super();
+        
         //File field
         this.fileLabel = new JLabel("File:");
         this.fileField = new JTextField();
@@ -172,28 +175,30 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         this.addDeviceButton.setActionCommand("addDevice");
         this.addDeviceButton.addActionListener(this);
         //*************
-                
+        
+        this.addComponents();
     }
 
-    public void showUI(JPanel panel) {
-        panel.add(this.fileLabel);
-        panel.add(this.fileField, "span 4, growx, split 2");
-        panel.add(this.fileButton, "wrap");
+    
+    private void addComponents() {
+        this.add(this.fileLabel);
+        this.add(this.fileField, "span 4, growx, split 2");
+        this.add(this.fileButton, "wrap");
         
-        panel.add(this.lengthLabel);
-        panel.add(this.lengthField, "wrap");
+        this.add(this.lengthLabel);
+        this.add(this.lengthField, "wrap");
         
-        panel.add(this.inLabel);
-        panel.add(this.inField);
-        panel.add(this.fadeInLabel);
-        panel.add(this.fadeInField, "wrap");
+        this.add(this.inLabel);
+        this.add(this.inField);
+        this.add(this.fadeInLabel);
+        this.add(this.fadeInField, "wrap");
         
-        panel.add(this.outLabel);
-        panel.add(this.outField);
-        panel.add(this.fadeOutLabel);
-        panel.add(this.fadeOutField, "wrap");
+        this.add(this.outLabel);
+        this.add(this.outField);
+        this.add(this.fadeOutLabel);
+        this.add(this.fadeOutField, "wrap");
         
-        panel.add(this.waveform, "span, grow,  wrap");
+        this.add(this.waveform, "span, grow,  wrap");
         this.waveform.repaint();
         
         //Create a panel for laying out buttons
@@ -203,24 +208,28 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         transportPanel.add(this.pauseButton);
         transportPanel.add(this.stopButton);
         
-        panel.add(transportPanel, "span 3, wrap");
+        this.add(transportPanel, "span 3, wrap");
         
-        panel.add(this.volumeLabel);
-        panel.add(this.volumeSlider, "span 3, growx");
-        panel.add(this.volumeField, "wrap");
+        this.add(this.volumeLabel);
+        this.add(this.volumeSlider, "span 3, growx");
+        this.add(this.volumeField, "wrap");
         
-//        panel.add(this.panLabel);
-//        panel.add(this.panSlider, "span 3, growx");
-//        panel.add(this.panField, "wrap");
+//        if (this.cue != null) {
+//            ArrayList<SoundDevice> outputs = this.cue.getOutputs();
+//            for (SoundDevice sd : outputs) {
+//                this.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
+//            }
+//        }
         
-        if (this.cue != null) {
-            ArrayList<SoundDevice> outputs = this.cue.getOutputs();
-            for (SoundDevice sd : outputs) {
-                panel.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
-            }
-        }
+        this.add(this.deviceLabel);
         
-        panel.add(this.deviceLabel);
+        this.add(this.deviceSelect, "span, split 2");
+        this.add(this.addDeviceButton, "wrap");
+    }
+    
+    @Override
+    public void update() {
+        super.update();
         
         //Update device selection combo box
         DeviceManager dm = DeviceManager.getInstance();
@@ -230,14 +239,9 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
         
         ComboBoxModel cbm = new DefaultComboBoxModel(deviceArray);
         this.deviceSelect.setModel(cbm);
-        
-        panel.add(this.deviceSelect, "span, split 2");
-        panel.add(this.addDeviceButton, "wrap");
-                
-        
-        panel.revalidate();
     }
     
+    @Override
     public void showUI2(JPanel container) {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 3, 5, 3);
@@ -348,46 +352,64 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
     }
 
 
-    public void setVolumeControlValue(double value) {
+    private void setVolumeControlValue(double value) {
         this.volumeField.setValue((1000 * value) / 10);
         this.volumeSlider.setValue((int) (1000 * value));
     }
 
-    public void setPanControlValue(double value) {
+    private void setPanControlValue(double value) {
         this.panField.setValue((1000 * value) / 10);
         this.panSlider.setValue((int) (1000 * value));
     }
 
-    public void setFadeInFieldValue(double value) {
+    private void setFadeInFieldValue(double value) {
         this.fadeInField.setValue(value);
     }
 
-    public void setFadeOutFieldValue(double value) {
+    private void setFadeOutFieldValue(double value) {
         this.fadeOutField.setValue(value);
     }
 
-    public void setInFieldValue(double value) {
+    private void setInFieldValue(double value) {
         this.inField.setValue(value);
     }
 
-    public void setOutFieldValue(double value) {
+    private void setOutFieldValue(double value) {
         this.outField.setValue(value);
     }
 
-    public void setWaveformData(AudioCue cue) {
+    private void setWaveformData(AudioCue cue) {
         this.waveform.setCue(cue);
     }
 
-    public void setFileFieldText(String text) {
+    private void setFileFieldText(String text) {
         this.fileField.setText(text);
     }
 
-    public void setLengthFieldValue(double value) {
+    private void setLengthFieldValue(double value) {
         this.lengthField.setValue(value);
     }
 
-    public void setCurrentCue(AudioCue cue) {
-        this.cue = cue;
+    @Override
+    public void setCurrentCue(AbstractCue cue) {
+        super.setCurrentCue(cue);
+        
+        this.cue = (AudioCue) cue;
+        
+        setVolumeControlValue(this.cue.getAudio().getMasterVolume());
+        
+        setFadeInFieldValue(this.cue.getFadeIn());
+        setFadeOutFieldValue(this.cue.getFadeOut());
+        
+        setInFieldValue(this.cue.getInPos());
+        setOutFieldValue(this.cue.getOutPos());
+        
+        setWaveformData(this.cue);
+        
+        setFileFieldText(this.cue.getAudio().getFilePath());
+        
+        setLengthFieldValue(this.cue.getAudio().getLength());
+        
         this.correctCue = false;
     }
     
@@ -397,6 +419,8 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        super.actionPerformed(ae);
+        
         String command = ae.getActionCommand();
         
         if (command.equals("loadAudio")) {  //File choose button was pressed
@@ -408,7 +432,7 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
                 this.cue.loadAudio(file.getAbsolutePath());
-                this.cue.updateUI();
+                //this.cue.updateUI();
             }
         } else if (command.equals("play")) {
             this.cue.start(false);
@@ -429,12 +453,14 @@ public class AudioCueUI implements ActionListener, PropertyChangeListener, Chang
             SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
             
             this.cue.addOutput(sd);
-            this.cue.updateUI();
+            //this.cue.updateUI();
         }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
+        super.propertyChange(pce);
+        
         Object source = pce.getSource();
         
         if (this.correctCue) {

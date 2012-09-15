@@ -23,8 +23,6 @@ public class AudioCue extends AbstractCue {
     private double volume, pan;
     
     private ArrayList<SoundDevice> outputs;
-    
-    private static AudioCueUI ui = new AudioCueUI();
 
     public AudioCue(String name, String description, ArrayList<SoundDevice> outputs) {
         super(name, description, CueType.AUDIO);
@@ -54,8 +52,6 @@ public class AudioCue extends AbstractCue {
         
         this.inPos = 0;
         this.outPos = this.audio.getLength();
-        
-        ui.setOutFieldValue(this.outPos);
         
         if (this.getDescription().isEmpty()) {
             File audioFile = new File(filePath);
@@ -203,34 +199,34 @@ public class AudioCue extends AbstractCue {
         return true;
     }
     
-    @Override
-    public void updateUI(JPanel panel) {
-        super.updateUI(panel);
-        
-        ui.setCurrentCue(this);
-        ui.showUI(panel);
-        
-        ui.setFileFieldText(this.audio.getFilePath());
-        ui.setLengthFieldValue(this.audio.getLength());
-        
-        ui.setInFieldValue(this.inPos);
-        ui.setOutFieldValue(this.outPos);
-        
-        ui.setFadeInFieldValue(this.fadeIn);
-        ui.setFadeOutFieldValue(this.fadeOut);
-        
-        ui.setVolumeControlValue(this.volume);
-        ui.setPanControlValue(this.pan);
-        
-        ui.setWaveformData(this);
-        
-        ui.correctCue();
-        
-        AudioCueUI.lastPanel = panel;
-    }
+//    @Override
+//    public void updateUI(JPanel panel) {
+//        super.updateUI(panel);
+//        
+//        ui.setCurrentCue(this);
+//        ui.showUI(panel);
+//        
+//        ui.setFileFieldText(this.audio.getFilePath());
+//        ui.setLengthFieldValue(this.audio.getLength());
+//        
+//        ui.setInFieldValue(this.inPos);
+//        ui.setOutFieldValue(this.outPos);
+//        
+//        ui.setFadeInFieldValue(this.fadeIn);
+//        ui.setFadeOutFieldValue(this.fadeOut);
+//        
+//        ui.setVolumeControlValue(this.volume);
+//        ui.setPanControlValue(this.pan);
+//        
+//        ui.setWaveformData(this);
+//        
+//        ui.correctCue();
+//        
+//        AudioCueUI.lastPanel = panel;
+//    }
     
-    @Override
-    public void updateUI() {
-        updateUI(AudioCueUI.lastPanel);
-    }
+//    @Override
+//    public void updateUI() {
+//        updateUI(AudioCueUI.lastPanel);
+//    }
 }

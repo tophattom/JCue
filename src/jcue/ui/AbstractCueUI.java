@@ -16,6 +16,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
 import jcue.domain.StartMode;
@@ -25,7 +27,8 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Jaakko
  */
-public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
+public class AbstractCueUI extends JPanel implements PropertyChangeListener, ActionListener,
+        ListDataListener {
 
     private JLabel nameLabel, descLabel;
     private JTextField nameField, descField;
@@ -39,6 +42,8 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
     public static JPanel lastPanel = null;
 
     public AbstractCueUI() {
+        super(new MigLayout("fillx, insets panel"));
+        
         this.nameLabel = new JLabel("Name:");
         this.nameField = new JTextField();
         this.nameField.addActionListener(this);
@@ -70,37 +75,35 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
         this.delayField = new JFormattedTextField(delayFormat);
         this.delayField.setColumns(5);
         this.delayField.addPropertyChangeListener(this);
+        
+        this.addComponents();
     }
 
-    public void showUI(JPanel panel) {
-        panel.removeAll();
+    private void addComponents() {
+        this.add(this.nameLabel);
+        this.add(this.nameField, "span 4, growx, wrap");
         
-        panel.setLayout(new MigLayout("fillx"));
+        this.add(this.descLabel);
+        this.add(this.descField, "span 4, growx, wrap");
         
-        panel.add(this.nameLabel);
-        panel.add(this.nameField, "span 4, growx, wrap");
+        this.add(this.startModeLabel);
+        this.add(this.startModeSelect);
         
-        panel.add(this.descLabel);
-        panel.add(this.descField, "span 4, growx, wrap");
+        this.add(this.cueLabel);
         
-        panel.add(this.startModeLabel);
-        panel.add(this.startModeSelect);
+        this.add(this.cueSelect, "span 2, growx, wmin 200");
         
-        panel.add(this.cueLabel);
-        
+        this.add(this.delayLabel);
+        this.add(this.delayField, "wrap");
+    }
+    
+    protected void update() {
         ArrayList<AbstractCue> cues = CueList.getInstance().getCues();
         AbstractCue[] tmpArray = new AbstractCue[cues.size() + 1];
         AbstractCue[] cueArray = cues.toArray(tmpArray);
         ComboBoxModel cbm = new DefaultComboBoxModel(cueArray);
         
         this.cueSelect.setModel(cbm);
-        this.cueSelect.setSelectedItem(null);
-        panel.add(this.cueSelect, "span 2, growx, wmin 200");
-        
-        panel.add(this.delayLabel);
-        panel.add(this.delayField, "wrap");
-        
-        panel.revalidate();
     }
     
     public void showUI2(JPanel container) {
@@ -153,28 +156,36 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
         container.revalidate();
     }
 
-    public void setNameFieldText(String text) {
+    private void setNameFieldText(String text) {
         this.nameField.setText(text);
     }
 
-    public void setDescFieldText(String text) {
+    private void setDescFieldText(String text) {
         this.descField.setText(text);
     }
 
-    public void setDelayFieldValue(double value) {
+    private void setDelayFieldValue(double value) {
         this.delayField.setValue(value);
     }
     
-    public void setStartModeSelectValue(StartMode value) {
+    private void setStartModeSelectValue(StartMode value) {
         this.startModeSelect.setSelectedItem(value);
     }
     
-    public void setCueSelectValue(AbstractCue ac) {
+    private void setCueSelectValue(AbstractCue ac) {
         this.cueSelect.setSelectedItem(ac);
     }
 
-    public void setCurrentCue(AbstractCue cue) {
+    protected void setCurrentCue(AbstractCue cue) {
         this.cue = cue;
+        
+        setNameFieldText(cue.getName());
+        setDescFieldText(cue.getDescription());
+        
+        setDelayFieldValue(cue.getStartDelay());
+        
+        setStartModeSelectValue(cue.getStartMode());
+        setCueSelectValue(cue.getParentCue());
     }
     
     @Override
@@ -217,5 +228,20 @@ public class AbstractCueUI implements PropertyChangeListener, ActionListener  {
         } else if (source == this.descField) {
             this.cue.setDescription(this.descField.getText());
         }
+    }
+
+    @Override
+    public void intervalAdded(ListDataEvent lde) {
+        this.update();
+    }
+
+    @Override
+    public void intervalRemoved(ListDataEvent lde) {
+        this.update();
+    }
+
+    @Override
+    public void contentsChanged(ListDataEvent lde) {
+        this.update();
     }
 }

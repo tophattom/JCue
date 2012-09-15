@@ -9,6 +9,7 @@ import javax.swing.event.ListSelectionListener;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
 import jcue.domain.CueType;
+import jcue.ui.EditorWindow;
 
 /**
  *
@@ -20,10 +21,12 @@ public class EditorListener implements ActionListener, ListSelectionListener {
     
     private JList list;
     private JPanel panel;
+    
+    private EditorWindow window;
 
-    public EditorListener(CueList cueList, JPanel panel, JList list) {
+    public EditorListener(CueList cueList, EditorWindow window, JList list) {
         this.cueList = cueList;
-        this.panel = panel;
+        this.window = window;
         this.list = list;
     }
 
@@ -50,7 +53,7 @@ public class EditorListener implements ActionListener, ListSelectionListener {
 
             if (selection instanceof AbstractCue) {
                 AbstractCue cue = (AbstractCue) list.getSelectedValue();
-                cue.updateUI(panel);
+                this.window.setUI(cue);
             }
         }
     }

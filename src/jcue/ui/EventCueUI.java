@@ -12,7 +12,7 @@ import jcue.domain.eventcue.EventCue;
  *
  * @author Jaakko
  */
-public class EventCueUI {
+public class EventCueUI extends AbstractCueUI {
     
     private JLabel listLabel;
     private JList eventsList;

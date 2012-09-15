@@ -54,12 +54,12 @@ public class EventCue extends AbstractCue {
     public void pause() {
     }
 
-    @Override
-    public void updateUI(JPanel panel) {
-        super.updateUI(panel);
-        
-        ui.showUI(panel);
-    }
+//    @Override
+//    public void updateUI(JPanel panel) {
+//        super.updateUI(panel);
+//        
+//        ui.showUI(panel);
+//    }
     
     
 }

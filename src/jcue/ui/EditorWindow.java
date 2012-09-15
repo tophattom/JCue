@@ -2,7 +2,10 @@ package jcue.ui;
 
 import java.awt.*;
 import javax.swing.*;
+import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
+import jcue.domain.CueType;
+import jcue.domain.audiocue.AudioCue;
 import jcue.ui.event.EditorListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -18,8 +21,13 @@ public class EditorWindow extends JFrame {
     private JButton upButton, downButton, deleteButton;
     
     private JTabbedPane editorTabs;
-    private JPanel basicPanel, effectPanel;
-
+    private JPanel effectPanel;
+    
+    private AudioCueUI audioPanel;
+    private EventCueUI eventPanel;
+    
+    private JPanel uiArea;
+    
     private CueList cues;
     
     public EditorWindow(CueList cues) {
@@ -37,12 +45,21 @@ public class EditorWindow extends JFrame {
 
     private void createComponents(Container container) {
         //Panels for cue controls
-        this.basicPanel = new JPanel();
-        JScrollPane basicScroll = new JScrollPane(this.basicPanel);
-        basicScroll.setBorder(null);
+        this.uiArea = new JPanel(new CardLayout());
+        JScrollPane scrollPane = new JScrollPane(this.uiArea);
+        this.uiArea.setBorder(null);
         
         this.effectPanel = new JPanel();
         //**********
+        
+        //
+        this.audioPanel = new AudioCueUI();
+        this.eventPanel = new EventCueUI();
+        
+        this.uiArea.add(new JPanel(), "empty");
+        this.uiArea.add(audioPanel, "audio");
+        this.uiArea.add(eventPanel, "event");
+        
         
         //Cue list
         this.cueList = new JList(this.cues);
@@ -74,7 +91,7 @@ public class EditorWindow extends JFrame {
         //Tabs for cue controls
         this.editorTabs = new JTabbedPane();
         
-        this.editorTabs.addTab("Basic", basicScroll);
+        this.editorTabs.addTab("Basic", scrollPane);
         this.editorTabs.addTab("Effects", this.effectPanel);
         //**********
         
@@ -93,7 +110,7 @@ public class EditorWindow extends JFrame {
 
     private void createEventListeners() {
         //Event listener for editor
-        EditorListener editorListener = new EditorListener(this.cues, this.basicPanel, this.cueList);
+        EditorListener editorListener = new EditorListener(this.cues, this, this.cueList);
         
         //Buttons for adding cues
         this.audioButton.addActionListener(editorListener);
@@ -102,5 +119,23 @@ public class EditorWindow extends JFrame {
         
         //Editor list
         this.cueList.addListSelectionListener(editorListener);
+        
+        //CueList data listener
+        this.cues.addListDataListener(this.audioPanel);
+        this.cues.addListDataListener(this.eventPanel);
+    }
+    
+    public void setUI(AbstractCue cue) {
+        CueType type = cue.getType();
+        CardLayout cl = (CardLayout) this.uiArea.getLayout();
+        
+        if (type == CueType.AUDIO) {
+            cl.show(this.uiArea, "audio");
+            
+            AudioCue ac = (AudioCue) cue;
+            this.audioPanel.setCurrentCue(ac);
+        } else if (type == CueType.EVENT) {
+            cl.show(this.uiArea, "event");
+        }
     }
 }
