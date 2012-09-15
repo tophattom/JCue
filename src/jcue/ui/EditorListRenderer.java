@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import jcue.domain.audiocue.AudioCue;
+import jcue.domain.eventcue.EventCue;
 
 /**
  *
@@ -25,6 +26,8 @@ public class EditorListRenderer extends JLabel implements ListCellRenderer {
         } else {
             if (o instanceof AudioCue) {
                 setBackground(new Color(100, 200, 200));
+            } else if (o instanceof EventCue) {
+                setBackground(new Color(100, 200, 100));
             }
             //TODO: render other cue types
 

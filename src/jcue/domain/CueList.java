@@ -8,6 +8,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
+import jcue.domain.eventcue.EventCue;
 
 /**
  *
@@ -52,6 +53,7 @@ public class CueList extends AbstractTableModel implements ListModel {
         if (cueType == CueType.AUDIO) {
             cue = new AudioCue("Q" + counter, "", this.dm.getAutoIncludeDevices());
         } else if (cueType == CueType.EVENT) {
+            cue = new EventCue("Q" + counter, "");
         } else if (cueType == CueType.CHANGE) {
         } else if (cueType == CueType.NOTE) {
         }

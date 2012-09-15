@@ -9,16 +9,14 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileFilter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import jcue.domain.audiocue.AudioCue;
 import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
+import jcue.domain.audiocue.AudioCue;
 
 /**
  *

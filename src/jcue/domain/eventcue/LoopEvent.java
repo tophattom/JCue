@@ -15,6 +15,4 @@ public class LoopEvent extends AbstractEvent {
     public String toString() {
         return "Release loop";
     }
-    
-    
 }

@@ -5,7 +5,7 @@ package jcue.domain.eventcue;
  * @author Jaakko
  */
 public class EffectEvent extends AbstractEvent {
-    
+
     public static final int EFFECT_ON = 1;
     public static final int EFFECT_OFF = 2;
     
@@ -19,8 +19,6 @@ public class EffectEvent extends AbstractEvent {
     public EffectEvent() {
         this(EFFECT_OFF);
     }
-    
-    
 
     @Override
     public void perform() {
@@ -30,5 +28,4 @@ public class EffectEvent extends AbstractEvent {
             //this.targetEffect.setActive(false);
         }
     }
-    
 }

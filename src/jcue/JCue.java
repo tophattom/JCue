@@ -11,6 +11,8 @@ import jouvieje.bass.BassInit;
  * @author Jaakko
  */
 public class JCue {
+    
+    public static String libPath = null;
 
     /**
      * @param args the command line arguments
@@ -47,7 +49,6 @@ public class JCue {
         //Get OS name and architecture
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch");
-        String libPath = null;
         
         if (os.contains("windows")) {       //Is Windows
             if (arch.equals("x86")) {
