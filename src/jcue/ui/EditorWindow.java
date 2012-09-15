@@ -47,7 +47,7 @@ public class EditorWindow extends JFrame {
         //Panels for cue controls
         this.uiArea = new JPanel(new CardLayout());
         JScrollPane scrollPane = new JScrollPane(this.uiArea);
-        this.uiArea.setBorder(null);
+        scrollPane.setBorder(null);
         
         this.effectPanel = new JPanel();
         //**********
