@@ -11,6 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -53,6 +54,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     private JComboBox deviceSelect;
     private ComboBoxModel deviceSelectModel;
     private JButton addDeviceButton;
+    
+    private JPanel devicesPanel;
     
     private AudioCue cue;
     
@@ -176,10 +179,12 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.addDeviceButton.addActionListener(this);
         //*************
         
+        this.devicesPanel = new JPanel();
+        this.devicesPanel.setLayout(new BoxLayout(devicesPanel, BoxLayout.Y_AXIS));
+        
         this.addComponents();
     }
 
-    
     private void addComponents() {
         this.add(this.fileLabel);
         this.add(this.fileField, "span 4, growx, split 2");
@@ -220,6 +225,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
 //                this.add(new DeviceControlPanel(this.cue, sd), "span, growx, wrap");
 //            }
 //        }
+        
+        this.add(this.devicesPanel, "growx, span, wrap");
         
         this.add(this.deviceLabel);
         
@@ -289,6 +296,17 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         this.cue = (AudioCue) cue;
         this.update();
+        
+        //Show output devices
+        this.devicesPanel.removeAll();
+        
+        ArrayList<SoundDevice> outputs = this.cue.getOutputs();
+        for (SoundDevice sd : outputs) {
+            DeviceControlPanel dcp = new DeviceControlPanel(this.cue, sd);
+            
+            this.devicesPanel.add(dcp);
+        }
+        //*****s
         
         this.correctCue = false;
     }

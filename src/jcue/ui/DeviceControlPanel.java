@@ -27,7 +27,7 @@ import net.miginfocom.swing.MigLayout;
 public class DeviceControlPanel extends JPanel implements ChangeListener, 
         ItemListener, ActionListener {
     
-    private JLabel deviceLabel, volumeLabel, panLabel;
+    private JLabel volumeLabel, panLabel;
     
     private JSlider volumeSlider, panSlider;
     private JFormattedTextField volumeField, panField;
@@ -47,8 +47,6 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
         
         this.targetCue = targetCue;
         this.targetDevice = targetDevice;
-        
-        this.deviceLabel = new JLabel(targetDevice.getName());
         
         this.volumeLabel = new JLabel("Volume:");
         this.volumeSlider = new JSlider(0, 1000);
