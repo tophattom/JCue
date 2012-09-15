@@ -54,8 +54,6 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     private JPanel devicesPanel;
     
     private AudioCue cue;
-    
-    private boolean correctCue;
 
     public AudioCueUI() {
         super();
@@ -302,13 +300,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             this.devicesPanel.add(dcp);
         }
-        //*****s
-        
-        this.correctCue = false;
-    }
-    
-    public void correctCue() {
-        this.correctCue = true;
+        //*****
     }
 
     @Override
@@ -357,19 +349,17 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         Object source = pce.getSource();
         
-        if (this.correctCue) {
-            if (source == this.inField) {
-                if (this.inField.getValue() != null) {
-                    this.cue.setInPos((Double) this.inField.getValue());
-                }
-            } else if (source == this.outField) {
-                if (this.outField.getValue() != null) {
-                    this.cue.setOutPos((Double) this.outField.getValue());
-                }
+        if (source == this.inField) {
+            if (this.inField.getValue() != null) {
+                this.cue.setInPos((Double) this.inField.getValue());
             }
-        
-            this.waveform.repaint();
+        } else if (source == this.outField) {
+            if (this.outField.getValue() != null) {
+                this.cue.setOutPos((Double) this.outField.getValue());
+            }
         }
+        
+        this.waveform.repaint();
     }
 
     @Override
