@@ -153,8 +153,6 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
             if (!removeOutput) {
                JOptionPane.showMessageDialog(this, "Cannot delete output.\nAudio cues must have at least one output.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
-            //this.targetCue.updateUI();
         }
     }
     

@@ -239,6 +239,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             setFileFieldText(this.cue.getAudio().getFilePath());
 
             setLengthFieldValue(this.cue.getAudio().getLength());
+            
+            this.updateDevicesPanel();
         }
         
         this.waveform.repaint();
@@ -283,7 +285,10 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         this.cue = (AudioCue) cue;
         this.update();
-        
+        this.updateDevicesPanel();
+    }
+    
+    private void updateDevicesPanel() {
         //Show output devices
         this.devicesPanel.removeAll();
         
@@ -293,6 +298,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             this.devicesPanel.add(dcp);
         }
+        
+        this.revalidate();
         //*****
     }
 
@@ -332,7 +339,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
             
             this.cue.addOutput(sd);
-            //this.cue.updateUI();
+            this.updateDevicesPanel();
         }
     }
 
@@ -375,6 +382,4 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         this.update();
     }
-    
-    
 }

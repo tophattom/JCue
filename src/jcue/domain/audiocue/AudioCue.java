@@ -200,6 +200,9 @@ public class AudioCue extends AbstractCue {
         this.audio.removeOutput(sd);
         this.outputs.remove(sd);
         
+        CueList cl = CueList.getInstance();
+        cl.fireContentsChanged(this, cl.getCueIndex(this) - 1, cl.getCueIndex(this));
+        
         return true;
     }
 }
