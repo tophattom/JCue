@@ -31,11 +31,7 @@ public class EffectEvent extends AbstractEvent {
 
     @Override
     public String toString() {
-        if (this.type == EFFECT_ON) {
-            return "Effect on";
-        } else {
-            return "Effect off";
-        }
+        return "Effect event";
     }
     
     

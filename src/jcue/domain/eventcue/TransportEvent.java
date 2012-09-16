@@ -38,12 +38,6 @@ public class TransportEvent extends AbstractEvent {
 
     @Override
     public String toString() {
-        if (this.type == STOP) {
-            return "Stop";
-        } else if (this.type == PAUSE) {
-            return "Pause";
-        } else {
-            return "Start";
-        }
+        return "Transport event";
     }
 }

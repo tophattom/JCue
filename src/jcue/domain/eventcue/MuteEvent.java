@@ -46,12 +46,6 @@ public class MuteEvent extends AbstractEvent {
 
     @Override
     public String toString() {
-        if (this.type == MUTE) {
-            return "Mute";
-        } else if (this.type == UNMUTE) {
-            return "Unmute";
-        } else {
-            return "Toggle muting";
-        }
+        return "Mute event";
     }
 }
