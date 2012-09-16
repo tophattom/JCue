@@ -37,12 +37,20 @@ public class EditorListener implements ActionListener, ListSelectionListener {
         System.out.println(command);
         if (command.equals("audio")) {
             this.cueList.addCue(CueType.AUDIO);
+            
+            this.list.setSelectedIndex(this.cueList.getSize() - 1);
         } else if (command.equals("event")) {
             this.cueList.addCue(CueType.EVENT);
+            
+            this.list.setSelectedIndex(this.cueList.getSize() - 1);
         } else if (command.equals("change")) {
             this.cueList.addCue(CueType.CHANGE);
+            
+            this.list.setSelectedIndex(this.cueList.getSize() - 1);
         } else if (command.equals("note")) {
             this.cueList.addCue(CueType.NOTE);
+            
+            this.list.setSelectedIndex(this.cueList.getSize() - 1);
         }
     }
 
