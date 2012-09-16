@@ -1,6 +1,5 @@
 package jcue.domain.eventcue;
 
-import jcue.domain.AbstractCue;
 import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.AudioCue;
 

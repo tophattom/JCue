@@ -1,15 +1,25 @@
 package jcue.ui;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.ListModel;
 import jcue.domain.AbstractCue;
 import jcue.domain.eventcue.AbstractEvent;
+import jcue.domain.eventcue.EffectEvent;
 import jcue.domain.eventcue.EventCue;
+import jcue.domain.eventcue.LoopEvent;
+import jcue.domain.eventcue.MuteEvent;
+import jcue.domain.eventcue.TransportEvent;
 
 /**
  *
@@ -20,7 +30,9 @@ public class EventCueUI extends AbstractCueUI {
     private JLabel listLabel;
     private JList eventsList;
     
-    private JButton addTransport, addLoop, addMute, addEffect;
+    private JButton addButton;
+    private JPopupMenu addMenu;
+    private JMenuItem addTransport, addLoop, addMute, addEffect;
     
     private JLabel targetCueLabel;
     private JComboBox selectTargetCue;
@@ -39,10 +51,28 @@ public class EventCueUI extends AbstractCueUI {
         this.eventsList = new JList();
         this.eventsList.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         
-        this.addTransport = new JButton("Transport event");
-        this.addMute = new JButton("Mute event");
-        this.addLoop = new JButton("Loop event");
-        this.addEffect = new JButton("Effect event");
+        //Event adding stuff
+        this.addButton = new JButton(new ImageIcon("images/add_small.png"));
+        this.addButton.addActionListener(this);
+        
+        this.addMenu = new JPopupMenu();
+        
+        this.addTransport = new JMenuItem("Transport event");
+        this.addTransport.addActionListener(this);
+        this.addMenu.add(addTransport);
+        
+        this.addMute = new JMenuItem("Mute event");
+        this.addMute.addActionListener(this);
+        this.addMenu.add(addMute);
+        
+        this.addLoop = new JMenuItem("Loop event");
+        this.addLoop.addActionListener(this);
+        this.addMenu.add(addLoop);
+        
+        this.addEffect = new JMenuItem("Effect event");
+        this.addEffect.addActionListener(this);
+        this.addMenu.add(addEffect);
+        //*******
         
         this.targetCueLabel = new JLabel("Target cue:");
         this.selectTargetCue = new JComboBox();
@@ -60,13 +90,21 @@ public class EventCueUI extends AbstractCueUI {
         this.add(this.listLabel, "wrap");
         this.add(this.eventsList, "hmin 200, wmin 100, wrap");
         
+        this.add(this.addButton);
     }
 
     @Override
     protected void update() {
         super.update();
         
-        
+        if (this.cue != null) {
+            ArrayList<AbstractEvent> events = this.cue.getEvents();
+            AbstractEvent[] tmpArray = new AbstractEvent[events.size()];
+            AbstractEvent[] eventsArray = events.toArray(tmpArray);
+            ListModel lm = new DefaultComboBoxModel(eventsArray);
+
+            this.eventsList.setModel(lm);
+        }
     }
 
     @Override
@@ -74,5 +112,30 @@ public class EventCueUI extends AbstractCueUI {
         super.setCurrentCue(cue);
         
         this.cue = (EventCue) cue;
+        
+        this.update();
     }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        super.actionPerformed(ae);
+        
+        Object source = ae.getSource();
+        
+        if (source == this.addButton) {
+            this.addMenu.show(this, this.addButton.getX(), this.addButton.getY() + this.addButton.getHeight());
+        } else if (source == this.addTransport) {
+            this.cue.addEvent(new TransportEvent());
+        } else if (source == this.addMute) {
+            this.cue.addEvent(new MuteEvent());
+        } else if (source == this.addLoop) {
+            this.cue.addEvent(new LoopEvent());
+        } else if (source == this.addEffect) {
+            this.cue.addEvent(new EffectEvent());
+        }
+        
+        this.update();
+    }
+    
+    
 }

@@ -28,4 +28,15 @@ public class EffectEvent extends AbstractEvent {
             //this.targetEffect.setActive(false);
         }
     }
+
+    @Override
+    public String toString() {
+        if (this.type == EFFECT_ON) {
+            return "Effect on";
+        } else {
+            return "Effect off";
+        }
+    }
+    
+    
 }
