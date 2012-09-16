@@ -53,13 +53,13 @@ public class JCue {
         if (os.contains("windows")) {       //Is Windows
             if (arch.equals("x86")) {
                 libPath = "lib/win32";
-            } else if (arch.equals("x64")) {
+            } else if (arch.contains("64")) {
                 libPath = "lib/win64";
             }
         } else if (os.contains("linux")) {  //Is Linux
             if (arch.equals("x86")) {
                 libPath = "lib/linux32";
-            } else if (arch.equals("x64")) {
+            } else if (arch.contains("64")) {
                 libPath = "lib/linux64";
             }
         } else if (os.contains("mac")) {    //Is Mac
