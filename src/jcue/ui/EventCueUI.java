@@ -1,24 +1,23 @@
 package jcue.ui;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.ListModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import jcue.domain.AbstractCue;
 import jcue.domain.eventcue.AbstractEvent;
-import jcue.domain.eventcue.EffectEvent;
 import jcue.domain.eventcue.EventCue;
-import jcue.domain.eventcue.LoopEvent;
 import jcue.domain.eventcue.MuteEvent;
 import jcue.domain.eventcue.TransportEvent;
 
@@ -26,29 +25,25 @@ import jcue.domain.eventcue.TransportEvent;
  *
  * @author Jaakko
  */
-public class EventCueUI extends AbstractCueUI {
+public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
     
-    private JComboBox eventSelect;
+    private JList eventsList;
     
     private JButton addButton;
     private JPopupMenu addMenu;
     private JMenuItem addTransport, addLoop, addMute, addEffect;
     
-    private JLabel targetCueLabel;
-    private JComboBox selectTargetCue;
+    private JPanel controlPanel;
     
-    private JLabel targetOutLabel;
-    private JComboBox selectTargetOut;
-    
-    private JLabel targetEffectLabel;
-    private JComboBox selectTargetEffect;
+    private TransportEventPanel transportPanel;
+    private MuteEventPanel mutePanel;
     
     private EventCue cue;
 
     public EventCueUI() {
-        String[] types = {"Transport event", "Mute event", "Loop event", "Effect event"};
-        ComboBoxModel cbm = new DefaultComboBoxModel(types);
-        this.eventSelect = new JComboBox(cbm);
+        this.eventsList = new JList();
+        this.eventsList.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        this.eventsList.addListSelectionListener(this);
         
         //Event adding stuff
         this.addButton = new JButton(new ImageIcon("images/add_small.png"));
@@ -73,22 +68,25 @@ public class EventCueUI extends AbstractCueUI {
         this.addMenu.add(addEffect);
         //*******
         
-        this.targetCueLabel = new JLabel("Target cue:");
-        this.selectTargetCue = new JComboBox();
         
-        this.targetOutLabel = new JLabel("Target output:");
-        this.selectTargetOut = new JComboBox();
+        this.controlPanel = new JPanel(new CardLayout());
         
-        this.targetEffectLabel = new JLabel("Target effect:");
-        this.selectTargetEffect = new JComboBox();
+        this.transportPanel = new TransportEventPanel(cue);
+        this.mutePanel = new MuteEventPanel(cue);
+        
+        this.controlPanel.add(new JPanel(), "empty");
+        this.controlPanel.add(this.transportPanel, "transport");
+        this.controlPanel.add(this.mutePanel, "mute");
+        
         
         addComponents();
     }
     
     private void addComponents() {
-        this.add(this.eventSelect, "span 2, split 2, wmin 150");
+        this.add(this.eventsList, "split 2, span, hmin 150, wmin 100");
+        this.add(this.controlPanel, "growx, aligny top, wrap");
         
-        this.add(this.addButton, "wrap");
+        this.add(this.addButton);
     }
 
     @Override
@@ -96,6 +94,12 @@ public class EventCueUI extends AbstractCueUI {
         super.update();
         
         if (this.cue != null) {
+            ArrayList<AbstractEvent> events = this.cue.getEvents();
+            AbstractEvent[] tmpArray = new AbstractEvent[events.size()];
+            AbstractEvent[] eventArray = events.toArray(tmpArray);
+            
+            ListModel lm = new DefaultComboBoxModel(eventArray);
+            this.eventsList.setModel(lm);
         }
     }
 
@@ -115,26 +119,39 @@ public class EventCueUI extends AbstractCueUI {
         Object source = ae.getSource();
         
         if (source == this.addButton) {
-            String selection = this.eventSelect.getSelectedItem().toString();
-            AbstractEvent newEvent = null;
-            
-            if (selection.equals("Transport event")) {
-                newEvent = new TransportEvent();
-            } else if (selection.equals("Mute event")) {
-                newEvent = new MuteEvent();
-            } else if (selection.equals("Loop event")) {
-                newEvent = new LoopEvent();
-            } else if (selection.equals("Effect event")) {
-                newEvent = new EffectEvent();
-            }
-            
-            if (newEvent != null) {
-                this.cue.addEvent(newEvent);
-                this.add(new EventControlPanel(this.cue, newEvent), "span, growx, wrap");
-            }
+            this.addMenu.show(this, addButton.getX(), addButton.getY() + addButton.getHeight());
+        } else if (source == this.addTransport) {
+            this.cue.addEvent(new TransportEvent());
+        } else if (source == this.addMute) {
+            this.cue.addEvent(new MuteEvent());
         }
         
         this.update();
+    }
+
+    @Override
+    public void valueChanged(ListSelectionEvent lse) {
+        if (!lse.getValueIsAdjusting()) {
+            AbstractEvent selection = (AbstractEvent) this.eventsList.getSelectedValue();
+            
+            if (selection != null) {
+                CardLayout cl = (CardLayout) this.controlPanel.getLayout();
+                
+                if (selection instanceof TransportEvent) {
+                    TransportEvent te = (TransportEvent) selection;
+                    
+                    cl.show(this.controlPanel, "transport");
+                    
+                    this.transportPanel.setEvent(te);
+                } else if (selection instanceof MuteEvent) {
+                    MuteEvent me = (MuteEvent) selection;
+                    
+                    cl.show(this.controlPanel, "mute");
+                    
+                    this.mutePanel.setEvent(me);
+                }
+            }
+        }
     }
     
     

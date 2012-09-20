@@ -1,15 +1,11 @@
 package jcue.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -58,6 +54,7 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
             StartMode.AFTER_END,
             StartMode.HOTKEY
         };
+        
         this.startModeSelect = new JComboBox(modes);
         this.startModeSelect.addActionListener(this);
 

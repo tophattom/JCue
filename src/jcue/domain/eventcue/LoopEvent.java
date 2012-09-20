@@ -6,6 +6,10 @@ package jcue.domain.eventcue;
  */
 public class LoopEvent extends AbstractEvent {
 
+    public LoopEvent() {
+        super(AbstractEvent.TYPE_LOOP);
+    }
+    
     @Override
     public void perform() {
         throw new UnsupportedOperationException("Looping not implemented");

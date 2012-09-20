@@ -11,10 +11,14 @@ public class TransportEvent extends AbstractEvent {
     public static final int PAUSE = 2;
     public static final int START = 3;
     
-    private int type;
+    public static final int MODE_COUNT = 3;
+    
+    private int mode;
 
-    public TransportEvent(int type) {
-        this.type = type;
+    public TransportEvent(int mode) {
+        super(AbstractEvent.TYPE_TRANSPORT);
+        
+        this.mode = mode;
     }
 
     public TransportEvent() {
@@ -22,16 +26,16 @@ public class TransportEvent extends AbstractEvent {
     }
 
     public void setType(int type) {
-        this.type = type;
+        this.mode = type;
     }
 
     @Override
     public void perform() {
-        if (this.type == STOP) {
+        if (this.mode == STOP) {
             super.targetCue.stop();
-        } else if (this.type == PAUSE) {
+        } else if (this.mode == PAUSE) {
             super.targetCue.pause();
-        } else if (this.type == START) {
+        } else if (this.mode == START) {
             super.targetCue.start(true);
         }
     }
@@ -39,5 +43,17 @@ public class TransportEvent extends AbstractEvent {
     @Override
     public String toString() {
         return "Transport event";
+    }
+    
+    public static String getModeString(int mode) {
+        if (mode == STOP) {
+            return "Stop";
+        } else if (mode == PAUSE) {
+            return "Pause";
+        } else if (mode == START) {
+            return "Start";
+        } else {
+            return "Unknown mode";
+        }
     }
 }

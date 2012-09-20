@@ -9,11 +9,13 @@ public class EffectEvent extends AbstractEvent {
     public static final int EFFECT_ON = 1;
     public static final int EFFECT_OFF = 2;
     
-    private int type;
+    private int mode;
     //private SoundEffect targetEffect;
 
-    public EffectEvent(int type) {
-        this.type = type;
+    public EffectEvent(int mode) {
+        super(AbstractEvent.TYPE_EFFECT);
+        
+        this.mode = mode;
     }
 
     public EffectEvent() {
@@ -22,7 +24,7 @@ public class EffectEvent extends AbstractEvent {
 
     @Override
     public void perform() {
-        if (this.type == EFFECT_ON) {
+        if (this.mode == EFFECT_ON) {
             //this.targetEffect.setActive(true);
         } else {
             //this.targetEffect.setActive(false);

@@ -13,10 +13,14 @@ public class MuteEvent extends AbstractEvent {
     public static final int UNMUTE = 2;
     public static final int TOGGLE_MUTE = 3;
     
-    private int type;
+    public static final int MODE_COUNT = 3;
+    
+    private int mode;
 
-    public MuteEvent(int type) {
-        this.type = type;
+    public MuteEvent(int mode) {
+        super(AbstractEvent.TYPE_MUTE);
+        
+        this.mode = mode;
     }
 
     public MuteEvent() {
@@ -24,16 +28,16 @@ public class MuteEvent extends AbstractEvent {
     }
 
     public void setType(int type) {
-        this.type = type;
+        this.mode = type;
     }
 
     @Override
     public void perform() {
-        if (this.type == MUTE) {
+        if (this.mode == MUTE) {
             super.targetCue.getAudio().muteOutput(super.targetOutput);
-        } else if (this.type == UNMUTE) {
+        } else if (this.mode == UNMUTE) {
             super.targetCue.getAudio().unmuteOutput(super.targetOutput);
-        } else if (this.type == TOGGLE_MUTE) {
+        } else if (this.mode == TOGGLE_MUTE) {
             AudioStream audio = super.targetCue.getAudio();
 
             if (audio.isMuted(super.targetOutput)) {
@@ -47,5 +51,17 @@ public class MuteEvent extends AbstractEvent {
     @Override
     public String toString() {
         return "Mute event";
+    }
+    
+    public static String getModeString(int mode) {
+        if (mode == MUTE) {
+            return "Mute";
+        } else if (mode == UNMUTE) {
+            return "Unmute";
+        } else if (mode == TOGGLE_MUTE) {
+            return "Toggle state";
+        } else {
+            return "Unknown mode";
+        }
     }
 }

@@ -10,9 +10,20 @@ import jcue.domain.audiocue.AudioCue;
  */
 public abstract class AbstractEvent {
     
+    public static final int TYPE_TRANSPORT = 1;
+    public static final int TYPE_MUTE = 2;
+    public static final int TYPE_LOOP = 3;
+    public static final int TYPE_EFFECT = 4;
+    
     protected AudioCue targetCue;
     protected SoundDevice targetOutput;
+    
+    private int type;
 
+    public AbstractEvent(int type) {
+        this.type = type;
+    }
+    
     public void setTargetCue(AudioCue targetCue) {
         this.targetCue = targetCue;
     }
