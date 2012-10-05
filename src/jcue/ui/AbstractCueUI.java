@@ -79,20 +79,20 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
     }
 
     private void addComponents() {
-        this.add(this.nameLabel);
+        this.add(this.nameLabel, "align label");
         this.add(this.nameField, "span 4, growx, wrap");
         
-        this.add(this.descLabel);
+        this.add(this.descLabel, "align label");
         this.add(this.descField, "span 4, growx, wrap");
         
-        this.add(this.startModeLabel);
+        this.add(this.startModeLabel, "align label");
         this.add(this.startModeSelect);
         
-        this.add(this.cueLabel);
+        this.add(this.cueLabel, "align label");
         
         this.add(this.cueSelect, "span 2, growx, wmin 200");
         
-        this.add(this.delayLabel);
+        this.add(this.delayLabel, "align label");
         this.add(this.delayField, "wrap");
     }
     
