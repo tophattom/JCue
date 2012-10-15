@@ -16,7 +16,6 @@ public abstract class AbstractEvent {
     public static final int TYPE_EFFECT = 4;
     
     protected AudioCue targetCue;
-    protected SoundDevice targetOutput;
     
     private int type;
 
@@ -28,18 +27,9 @@ public abstract class AbstractEvent {
         this.targetCue = targetCue;
     }
 
-    public void setTargetOutput(SoundDevice targetOutput) {
-        this.targetOutput = targetOutput;
-    }
-
     public AudioCue getTargetCue() {
         return targetCue;
     }
 
-    public SoundDevice getTargetOutput() {
-        return targetOutput;
-    }
-
-    
     public abstract void perform();
 }

@@ -25,7 +25,7 @@ public class AbstractEventPanel extends JPanel implements ActionListener {
     private AbstractEvent event;
     
     private JLabel targetCueLabel;
-    private JComboBox targetCueSelect;
+    protected JComboBox targetCueSelect;
     
 
     public AbstractEventPanel(EventCue cue) {

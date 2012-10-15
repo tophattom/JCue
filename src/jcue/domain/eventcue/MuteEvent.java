@@ -1,5 +1,6 @@
 package jcue.domain.eventcue;
 
+import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.AudioStream;
 
 /**
@@ -15,6 +16,7 @@ public class MuteEvent extends AbstractEvent {
     
     public static final int MODE_COUNT = 3;
     
+    private SoundDevice targetOutput;
     private int mode;
 
     public MuteEvent(int mode) {
@@ -27,23 +29,35 @@ public class MuteEvent extends AbstractEvent {
         this(MUTE);
     }
 
-    public void setType(int type) {
-        this.mode = type;
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setTargetOutput(SoundDevice targetOutput) {
+        this.targetOutput = targetOutput;
+    }
+
+    public SoundDevice getTargetOutput() {
+        return targetOutput;
     }
 
     @Override
     public void perform() {
         if (this.mode == MUTE) {
-            super.targetCue.getAudio().muteOutput(super.targetOutput);
+            super.targetCue.getAudio().muteOutput(this.targetOutput);
         } else if (this.mode == UNMUTE) {
-            super.targetCue.getAudio().unmuteOutput(super.targetOutput);
+            super.targetCue.getAudio().unmuteOutput(this.targetOutput);
         } else if (this.mode == TOGGLE_MUTE) {
             AudioStream audio = super.targetCue.getAudio();
 
-            if (audio.isMuted(super.targetOutput)) {
-                audio.unmuteOutput(super.targetOutput);
+            if (audio.isMuted(this.targetOutput)) {
+                audio.unmuteOutput(this.targetOutput);
             } else {
-                audio.muteOutput(super.targetOutput);
+                audio.muteOutput(this.targetOutput);
             }
         }
     }

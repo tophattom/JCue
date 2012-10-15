@@ -25,10 +25,6 @@ public class TransportEvent extends AbstractEvent {
         this(STOP);
     }
 
-    public void setType(int type) {
-        this.mode = type;
-    }
-
     public int getMode() {
         return mode;
     }
