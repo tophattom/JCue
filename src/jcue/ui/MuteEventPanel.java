@@ -5,7 +5,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
-import jcue.domain.eventcue.AbstractEvent;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.eventcue.MuteEvent;
 
@@ -51,6 +50,8 @@ public class MuteEventPanel extends AbstractEventPanel {
     }
 
     public void setEvent(MuteEvent event) {
+        super.setEvent(event);
+        
         this.event = event;
     }
     

@@ -1,12 +1,17 @@
 package jcue.ui;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
+import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import jcue.domain.AbstractCue;
+import jcue.domain.CueList;
+import jcue.domain.CueType;
+import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.AbstractEvent;
 import jcue.domain.eventcue.EventCue;
 import net.miginfocom.swing.MigLayout;
@@ -17,21 +22,18 @@ import net.miginfocom.swing.MigLayout;
  */
 public class AbstractEventPanel extends JPanel implements ActionListener {
     
-    private EventCue cue;
+    private AbstractEvent event;
     
     private JLabel targetCueLabel;
     private JComboBox targetCueSelect;
     
-    
-    private static final ImageIcon removeIcon = new ImageIcon("images/remove_small.png");
 
     public AbstractEventPanel(EventCue cue) {
         super(new MigLayout("fillx, insets panel"));
         
-        this.cue = cue;
-        
         this.targetCueLabel = new JLabel("Target cue:");
         this.targetCueSelect = new JComboBox();
+        this.targetCueSelect.addActionListener(this);
         
         addComponents();
     }
@@ -40,17 +42,36 @@ public class AbstractEventPanel extends JPanel implements ActionListener {
         this.add(this.targetCueLabel, "split 2");
         this.add(this.targetCueSelect, "wmin 200, span, wrap");
     }
+    
+    public void setEvent(AbstractEvent event) {
+        this.event = event;
+        
+        update();
+    }
+    
+    protected void update() {
+        ArrayList<AbstractCue> cues = CueList.getInstance().getCues(CueType.AUDIO);
+        AbstractCue[] tmpArray = new AbstractCue[cues.size()];
+        AbstractCue[] cueArray = cues.toArray(tmpArray);
 
-    public void setCue(EventCue cue) {
-        this.cue = cue;
+        ComboBoxModel cbm = new DefaultComboBoxModel(cueArray);
+        this.targetCueSelect.setModel(cbm);
+        
+        if (this.event != null) {
+            this.targetCueSelect.setSelectedItem(this.event.getTargetCue());
+        }
     }
     
     @Override
     public void actionPerformed(ActionEvent ae) {
         Object source = ae.getSource();
         
-        
+        if (source == this.targetCueSelect) {
+            JComboBox cb = (JComboBox) source;
+            
+            if (this.event != null) {
+                this.event.setTargetCue((AudioCue) cb.getSelectedItem());
+            }
+        }
     }
-    
-    
 }

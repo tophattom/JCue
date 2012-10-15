@@ -95,7 +95,29 @@ public class CueList extends AbstractTableModel implements ListModel {
         return cues;
     }
 
+    public ArrayList<AbstractCue> getCues(AbstractCue exclude) {
+        ArrayList<AbstractCue> result = new ArrayList<AbstractCue>();
+        
+        for (AbstractCue ac : this.cues) {
+            if (ac != exclude) {
+                result.add(ac);
+            }
+        }
+        
+        return result;
+    }
     
+    public ArrayList<AbstractCue> getCues(CueType type) {
+        ArrayList<AbstractCue> result = new ArrayList<AbstractCue>();
+        
+        for (AbstractCue ac : this.cues) {
+            if (ac.getType() == type) {
+                result.add(ac);
+            }
+        }
+        
+        return result;
+    }
     
     //<editor-fold defaultstate="collapsed" desc="Model stuff">
     @Override

@@ -29,6 +29,14 @@ public class TransportEvent extends AbstractEvent {
         this.mode = type;
     }
 
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
+    
     @Override
     public void perform() {
         if (this.mode == STOP) {

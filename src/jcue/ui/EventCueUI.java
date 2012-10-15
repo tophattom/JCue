@@ -109,6 +109,12 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
         
         this.cue = (EventCue) cue;
         
+        this.transportPanel.setEvent(null);
+        this.mutePanel.setEvent(null);
+        
+        CardLayout cl = (CardLayout) this.controlPanel.getLayout();
+        cl.show(this.controlPanel, "empty");
+        
         this.update();
     }
 
