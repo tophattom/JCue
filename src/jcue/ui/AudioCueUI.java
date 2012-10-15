@@ -180,21 +180,21 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     }
 
     private void addComponents() {
-        this.add(this.fileLabel);
+        this.add(this.fileLabel, "align label");
         this.add(this.fileField, "span 4, growx, split 2");
         this.add(this.fileButton, "wrap");
         
-        this.add(this.lengthLabel);
+        this.add(this.lengthLabel, "align label");
         this.add(this.lengthField, "wrap");
         
-        this.add(this.inLabel);
+        this.add(this.inLabel, "align label");
         this.add(this.inField);
-        this.add(this.fadeInLabel);
+        this.add(this.fadeInLabel, "align label");
         this.add(this.fadeInField, "wrap");
         
-        this.add(this.outLabel);
+        this.add(this.outLabel, "align label");
         this.add(this.outField);
-        this.add(this.fadeOutLabel);
+        this.add(this.fadeOutLabel, "align label");
         this.add(this.fadeOutField, "wrap");
         
         this.add(this.waveform, "span, grow,  wrap");
@@ -209,13 +209,13 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         this.add(transportPanel, "span 3, wrap");
         
-        this.add(this.volumeLabel);
+        this.add(this.volumeLabel, "align label");
         this.add(this.volumeSlider, "span 3, growx");
         this.add(this.volumeField, "wrap");
         
         this.add(this.devicesPanel, "growx, span, wrap");
         
-        this.add(this.deviceLabel);
+        this.add(this.deviceLabel, "align label");
         
         this.add(this.deviceSelect, "span, split 2");
         this.add(this.addDeviceButton, "wrap");
