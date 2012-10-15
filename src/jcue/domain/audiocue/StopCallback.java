@@ -1,7 +1,6 @@
 package jcue.domain.audiocue;
 
 import jcue.domain.AbstractCue;
-import jouvieje.bass.Bass;
 import jouvieje.bass.callbacks.SYNCPROC;
 import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.Pointer;

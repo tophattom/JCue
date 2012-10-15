@@ -2,13 +2,11 @@ package jcue.domain.audiocue;
 
 import java.io.File;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
 import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.domain.SoundDevice;
-import jcue.ui.AudioCueUI;
 
 /**
  * 

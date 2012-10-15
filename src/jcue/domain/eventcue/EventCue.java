@@ -1,7 +1,6 @@
 package jcue.domain.eventcue;
 
 import java.util.ArrayList;
-import javax.swing.JPanel;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueType;
 import jcue.ui.EventCueUI;

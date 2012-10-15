@@ -1,7 +1,6 @@
 package jcue.domain;
 
 import java.util.LinkedHashSet;
-import javax.swing.JPanel;
 import jcue.ui.AbstractCueUI;
 
 /**
