@@ -41,7 +41,7 @@ public class EventCue extends AbstractCue {
     public void start(boolean delay) {
         super.start(delay);
         
-        if (!delay) {
+        if (!delay || super.getStartDelay() == 0) {
             for (AbstractEvent ae : this.events) {
                 ae.perform();
             }
