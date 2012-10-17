@@ -23,9 +23,7 @@ public class ParameterEnvelope implements Runnable {
     public ParameterEnvelope() {
         this.curves = new ArrayList<QuadCurve2D>();
         
-//        this.curves.add(new QuadCurve2D.Double(0, 0.5, 0.25, 0.5, 0.5, 0.5));
-//        this.curves.add(new QuadCurve2D.Double(0.5, 0.5, 0.6, 0.5, 0.75, 0.5));
-//        this.curves.add(new QuadCurve2D.Double(0.75, 0.5, 0.9, 0.5, 1, 0.5));
+        this.curves.add(new QuadCurve2D.Double(0, 0.5, 0.5, 0.5, 1, 0.5));
     }
     
     
@@ -88,13 +86,51 @@ public class ParameterEnvelope implements Runnable {
         }
     }
     
+    public void addPoint(double x, double y) {
+        QuadCurve2D curveAtX = getCurveAtX(x);
+        int index = this.curves.indexOf(curveAtX);
+
+        QuadCurve2D newCurve = new QuadCurve2D.Double();
+        
+        double cX = curveAtX.getCtrlX();
+        double cY = curveAtX.getCtrlY();
+        
+        if (cX > x) {
+            cX = x;
+        }
+
+        curveAtX.setCurve(curveAtX.getP1(), new Point2D.Double(cX, cY), new Point2D.Double(x, y));
+
+        double newCX, newCY, newX2, newY2;
+
+        if (this.curves.size() > 1) {
+            if (index == this.curves.size() - 1) {
+                newX2 = 1;
+                newY2 = 0.5;
+            } else {
+                QuadCurve2D nextCurve = this.curves.get(index + 1);
+
+                newX2 = nextCurve.getX1();
+                newY2 = nextCurve.getY1();
+            }
+        } else {
+            newX2 = 1;
+            newY2 = 0.5;
+        }
+
+        newCX = x + (newX2 - x) / 2;
+        newCY = y + (newY2 - y) / 2;
+
+        newCurve.setCurve(x, y, newCX, newCY, newX2, newY2);
+
+        this.curves.add(index + 1, newCurve);
+
+    }
     
     
     private QuadCurve2D getCurveAtX(double x) {
         for (QuadCurve2D c : this.curves) {
-            Rectangle bounds = c.getBounds();
-            
-            if (x >= bounds.x && x <= (bounds.x + bounds.width)) {
+            if (x >= c.getX1() && x <= c.getX2()) {
                 return c;
             }
         }

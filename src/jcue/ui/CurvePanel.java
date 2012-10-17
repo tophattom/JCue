@@ -172,6 +172,12 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
                 break;
             }
         }
+        
+        if (!this.dragging) {
+            this.envelope.addPoint((double) mX / this.getWidth(), (double) mY / this.getHeight());
+            
+            this.repaint();
+        }
     }
 
     @Override
