@@ -161,11 +161,13 @@ public class AudioStream {
      * @param pos New position in seconds
      */
     public void setPosition(double pos) {
-        long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.masterStream.asInt(), pos);
-        Bass.BASS_ChannelSetPosition(this.masterStream.asInt(), bytePos, BASS_POS.BASS_POS_BYTE);
-        
-        for (VirtualOutput vo : this.outputs.values()) {
-            vo.setPosition(pos);
+        if (this.masterStream != null) {
+            long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.masterStream.asInt(), pos);
+            Bass.BASS_ChannelSetPosition(this.masterStream.asInt(), bytePos, BASS_POS.BASS_POS_BYTE);
+
+            for (VirtualOutput vo : this.outputs.values()) {
+                vo.setPosition(pos);
+            }
         }
     }
 
@@ -181,25 +183,6 @@ public class AudioStream {
         }
 
         return -1;
-    }
-
-    //TODO: change to work with multi-device shit
-    public void startVolumeChange(double newVolume, double duration) {
-        if (this.stream != null) {
-            Bass.BASS_ChannelSlideAttribute(this.stream.asInt(),
-                    BASS_ATTRIB.BASS_ATTRIB_VOL,
-                    (float) newVolume,
-                    (int) (duration * 1000));
-        }
-    }
-
-    public void startPanChange(double newPan, double duration) {
-        if (this.stream != null) {
-            Bass.BASS_ChannelSlideAttribute(this.stream.asInt(),
-                    BASS_ATTRIB.BASS_ATTRIB_PAN,
-                    (float) newPan,
-                    (int) (duration * 1000));
-        }
     }
 
     /**

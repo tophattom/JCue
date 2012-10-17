@@ -15,6 +15,8 @@ public abstract class AbstractCue {
     private String name, description;
     private StartMode startMode;
     
+    protected CueState state;
+    
     private double startDelay;
     private long startTime;
     
@@ -30,6 +32,8 @@ public abstract class AbstractCue {
         this.description = description;
         this.type = type;
         this.startMode = StartMode.MANUAL;
+        
+        this.state = CueState.STOPPED;
         
         this.parentCue = null;
         this.childCues = new LinkedHashSet<AbstractCue>();
@@ -112,8 +116,15 @@ public abstract class AbstractCue {
             this.childCues.remove(cue);
         }
     }
-    
 
+    public CueState getState() {
+        return state;
+    }
+
+    public void setState(CueState state) {
+        this.state = state;
+    }
+    
     @Override
     public String toString() {
         return this.name + " " + this.description + " (" + this.type + ")";
@@ -122,12 +133,15 @@ public abstract class AbstractCue {
     public void start(boolean delay) {
         if (delay && this.startDelay > 0) {
             new CueDelayHandler(System.nanoTime(), startDelay, this);
+            this.state = CueState.WAITING;
         } else {
             for (AbstractCue child : this.childCues) {
                 if (child.getStartMode() == StartMode.AFTER_START) {
                     child.start(true);
                 }
             }
+            
+            this.state = CueState.PLAYING;
         }
     }
 
@@ -139,5 +153,7 @@ public abstract class AbstractCue {
                 child.start(true);
             }
         }
+        
+        this.state = CueState.STOPPED;
     }
 }

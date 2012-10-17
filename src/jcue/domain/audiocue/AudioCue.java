@@ -18,7 +18,7 @@ public class AudioCue extends AbstractCue {
     private AudioStream audio;
     private double inPos, outPos;
     private double fadeIn, fadeOut;
-    private CueState state;
+    
     private double volume, pan;
     
     private ArrayList<SoundDevice> outputs;
@@ -69,21 +69,13 @@ public class AudioCue extends AbstractCue {
         
         if (!delay || super.getStartDelay() == 0) {
             if (this.audio != null) {
-                //TODO: uncomment when multi-device shit works
                 //Set audio position to start if the cue is not paused
                 if (this.state == CueState.STOPPED) {
                     this.audio.setPosition(this.inPos);
                     this.audio.setMasterVolume(this.volume);
                 }
-    //            
-    //            //Fade in, if there is fade in time specified
-    //            if (this.fadeIn != 0) {
-    //                this.audio.setVolume(0);    //Start fading from silent
-    //                this.audio.startVolumeChange(this.volume, this.fadeIn);
-    //            }
-
+                
                 this.audio.play();              //Start playing the audio
-                this.state = CueState.PLAYING;  //Set state to playing
             }
         }
     }
@@ -93,7 +85,7 @@ public class AudioCue extends AbstractCue {
         if (this.audio != null) {
             //TODO: pause fades when pausing audio
             this.audio.pause();
-            this.state = CueState.PAUSED;
+            super.state = CueState.PAUSED;
         }
     }
 
@@ -104,7 +96,6 @@ public class AudioCue extends AbstractCue {
         if (this.audio != null) {
             this.audio.stop();
             this.audio.setPosition(this.inPos);
-            this.state = CueState.STOPPED;
         }
     }
 
@@ -135,10 +126,6 @@ public class AudioCue extends AbstractCue {
     
     public double getDeviceVolume(SoundDevice sd) {
         return this.audio.getDeviceVolume(sd);
-    }
-
-    public CueState getState() {
-        return state;
     }
 
     public AudioStream getAudio() {

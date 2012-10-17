@@ -2,6 +2,7 @@ package jcue.domain.eventcue;
 
 import java.util.ArrayList;
 import jcue.domain.AbstractCue;
+import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.ui.EventCueUI;
 
@@ -47,6 +48,8 @@ public class EventCue extends AbstractCue {
             
             super.stop();
         }
+        
+        super.state = CueState.DONE;
     }
 
     @Override

@@ -1,6 +1,11 @@
 package jcue.domain;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -10,7 +15,8 @@ public class CuePlayer implements Runnable {
 
     private CueList cues;
     
-    private LinkedList<AbstractCue> playingList;
+    private HashMap<AbstractCue, CueState> activeCues;
+    private LinkedList<AbstractCue> activeList;
     
     private AbstractCue currentCue;
     
@@ -18,7 +24,8 @@ public class CuePlayer implements Runnable {
     private Thread updater;
 
     public CuePlayer(CueList cues) {
-        this.playingList = new LinkedList<AbstractCue>();
+        this.activeList = new LinkedList<AbstractCue>();
+        this.activeCues = new HashMap<AbstractCue, CueState>();
 
         this.running = false;
         this.cues = cues;
@@ -41,7 +48,8 @@ public class CuePlayer implements Runnable {
 
     public void startNext() {
         this.currentCue.start(true);
-        this.playingList.add(currentCue);
+        this.activeList.add(currentCue);
+        this.activeCues.put(currentCue, currentCue.getState());
 
         this.currentCue = getNextManualCue();
     }
@@ -57,10 +65,25 @@ public class CuePlayer implements Runnable {
     @Override
     public void run() {
         while (running) {
+            Iterator<Entry<AbstractCue, CueState>> iterator = this.activeCues.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Entry<AbstractCue, CueState> entry = iterator.next();
+                AbstractCue ac = entry.getKey();
+                CueState oldState = entry.getValue();
+                
+                CueState newState = ac.getState();
+                if (newState != oldState) {
+                    this.cues.fireTableCellUpdated(this.cues.getCueIndex(ac), 3);
+                    
+                    if (newState == CueState.STOPPED || newState == CueState.DONE) {
+                        iterator.remove();
+                    }
+                }
+            }
 
             //Sleep a bit
             try {
-                Thread.sleep(1);
+                Thread.sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
             }
