@@ -44,7 +44,7 @@ public class EditorListener implements ActionListener, ListSelectionListener {
             
             this.list.setSelectedIndex(this.cueList.getSize() - 1);
         } else if (command.equals("change")) {
-            this.cueList.addCue(CueType.CHANGE);
+            this.cueList.addCue(CueType.FADE);
             
             this.list.setSelectedIndex(this.cueList.getSize() - 1);
         } else if (command.equals("note")) {

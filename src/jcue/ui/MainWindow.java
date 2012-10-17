@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
+import jcue.domain.fadecue.ParameterEnvelope;
 import jcue.ui.event.MainWindowListener;
 import net.miginfocom.swing.MigLayout;
 

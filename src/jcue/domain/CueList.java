@@ -54,7 +54,7 @@ public class CueList extends AbstractTableModel implements ListModel {
             cue = new AudioCue("Q" + counter, "", this.dm.getAutoIncludeDevices());
         } else if (cueType == CueType.EVENT) {
             cue = new EventCue("Q" + counter, "");
-        } else if (cueType == CueType.CHANGE) {
+        } else if (cueType == CueType.FADE) {
         } else if (cueType == CueType.NOTE) {
         }
 

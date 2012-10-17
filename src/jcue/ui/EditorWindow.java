@@ -78,7 +78,7 @@ public class EditorWindow extends JFrame {
         this.eventButton.setMargin(new Insets(10, 10, 10, 10));
         this.eventButton.setActionCommand("event");
         
-        this.changeButton = new JButton("Level change cue");
+        this.changeButton = new JButton("Fade cue");
         this.changeButton.setMargin(new Insets(10, 10, 10, 10));
         this.changeButton.setActionCommand("change");
         //*************

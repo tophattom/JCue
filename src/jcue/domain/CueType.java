@@ -8,7 +8,7 @@ public enum CueType {
 
     AUDIO("Audio"),
     EVENT("Event"),
-    CHANGE("Change"),
+    FADE("Fade"),
     NOTE("Note");
     
     private String displayName;
