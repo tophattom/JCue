@@ -32,15 +32,15 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
     private static final int pointRadius = 6;
     private static final int ctrlRadius = 6;
     
-    private static final int DRAG_P1 = 1;
-    private static final int DRAG_P2 = 2;
-    private static final int DRAG_CTRL = 3;
+    public static final int POINT_P1 = 1;
+    public static final int POINT_P2 = 2;
+    public static final int POINT_CTRL = 3;
     
     private ParameterEnvelope envelope;
     
     private boolean dragging;
-    private QuadCurve2D draggedCurve;
-    private int draggedPoint;
+    private QuadCurve2D selectedCurve;
+    private int selectedPoint;
     
     private int cursorX;
 
@@ -148,42 +148,42 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
         this.cursorX =  me.getX();
         
         if (this.dragging) {
-            double x1 = this.draggedCurve.getX1();
-            double y1 = this.draggedCurve.getY1();
-            double x2 = this.draggedCurve.getX2();
-            double y2 = this.draggedCurve.getY2();
-            double cX = this.draggedCurve.getCtrlX();
-            double cY = this.draggedCurve.getCtrlY();
+            double x1 = this.selectedCurve.getX1();
+            double y1 = this.selectedCurve.getY1();
+            double x2 = this.selectedCurve.getX2();
+            double y2 = this.selectedCurve.getY2();
+            double cX = this.selectedCurve.getCtrlX();
+            double cY = this.selectedCurve.getCtrlY();
             
             double newX = (double) mX / this.getWidth();
             double newY = (double) mY / this.getHeight();
             
             boolean alt = me.isAltDown();
             
-            if (this.draggedPoint == DRAG_P1) {
+            if (this.selectedPoint == POINT_P1) {
                 if (me.isShiftDown()) {
                     newX = x1;
                 } else if (me.isControlDown()) {
                     newY = y1;
                 }
                 
-                this.envelope.setCurve(draggedCurve, newX, newY, cX, cY, x2, y2, alt);
-            } else if (this.draggedPoint == DRAG_P2) {
+                this.envelope.setCurve(selectedCurve, newX, newY, cX, cY, x2, y2, alt);
+            } else if (this.selectedPoint == POINT_P2) {
                 if (me.isShiftDown()) {
                     newX = x2;
                 } else if (me.isControlDown()) {
                     newY = y2;
                 }
                 
-                this.envelope.setCurve(draggedCurve, x1, y1, cX, cY, newX, newY, alt);
-            } else if (this.draggedPoint == DRAG_CTRL) {
+                this.envelope.setCurve(selectedCurve, x1, y1, cX, cY, newX, newY, alt);
+            } else if (this.selectedPoint == POINT_CTRL) {
                 if (me.isShiftDown()) {
                     newX = cX;
                 } else if (me.isControlDown()) {
                     newY = cY;
                 }
                 
-                this.envelope.setCurve(draggedCurve, x1, y1, newX, newY, x2, y2, false);
+                this.envelope.setCurve(selectedCurve, x1, y1, newX, newY, x2, y2, false);
             }
             
             this.repaint();
@@ -209,32 +209,47 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
         for (QuadCurve2D c : this.envelope.getCurves()) {
             QuadCurve2D tmpCurve = getRealCurve(c);
             
-            boolean drag1 = (Point.distance(mX, mY, tmpCurve.getX1(), tmpCurve.getY1()) <= pointRadius);
-            boolean drag2 = (Point.distance(mX, mY, tmpCurve.getX2(), tmpCurve.getY2()) <= pointRadius);
-            boolean drag3 = (Point.distance(mX, mY, tmpCurve.getCtrlX(), tmpCurve.getCtrlY()) <= ctrlRadius);
+            boolean hit1 = (Point.distance(mX, mY, tmpCurve.getX1(), tmpCurve.getY1()) <= pointRadius);
+            boolean hit2 = (Point.distance(mX, mY, tmpCurve.getX2(), tmpCurve.getY2()) <= pointRadius);
+            boolean hit3 = (Point.distance(mX, mY, tmpCurve.getCtrlX(), tmpCurve.getCtrlY()) <= ctrlRadius);
             
-            if (drag1) {
-                this.dragging = true;
-                this.draggedCurve = c;
-                this.draggedPoint = DRAG_P1;
+            if (hit1) {
+                if (me.getButton() == MouseEvent.BUTTON1) {
+                    this.dragging = true;
+                    this.selectedCurve = c;
+                    this.selectedPoint = POINT_P1;
+                } else if (me.getButton() == MouseEvent.BUTTON3) {
+                    this.envelope.deletePoint(c, POINT_P1);
+                    this.repaint();
+                }
                 
                 break;
-            } else if (drag2) {
-                this.dragging = true;
-                this.draggedCurve = c;
-                this.draggedPoint = DRAG_P2;
+            } else if (hit2) {
+                if (me.getButton() == MouseEvent.BUTTON1) {
+                    this.dragging = true;
+                    this.selectedCurve = c;
+                    this.selectedPoint = POINT_P2;
+                } else if (me.getButton() == MouseEvent.BUTTON3) {
+                    this.envelope.deletePoint(c, POINT_P2);
+                    this.repaint();
+                }
                 
                 break;
-            } else if (drag3) {
-                this.dragging = true;
-                this.draggedCurve = c;
-                this.draggedPoint = DRAG_CTRL;
+            } else if (hit3) {
+                if (me.getButton() == MouseEvent.BUTTON1) {
+                    this.dragging = true;
+                    this.selectedCurve = c;
+                    this.selectedPoint = POINT_CTRL;
+                } else if (me.getButton() == MouseEvent.BUTTON3) {
+                    this.envelope.deletePoint(c, POINT_CTRL);
+                    this.repaint();
+                }
                 
                 break;
             }
         }
         
-        if (!this.dragging) {
+        if (!this.dragging && (me.getButton() == MouseEvent.BUTTON1)) {
             this.envelope.addPoint((double) mX / this.getWidth(), (double) mY / this.getHeight());
             
             this.repaint();
@@ -244,8 +259,8 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
     @Override
     public void mouseReleased(MouseEvent me) {
         this.dragging = false;
-        this.draggedCurve = null;
-        this.draggedPoint = 0;
+        this.selectedCurve = null;
+        this.selectedPoint = 0;
     }
 
     @Override

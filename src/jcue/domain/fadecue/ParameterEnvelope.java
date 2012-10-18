@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
+import jcue.ui.CurvePanel;
 
 /**
  *
@@ -238,8 +239,37 @@ public class ParameterEnvelope implements Runnable {
 
     }
     
-    public void deletePoint() {
+    public void deletePoint(QuadCurve2D c, int point) {
+        if (!this.curves.contains(c)) {
+            return;
+        }
         
+        if (point == CurvePanel.POINT_CTRL) {
+            double newCX = (c.getX2() + c.getX1()) / 2;
+            double newCY = (c.getY2() + c.getY1()) / 2;
+            
+            c.setCurve(c.getP1(), new Point2D.Double(newCX, newCY), c.getP2());
+        }
+        
+        if (this.curves.size() > 1) {
+            int index = this.curves.indexOf(c);
+            
+            if (point == CurvePanel.POINT_P1) {
+                if (index > 0) {
+                    QuadCurve2D prev = this.curves.get(index - 1);
+                    
+                    prev.setCurve(prev.getP1(), prev.getCtrlPt(), new Point2D.Double(c.getX2(), c.getY2()));
+                    
+                    this.curves.remove(c);
+                }
+            } else if (point == CurvePanel.POINT_P2) {
+                if (index < this.curves.size() - 1) {
+                    QuadCurve2D next = this.curves.get(index + 1);
+                    
+                    deletePoint(next, CurvePanel.POINT_P1);
+                }
+            }
+        }
     }
     
     private QuadCurve2D getCurveAtX(double x) {
