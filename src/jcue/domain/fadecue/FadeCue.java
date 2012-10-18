@@ -10,8 +10,6 @@ import jcue.domain.CueType;
 public class FadeCue extends AbstractCue {
     
     private ParameterEnvelope envelope;
-    
-    private AbstractCue targetCue;
 
     public FadeCue(String name, String description) {
         super(name, description, CueType.FADE);

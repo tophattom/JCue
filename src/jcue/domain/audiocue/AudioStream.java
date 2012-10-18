@@ -133,6 +133,7 @@ public class AudioStream {
         //If stream loaded start it. Links automatically handle starting other
         //outputs.
         if (this.masterStream != null) {
+            this.setMasterVolumePercent(100);
             Bass.BASS_ChannelPlay(this.masterStream.asInt(), false);
         }
     }
@@ -286,6 +287,12 @@ public class AudioStream {
             this.outputs.get(sd).setVolume(deviceVolume, this.volume);
         }
     }
+    
+    public void setDeviceVolumePercent(double pc, SoundDevice sd) {
+        if (this.outputs.containsKey(sd)) {
+            this.outputs.get(sd).updateVolume(this.volume * pc);
+        }
+    }
 
     /**
      * Sets the master volume for this audio.
@@ -297,6 +304,12 @@ public class AudioStream {
 
         for (VirtualOutput vo : this.outputs.values()) {
             vo.updateVolume(volume);
+        }
+    }
+    
+    public void setMasterVolumePercent(double pc) {
+        for (VirtualOutput vo : this.outputs.values()) {
+            vo.updateVolume(volume * pc);
         }
     }
     

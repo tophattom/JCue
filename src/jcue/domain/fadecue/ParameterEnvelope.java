@@ -3,6 +3,7 @@ package jcue.domain.fadecue;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
+import jcue.domain.audiocue.AudioCue;
 import jcue.ui.CurvePanel;
 
 /**
@@ -15,10 +16,11 @@ public class ParameterEnvelope implements Runnable {
     private boolean running;
     
     private ArrayList<QuadCurve2D> curves;
-    private QuadCurve2D currentCurve;
     
     private long startTime;
     private double duration;
+    
+    private AudioCue targetCue;
 
     public ParameterEnvelope() {
         this.curves = new ArrayList<QuadCurve2D>();
@@ -35,11 +37,11 @@ public class ParameterEnvelope implements Runnable {
         this.updater.start();
         
         this.startTime = System.nanoTime();
-        this.currentCurve = this.curves.get(0);
     }
     
     public void stop() {
         this.running = false;
+        this.updater = null;
     }
     
     @Override
@@ -49,11 +51,17 @@ public class ParameterEnvelope implements Runnable {
             long lDuration = (long) (this.duration * 1000000000);
             double position = ((double) elapsedTime / lDuration);
             
+            if (elapsedTime > lDuration) {
+                this.stop();
+                break;
+            }
+            
             QuadCurve2D curveAtX = getCurveAtX(position);
             if (curveAtX != null) {
                 double t = findTforX(curveAtX, position);
                 double value = getCurveY(curveAtX, t);
                 
+                this.targetCue.getAudio().setMasterVolumePercent(1.0 - value);
             }
             
             try {
@@ -274,6 +282,16 @@ public class ParameterEnvelope implements Runnable {
             }
         }
     }
+
+    public void setTargetCue(AudioCue targetCue) {
+        this.targetCue = targetCue;
+    }
+
+    public AudioCue getTargetCue() {
+        return targetCue;
+    }
+    
+    
     
     private QuadCurve2D getCurveAtX(double x) {
         for (QuadCurve2D c : this.curves) {
