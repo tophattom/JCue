@@ -15,6 +15,8 @@ public class FadeCue extends AbstractCue {
 
     public FadeCue(String name, String description) {
         super(name, description, CueType.FADE);
+        
+        this.envelope = new ParameterEnvelope();
     }
 
     
@@ -36,5 +38,17 @@ public class FadeCue extends AbstractCue {
         super.stop();
         
         this.envelope.stop();
+    }
+
+    public ParameterEnvelope getEnvelope() {
+        return envelope;
+    }
+    
+    public double getDuration() {
+        return this.envelope.getDuration();
+    }
+    
+    public void setDuration(double duration) {
+        this.envelope.setDuration(duration);
     }
 }

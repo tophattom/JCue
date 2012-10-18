@@ -46,7 +46,7 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
 
     public CurvePanel() {
         super();
-        super.setPreferredSize(new Dimension(500, 200));
+        super.setMinimumSize(new Dimension(500, 200));
         
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -54,6 +54,7 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
 
     public void setEnvelope(ParameterEnvelope envelope) {
         this.envelope = envelope;
+        this.repaint();
     }
     
     @Override

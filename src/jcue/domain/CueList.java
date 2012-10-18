@@ -9,6 +9,7 @@ import javax.swing.event.ListDataListener;
 import javax.swing.table.AbstractTableModel;
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
+import jcue.domain.fadecue.FadeCue;
 
 /**
  *
@@ -55,6 +56,7 @@ public class CueList extends AbstractTableModel implements ListModel {
         } else if (cueType == CueType.EVENT) {
             cue = new EventCue("Q" + counter, "");
         } else if (cueType == CueType.FADE) {
+            cue = new FadeCue("Q" + counter, "");
         } else if (cueType == CueType.NOTE) {
         }
 

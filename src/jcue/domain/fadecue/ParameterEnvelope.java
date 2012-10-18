@@ -1,6 +1,5 @@
 package jcue.domain.fadecue;
 
-import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
@@ -25,19 +24,16 @@ public class ParameterEnvelope implements Runnable {
         this.curves = new ArrayList<QuadCurve2D>();
         
         this.curves.add(new QuadCurve2D.Double(0, 0.5, 0.5, 0.5, 1, 0.5));
-        
-        //Test stuff
-        this.duration = 2.0;
     }
     
-    
-
     public void start() {
         if (this.updater == null) {
             this.updater = new Thread(this, "Envelope thread");
         }
         
+        this.running = true;
         this.updater.start();
+        
         this.startTime = System.nanoTime();
         this.currentCurve = this.curves.get(0);
     }
@@ -51,7 +47,14 @@ public class ParameterEnvelope implements Runnable {
         while (this.running) {
             long elapsedTime = (System.nanoTime() - this.startTime);
             long lDuration = (long) (this.duration * 1000000000);
+            double position = ((double) elapsedTime / lDuration);
             
+            QuadCurve2D curveAtX = getCurveAtX(position);
+            if (curveAtX != null) {
+                double t = findTforX(curveAtX, position);
+                double value = getCurveY(curveAtX, t);
+                
+            }
             
             try {
                 Thread.sleep(1);
