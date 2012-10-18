@@ -24,6 +24,9 @@ public class ParameterEnvelope implements Runnable {
         this.curves = new ArrayList<QuadCurve2D>();
         
         this.curves.add(new QuadCurve2D.Double(0, 0.5, 0.5, 0.5, 1, 0.5));
+        
+        //Test stuff
+        this.duration = 2.0;
     }
     
     
@@ -71,11 +74,23 @@ public class ParameterEnvelope implements Runnable {
     public void setCurve(QuadCurve2D c, double x1, double y1, double ctrlX, double ctrlY, double x2, double y2) {
         if (this.curves.contains(c)) {
             //Limit values
+            int index = this.curves.indexOf(c);
+            
+            //First point must stay at the beginning
+            if (index == 0) {
+                x1 = 0;
+            }
+            
+            //Last point must stay at the end
+            if (index == this.curves.size() - 1) {
+                x2 = 1;
+            }
+            
             if (x1 < 0) {
                 x1 = 0;
             } else if (x1 > 1) {
                 x1 = 1;
-            } else if (x1 > c.getX2()) {
+            } else if (x1 > c.getX2()) {    //Don't pass control point
                 x1 = c.getX2();
             }
             
@@ -89,7 +104,7 @@ public class ParameterEnvelope implements Runnable {
                 x2 = 0;
             } else if (x2 > 1) {
                 x2 = 1;
-            } else if (x2 < c.getX1()) {
+            } else if (x2 < c.getX1()) {    //Don't pass control point
                 x2 = c.getX1();
             }
             
@@ -99,6 +114,7 @@ public class ParameterEnvelope implements Runnable {
                 y2 = 1;
             }
             
+            //Control points must not pass endpoints
             if (ctrlX < x1) {
                 ctrlX = x1;
             } else if (ctrlX > x2) {
@@ -111,16 +127,7 @@ public class ParameterEnvelope implements Runnable {
                 ctrlY = 1;
             }
             
-            int index = this.curves.indexOf(c);
-            
-            if (index == 0) {
-                x1 = 0;
-            }
-            
-            if (index == this.curves.size() - 1) {
-                x2 = 1;
-            }
-            
+            //Adjust previous and next curve
             if (index > 0) {
                 QuadCurve2D prev = this.curves.get(index - 1);
                 
@@ -141,6 +148,7 @@ public class ParameterEnvelope implements Runnable {
                 next.setCurve(new Point2D.Double(x2, y2), next.getCtrlPt(), next.getP2());
             }
             
+            //Adjust the curve itself
             c.setCurve(x1, y1, ctrlX, ctrlY, x2, y2);
         }
     }
