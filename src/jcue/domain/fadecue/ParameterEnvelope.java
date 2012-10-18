@@ -71,7 +71,7 @@ public class ParameterEnvelope implements Runnable {
         return duration;
     }
 
-    public void setCurve(QuadCurve2D c, double x1, double y1, double ctrlX, double ctrlY, double x2, double y2) {
+    public void setCurve(QuadCurve2D c, double x1, double y1, double ctrlX, double ctrlY, double x2, double y2, boolean link) {
         if (this.curves.contains(c)) {
             //Limit values
             int index = this.curves.indexOf(c);
@@ -114,6 +114,27 @@ public class ParameterEnvelope implements Runnable {
                 y2 = 1;
             }
             
+            //Calculate mouse deltas
+            double dX1 = c.getX1() - x1;
+            double dX2 = c.getX2() - x2;
+            double dY1 = c.getY1() - y1;
+            double dY2 = c.getY2() - y2;
+            
+            //Link endpoint and control point movement
+            if (link) {
+                if (dX1 != 0) {
+                    ctrlX -= dX1;
+                } else {
+                    ctrlX -= dX2;
+                }
+                
+                if (dY1 != 0) {
+                    ctrlY -= dY1;
+                } else {
+                    ctrlY -= dY2;
+                }
+            }
+            
             //Control points must not pass endpoints
             if (ctrlX < x1) {
                 ctrlX = x1;
@@ -144,8 +165,31 @@ public class ParameterEnvelope implements Runnable {
                 if (x2 > next.getCtrlX()) {
                     x2 = next.getCtrlX();
                 }
+
+                Point2D ctrlPoint = next.getCtrlPt();
+                //If linked adjust the next curve's control point also
+                if (link) {
+                    double newCX = next.getCtrlX() - dX2;
+                    double newCY = next.getCtrlY() - dY2;
+                    
+                    
+                    //Control points must not pass endpoints
+                    if (newCX < next.getX1()) {
+                        newCX = next.getX1();
+                    } else if (newCX > next.getX2()) {
+                        newCX = next.getX2();
+                    }
+
+                    if (newCY < 0) {
+                        newCY = 0;
+                    } else if (newCY > 1) {
+                        newCY = 1;
+                    }
+                    
+                    ctrlPoint.setLocation(newCX, newCY);
+                }
                 
-                next.setCurve(new Point2D.Double(x2, y2), next.getCtrlPt(), next.getP2());
+                next.setCurve(new Point2D.Double(x2, y2), ctrlPoint, next.getP2());
             }
             
             //Adjust the curve itself

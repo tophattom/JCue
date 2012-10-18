@@ -158,12 +158,32 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
             double newX = (double) mX / this.getWidth();
             double newY = (double) mY / this.getHeight();
             
+            boolean alt = me.isAltDown();
+            
             if (this.draggedPoint == DRAG_P1) {
-                this.envelope.setCurve(draggedCurve, newX, newY, cX, cY, x2, y2);
+                if (me.isShiftDown()) {
+                    newX = x1;
+                } else if (me.isControlDown()) {
+                    newY = y1;
+                }
+                
+                this.envelope.setCurve(draggedCurve, newX, newY, cX, cY, x2, y2, alt);
             } else if (this.draggedPoint == DRAG_P2) {
-                this.envelope.setCurve(draggedCurve, x1, y1, cX, cY, newX, newY);
+                if (me.isShiftDown()) {
+                    newX = x2;
+                } else if (me.isControlDown()) {
+                    newY = y2;
+                }
+                
+                this.envelope.setCurve(draggedCurve, x1, y1, cX, cY, newX, newY, alt);
             } else if (this.draggedPoint == DRAG_CTRL) {
-                this.envelope.setCurve(draggedCurve, x1, y1, newX, newY, x2, y2);
+                if (me.isShiftDown()) {
+                    newX = cX;
+                } else if (me.isControlDown()) {
+                    newY = cY;
+                }
+                
+                this.envelope.setCurve(draggedCurve, x1, y1, newX, newY, x2, y2, false);
             }
             
             this.repaint();
