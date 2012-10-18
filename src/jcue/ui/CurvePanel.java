@@ -93,8 +93,11 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
                 g2d.draw(new Ellipse2D.Double(cX - ctrlRadius, cY - ctrlRadius, ctrlRadius * 2, ctrlRadius * 2));
 
                 //Lines between points
+                float[] dash = {7.0f, 10.0f};
+                g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+                
                 g2d.draw(new Line2D.Double(x1, y1, cX, cY));
-                g2d.draw(new Line2D.Double(cX, cY, x2, y2));
+                g2d.draw(new Line2D.Double(x2, y2, cX, cY));
                 
                 //Endpoints
                 g2d.setColor(curveColor);

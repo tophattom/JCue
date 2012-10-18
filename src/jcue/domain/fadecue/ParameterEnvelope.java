@@ -70,19 +70,78 @@ public class ParameterEnvelope implements Runnable {
 
     public void setCurve(QuadCurve2D c, double x1, double y1, double ctrlX, double ctrlY, double x2, double y2) {
         if (this.curves.contains(c)) {
-            c.setCurve(x1, y1, ctrlX, ctrlY, x2, y2);
+            //Limit values
+            if (x1 < 0) {
+                x1 = 0;
+            } else if (x1 > 1) {
+                x1 = 1;
+            } else if (x1 > c.getX2()) {
+                x1 = c.getX2();
+            }
+            
+            if (y1 < 0) {
+                y1 = 0; 
+            } else if (y1 > 1) {
+                y1 = 1;
+            }
+            
+            if (x2 < 0) {
+                x2 = 0;
+            } else if (x2 > 1) {
+                x2 = 1;
+            } else if (x2 < c.getX1()) {
+                x2 = c.getX1();
+            }
+            
+            if (y2 < 0) {
+                y2 = 0; 
+            } else if (y2 > 1) {
+                y2 = 1;
+            }
+            
+            if (ctrlX < x1) {
+                ctrlX = x1;
+            } else if (ctrlX > x2) {
+                ctrlX = x2;
+            }
+            
+            if (ctrlY < 0) {
+                ctrlY = 0;
+            } else if (ctrlY > 1) {
+                ctrlY = 1;
+            }
             
             int index = this.curves.indexOf(c);
             
+            if (index == 0) {
+                x1 = 0;
+            }
+            
+            if (index == this.curves.size() - 1) {
+                x2 = 1;
+            }
+            
             if (index > 0) {
                 QuadCurve2D prev = this.curves.get(index - 1);
+                
+                if (x1 < prev.getCtrlX()) {
+                    x1 = prev.getCtrlX();
+                }
+                
                 prev.setCurve(prev.getP1(), prev.getCtrlPt(), new Point2D.Double(x1, y1));
             }
             
             if (index < this.curves.size() - 1) {
                 QuadCurve2D next = this.curves.get(index + 1);
+                
+                if (x2 > next.getCtrlX()) {
+                    x2 = next.getCtrlX();
+                }
+                
                 next.setCurve(new Point2D.Double(x2, y2), next.getCtrlPt(), next.getP2());
             }
+            
+            c.setCurve(x1, y1, ctrlX, ctrlY, x2, y2);
         }
     }
     
@@ -127,6 +186,9 @@ public class ParameterEnvelope implements Runnable {
 
     }
     
+    public void deletePoint() {
+        
+    }
     
     private QuadCurve2D getCurveAtX(double x) {
         for (QuadCurve2D c : this.curves) {
