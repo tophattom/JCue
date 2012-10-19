@@ -29,8 +29,10 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
     private static final Color textColor = Color.LIGHT_GRAY;
     private static final Color cursorColor = new Color(90, 90, 90);
     
-    private static final int pointRadius = 6;
-    private static final int ctrlRadius = 6;
+    private static final int pointDrawRadius = 6;
+    private static final int ctrlDrawRadius = 6;
+    
+    private static final int grabRadius = 10;
     
     public static final int POINT_P1 = 1;
     public static final int POINT_P2 = 2;
@@ -124,7 +126,7 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
                 g2d.setColor(controlColor);
                 g2d.setStroke(new BasicStroke(2));
 
-                g2d.draw(new Ellipse2D.Double(cX - ctrlRadius, cY - ctrlRadius, ctrlRadius * 2, ctrlRadius * 2));
+                g2d.draw(new Ellipse2D.Double(cX - ctrlDrawRadius, cY - ctrlDrawRadius, ctrlDrawRadius * 2, ctrlDrawRadius * 2));
 
                 //Lines between points
                 float[] dash = {7.0f, 10.0f};
@@ -135,8 +137,8 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
 
                 //Endpoints
                 g2d.setColor(curveColor);
-                g2d.fillOval((int) x1 - pointRadius, (int) y1 - pointRadius, pointRadius * 2, pointRadius * 2);
-                g2d.fillOval((int) x2 - pointRadius, (int) y2 - pointRadius, pointRadius * 2, pointRadius * 2);
+                g2d.fillOval((int) x1 - pointDrawRadius, (int) y1 - pointDrawRadius, pointDrawRadius * 2, pointDrawRadius * 2);
+                g2d.fillOval((int) x2 - pointDrawRadius, (int) y2 - pointDrawRadius, pointDrawRadius * 2, pointDrawRadius * 2);
             }
         }
     }
@@ -210,9 +212,9 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
         for (QuadCurve2D c : this.envelope.getCurves()) {
             QuadCurve2D tmpCurve = getRealCurve(c);
             
-            boolean hit1 = (Point.distance(mX, mY, tmpCurve.getX1(), tmpCurve.getY1()) <= pointRadius);
-            boolean hit2 = (Point.distance(mX, mY, tmpCurve.getX2(), tmpCurve.getY2()) <= pointRadius);
-            boolean hit3 = (Point.distance(mX, mY, tmpCurve.getCtrlX(), tmpCurve.getCtrlY()) <= ctrlRadius);
+            boolean hit1 = (Point.distance(mX, mY, tmpCurve.getX1(), tmpCurve.getY1()) <= grabRadius);
+            boolean hit2 = (Point.distance(mX, mY, tmpCurve.getX2(), tmpCurve.getY2()) <= grabRadius);
+            boolean hit3 = (Point.distance(mX, mY, tmpCurve.getCtrlX(), tmpCurve.getCtrlY()) <= grabRadius);
             
             if (hit1) {
                 if (me.getButton() == MouseEvent.BUTTON1) {

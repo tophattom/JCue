@@ -94,7 +94,7 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
     }
     
     protected void update() {
-        ArrayList<AbstractCue> cues = CueList.getInstance().getCues();
+        ArrayList<AbstractCue> cues = CueList.getInstance().getCues(this.cue);
         AbstractCue[] tmpArray = new AbstractCue[cues.size() + 1];
         AbstractCue[] cueArray = cues.toArray(tmpArray);
         ComboBoxModel cbm = new DefaultComboBoxModel(cueArray);
