@@ -2,9 +2,7 @@ package jcue.domain;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -114,6 +112,9 @@ public class CuePlayer implements Runnable {
     }
     
     public int getCurrentIndex() {
+        if (this.currentCue == null) {
+            return 0;
+        }
         return this.cues.getCueIndex(this.currentCue);
     }
 
