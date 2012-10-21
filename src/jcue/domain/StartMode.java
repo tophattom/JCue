@@ -1,7 +1,8 @@
 package jcue.domain;
 
 /**
- *
+ * Represents cue's start mode.
+ * 
  * @author Jaakko
  */
 public enum StartMode {

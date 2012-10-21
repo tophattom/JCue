@@ -6,7 +6,8 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 /**
- *
+ * Handles playback of the CueList.
+ * 
  * @author Jaakko
  */
 public class CuePlayer implements Runnable {
@@ -29,6 +30,9 @@ public class CuePlayer implements Runnable {
         this.cues = cues;
     }
 
+    /**
+     * Starts the updater loop.
+     */
     public void start() {
         if (this.updater == null || !this.running) {
             this.updater = new Thread(this, "CuePlayer");
@@ -44,6 +48,9 @@ public class CuePlayer implements Runnable {
         running = false;
     }
 
+    /**
+     * Starts next cue
+     */
     public void startNext() {
         this.currentCue.start(true);
         this.activeList.add(currentCue);
@@ -52,6 +59,9 @@ public class CuePlayer implements Runnable {
         this.currentCue = getNextManualCue();
     }
 
+    /**
+     * Stops all cues
+     */
     public void stopAll() {
         for (AbstractCue ac : this.cues.getCues()) {
             ac.stop();
@@ -92,6 +102,11 @@ public class CuePlayer implements Runnable {
         this.currentCue = currentCue;
     }
 
+    /**
+     * Returns next cue that has "Manual" as start mode.
+     * 
+     * @return next manual cue
+     */
     private AbstractCue getNextManualCue() {
         int index = this.cues.getCueIndex(this.currentCue);
         int size = this.cues.size();

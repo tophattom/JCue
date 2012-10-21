@@ -99,7 +99,8 @@ public class DeviceManager {
     
     /**
      * 
-     * @return A list of devices that should be automatically includet for new cues
+     * @return A list of devices that should be 
+     * automatically included for new cues
      */
     public ArrayList<SoundDevice> getAutoIncludeDevices() {
         ArrayList<SoundDevice> result = new ArrayList<SoundDevice>();

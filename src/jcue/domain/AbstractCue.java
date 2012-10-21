@@ -12,6 +12,7 @@ import jcue.ui.AbstractCueUI;
  */
 public abstract class AbstractCue {
 
+    
     private String name, description;
     private StartMode startMode;
     
@@ -87,14 +88,31 @@ public abstract class AbstractCue {
         this.startTime = startTime;
     }
 
+    /**
+     * Returns cues that start after this cue.
+     * 
+     * @return child cues
+     */
     public LinkedHashSet<AbstractCue> getChildCues() {
         return childCues;
     }
 
+    /**
+     * Returns cue after which this cue starts
+     * 
+     * @return parent cue
+     */
     public AbstractCue getParentCue() {
         return parentCue;
     }
 
+    /**
+     * Sets the parent cue. Also adds this cue
+     * to parent cue's child cue list. Null parameter removes
+     * this cue from parent cue's children.
+     * 
+     * @param parentCue parent cue
+     */
     public void setParentCue(AbstractCue parentCue) {
         if (this.parentCue != null) {
             this.parentCue.removeChildCue(this);
@@ -130,6 +148,13 @@ public abstract class AbstractCue {
         return this.name + " " + this.description + " (" + this.type + ")";
     }
 
+    /**
+     * Starts the cue. Delay parameter specifies wether to
+     * take start delay into account or not. Starts child cues
+     * that are supposed to start after start of this cue.
+     * 
+     * @param delay is delay noted
+     */
     public void start(boolean delay) {
         if (delay && this.startDelay > 0) {
             new CueDelayHandler(System.nanoTime(), startDelay, this);
@@ -145,6 +170,10 @@ public abstract class AbstractCue {
 
     public abstract void pause();
 
+    /**
+     * Stops the cue. Starts child cues that are supposed
+     * to start after end of this cue.
+     */
     public void stop() {
         for (AbstractCue child : this.childCues) {
             if (child.getStartMode() == StartMode.AFTER_END) {

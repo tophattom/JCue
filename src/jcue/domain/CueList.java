@@ -12,7 +12,9 @@ import jcue.domain.eventcue.EventCue;
 import jcue.domain.fadecue.FadeCue;
 
 /**
- *
+ * Stores the cues created. Only on instance of CueList can
+ * be created. Use getInstance() to retrieve it.
+ * 
  * @author Jaakko
  */
 public class CueList extends AbstractTableModel implements ListModel {
@@ -36,6 +38,10 @@ public class CueList extends AbstractTableModel implements ListModel {
         this.dm = DeviceManager.getInstance();
     }
     
+    /**
+     * 
+     * @return instance of CueList
+     */
     public static CueList getInstance() {
         if (instance == null) {
             synchronized (CueList.class) {
@@ -48,6 +54,11 @@ public class CueList extends AbstractTableModel implements ListModel {
         return instance;
     }
 
+    /**
+     * Create and add a new cue.
+     * 
+     * @param cueType type of the new cue
+     */
     public void addCue(CueType cueType) {
         AbstractCue cue = null;
 
@@ -70,6 +81,11 @@ public class CueList extends AbstractTableModel implements ListModel {
         this.counter++;
     }
 
+    /**
+     * Add existing cue to the list.
+     * 
+     * @param cue cue to add
+     */
     public void addCue(AbstractCue cue) {
         this.cues.add(cue);
 
@@ -81,22 +97,49 @@ public class CueList extends AbstractTableModel implements ListModel {
         this.counter++;
     }
 
+    /**
+     * Get cue by its index.
+     * 
+     * @param pos index starting from 0
+     * @return cue at index
+     */
     public AbstractCue getCue(int pos) {
         return this.cues.get(pos);
     }
 
+    /**
+     * 
+     * @return amount of cues in the list
+     */
     public int size() {
         return this.cues.size();
     }
     
+    /**
+     * Returns the index of specific cue.
+     * 
+     * @param cue cue which index to get
+     * @return cue's index
+     */
     public int getCueIndex(AbstractCue cue) {
         return this.cues.lastIndexOf(cue);
     }
 
+    /**
+     * Returns list of all cues.
+     * 
+     * @return list of all cues
+     */
     public ArrayList<AbstractCue> getCues() {
         return cues;
     }
 
+    /**
+     * Returns a list of all cues excluding the cue given.
+     * 
+     * @param exclude cue to exclude from the result
+     * @return resulting list
+     */
     public ArrayList<AbstractCue> getCues(AbstractCue exclude) {
         ArrayList<AbstractCue> result = new ArrayList<AbstractCue>();
         
@@ -109,6 +152,12 @@ public class CueList extends AbstractTableModel implements ListModel {
         return result;
     }
     
+    /**
+     * Returns a list of cues of given type.
+     * 
+     * @param type type of cues
+     * @return cues of given type
+     */
     public ArrayList<AbstractCue> getCues(CueType type) {
         ArrayList<AbstractCue> result = new ArrayList<AbstractCue>();
         

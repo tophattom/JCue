@@ -1,7 +1,10 @@
 package jcue.domain;
 
 /**
- *
+ * Handles delaying of cues. If cue has delay specified,
+ * a new instance of this class is created. When delay time
+ * has passed CueDelayHandler starts the cue.
+ * 
  * @author Jaakko
  */
 public class CueDelayHandler implements Runnable {
@@ -13,6 +16,12 @@ public class CueDelayHandler implements Runnable {
     private Thread waiter;
     private boolean running;
     
+    /**
+     * 
+     * @param startTime time of starting cue in nanoseconds
+     * @param delay time to wait in seconds
+     * @param cue cue to start
+     */
     public CueDelayHandler(long startTime, double delay, AbstractCue cue) {
         this.startTime = startTime;
         this.delay = (long) (delay * 1000000000L);

@@ -5,7 +5,8 @@ import jouvieje.bass.defines.BASS_DEVICE_STATUS;
 import jouvieje.bass.structures.BASS_DEVICEINFO;
 
 /**
- *
+ * Represents a physical output device.
+ * 
  * @author Jaakko
  */
 public class SoundDevice implements Comparable<SoundDevice> {
@@ -26,6 +27,10 @@ public class SoundDevice implements Comparable<SoundDevice> {
         this.autoInclude = false;
     }
     
+    /**
+     * 
+     * @return is device enabled
+     */
     public boolean isEnabled() {
         BASS_DEVICEINFO info = BASS_DEVICEINFO.allocate();
         Bass.BASS_GetDeviceInfo(this.id, info);
@@ -37,6 +42,10 @@ public class SoundDevice implements Comparable<SoundDevice> {
         return false;
     }
     
+    /**
+     * 
+     * @return is device system's default device
+     */
     public boolean isDefault() {
         BASS_DEVICEINFO info = BASS_DEVICEINFO.allocate();
         Bass.BASS_GetDeviceInfo(this.id, info);
@@ -48,6 +57,10 @@ public class SoundDevice implements Comparable<SoundDevice> {
         return false;
     }
     
+    /**
+     * 
+     * @return is device initialized
+     */
     public boolean isInitialized() {
         BASS_DEVICEINFO info = BASS_DEVICEINFO.allocate();
         Bass.BASS_GetDeviceInfo(this.id, info);
@@ -59,6 +72,12 @@ public class SoundDevice implements Comparable<SoundDevice> {
         return false;
     }
     
+    /**
+     * Initializes the device using speficied sample rate.
+     * 
+     * @param sampleRate desired sample rate
+     * @throws Exception when device init fails
+     */
     public void init(int sampleRate) throws Exception {
         boolean BASS_Init = Bass.BASS_Init(this.id, sampleRate, 0, null, null);
         
@@ -84,6 +103,12 @@ public class SoundDevice implements Comparable<SoundDevice> {
         return name;
     }
 
+    /**
+     * Sets the auto include status. Auto include devices
+     * are automatically added to new cues.
+     * 
+     * @param autoInclude wether to auto include this device
+     */
     public void setAutoInclude(boolean autoInclude) {
         this.autoInclude = autoInclude;
     }

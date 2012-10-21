@@ -1,7 +1,8 @@
 package jcue.domain;
 
 /**
- *
+ * Represents a type of cue.
+ * 
  * @author Jaakko
  */
 public enum CueType {

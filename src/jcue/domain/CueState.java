@@ -1,7 +1,8 @@
 package jcue.domain;
 
 /**
- *
+ * Represents a state of cue.
+ * 
  * @author Jaakko
  */
 public enum CueState {
