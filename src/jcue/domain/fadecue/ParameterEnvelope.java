@@ -336,4 +336,9 @@ public class ParameterEnvelope implements Runnable {
         
         return Math.pow((1 - t), 2) * Y0 + 2 * (1 - t) * t * Y1 + Math.pow(t, 2) * Y2;
     }
+    
+    public double getEnvelopeY(double x) {
+        QuadCurve2D curveAtX = getCurveAtX(x);
+        return getCurveY(curveAtX, findTforX(curveAtX, x));
+    }
 }

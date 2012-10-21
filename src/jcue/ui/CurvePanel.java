@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -28,6 +29,11 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
     private static final Color controlColor = new Color(200, 200, 250);
     private static final Color textColor = Color.LIGHT_GRAY;
     private static final Color cursorColor = new Color(90, 90, 90);
+    
+    private static final Stroke curveStroke = new BasicStroke(3);
+    private static final Stroke ctrlPointStroke = new BasicStroke(2);
+    private static final float[] dash = {7.0f, 10.0f};
+    private static final Stroke ctrlLineStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
     
     private static final int pointDrawRadius = 6;
     private static final int ctrlDrawRadius = 6;
@@ -119,18 +125,17 @@ public class CurvePanel extends JPanel implements MouseListener, MouseMotionList
 
                 //Curve
                 g2d.setColor(curveColor);
-                g2d.setStroke(new BasicStroke(3));
+                g2d.setStroke(curveStroke);
                 g2d.draw(tmpCurve);
 
                 //Control point
                 g2d.setColor(controlColor);
-                g2d.setStroke(new BasicStroke(2));
+                g2d.setStroke(ctrlPointStroke);
 
                 g2d.draw(new Ellipse2D.Double(cX - ctrlDrawRadius, cY - ctrlDrawRadius, ctrlDrawRadius * 2, ctrlDrawRadius * 2));
 
                 //Lines between points
-                float[] dash = {7.0f, 10.0f};
-                g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f));
+                g2d.setStroke(ctrlLineStroke);
 
                 g2d.draw(new Line2D.Double(x1, y1, cX, cY));
                 g2d.draw(new Line2D.Double(x2, y2, cX, cY));
