@@ -28,7 +28,6 @@ public class AudioCue extends AbstractCue {
         
         this.outputs = outputs;
 
-        this.state = CueState.STOPPED;
         this.audio = new AudioStream(this.outputs);
         
         this.volume = 1.0;

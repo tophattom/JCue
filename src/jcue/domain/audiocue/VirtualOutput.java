@@ -50,6 +50,12 @@ public class VirtualOutput {
         }
     }
     
+    public void setVolumeDirect(double newVolume) {
+        if (this.stream != null && !this.muted) {
+            Bass.BASS_ChannelSetAttribute(this.stream.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) newVolume);
+        }
+    }
+    
     public void updateVolume(double masterVolume) {
         if (this.stream != null && !this.muted) {
             Bass.BASS_ChannelSetAttribute(this.stream.asInt(), BASS_ATTRIB.BASS_ATTRIB_VOL, (float) (this.volume * masterVolume));

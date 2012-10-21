@@ -61,7 +61,7 @@ public class ParameterEnvelope implements Runnable {
                 double t = findTforX(curveAtX, position);
                 double value = getCurveY(curveAtX, t);
                 
-                this.targetCue.getAudio().setMasterVolumePercent(1.0 - value);
+                this.targetCue.getAudio().setMasterVolumeDirect(1.0 - value);
             }
             
             try {

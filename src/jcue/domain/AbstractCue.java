@@ -140,8 +140,6 @@ public abstract class AbstractCue {
                     child.start(true);
                 }
             }
-            
-            this.state = CueState.PLAYING;
         }
     }
 

@@ -26,7 +26,6 @@ public class AudioStream {
     private HSTREAM masterStream;
     
     private HSYNC stopSync;
-    private HSTREAM stream; //TODO: remove when multi-device stuff fully functional
     private String filePath;
     
     private double length;
@@ -130,10 +129,14 @@ public class AudioStream {
      * Starts playing audio through all outputs.
      */
     public void play() {
+        //Set volume to initial level before starting
+        for (VirtualOutput vo : this.outputs.values()) {
+            vo.updateVolume(this.volume);
+        }
+        
         //If stream loaded start it. Links automatically handle starting other
         //outputs.
         if (this.masterStream != null) {
-            this.setMasterVolumePercent(100);
             Bass.BASS_ChannelPlay(this.masterStream.asInt(), false);
         }
     }
@@ -288,9 +291,9 @@ public class AudioStream {
         }
     }
     
-    public void setDeviceVolumePercent(double pc, SoundDevice sd) {
+    public void setDeviceVolumeDirect(double volume, SoundDevice sd) {
         if (this.outputs.containsKey(sd)) {
-            this.outputs.get(sd).updateVolume(this.volume * pc);
+            this.outputs.get(sd).setVolumeDirect(this.volume * volume);
         }
     }
 
@@ -307,9 +310,9 @@ public class AudioStream {
         }
     }
     
-    public void setMasterVolumePercent(double pc) {
+    public void setMasterVolumeDirect(double volume) {
         for (VirtualOutput vo : this.outputs.values()) {
-            vo.updateVolume(volume * pc);
+            vo.setVolumeDirect(this.volume * volume);
         }
     }
     
