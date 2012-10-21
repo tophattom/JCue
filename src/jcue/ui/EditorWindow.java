@@ -51,11 +51,8 @@ public class EditorWindow extends JFrame {
         this.uiArea = new JPanel(new CardLayout());
         JScrollPane scrollPane = new JScrollPane(this.uiArea);
         scrollPane.setBorder(null);
-        
-        this.effectPanel = new JPanel();
         //**********
         
-        //
         this.audioPanel = new AudioCueUI();
         this.eventPanel = new EventCueUI();
         this.fadePanel = new FadeCueUI();
@@ -93,13 +90,6 @@ public class EditorWindow extends JFrame {
         this.deleteButton = new JButton("X");
         //**********
         
-        //Tabs for cue controls
-        this.editorTabs = new JTabbedPane();
-        
-        this.editorTabs.addTab("Basic", scrollPane);
-        this.editorTabs.addTab("Effects", this.effectPanel);
-        //**********
-        
         //Add buttons to a new panel for layout
         JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         top.add(this.audioButton);
@@ -110,7 +100,7 @@ public class EditorWindow extends JFrame {
         container.setLayout(new MigLayout("fill, insets panel"));
         container.add(top, "dock north");
         container.add(this.cueList, "dock west, gap 6px 0 0 6px");
-        container.add(this.editorTabs, "grow");
+        container.add(scrollPane, "grow");
     }
 
     private void createEventListeners() {
