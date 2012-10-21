@@ -11,6 +11,8 @@
     <description>Builds, tests, and runs the project JCue.</description>
     <import file="nbproject/build-impl.xml"/>
 
+    <property name="launch4j.dir" location="launch4j/" />
+
     <!-- **************************************** -->
     <!-- Detect operating system and architecture -->
     <!-- **************************************** -->
@@ -47,24 +49,30 @@
         </copy>
 
         <!-- Create temporary Windows directory -->
-        <copy todir="${dist.dir}/win">
+        <copy todir="${dist.dir}/win/JCue">
           <fileset dir="${dist.dir}">
             <exclude name="win" />
             <exclude name="mac" />
             <exclude name="linux" />
+            <exclude name="JCue.jar" />
           </fileset>
         </copy>
 
-        <copy todir="${dist.dir}/win/lib/win32">
+        <copy todir="${dist.dir}/win/JCue/lib/win32">
           <fileset dir="lib/win32" />
         </copy>
-        <copy todir="${dist.dir}/win/lib/win64">
+        <copy todir="${dist.dir}/win/JCue/lib/win64">
           <fileset dir="lib/win64" />
         </copy>
+
+        <!-- Create an .exe using launch4j -->
+        <taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"
+          classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+        <launch4j configFile="${launch4j.dir}/JCue.xml" />
         <!-- ***************** -->
 
         <!-- Create temporary Linux directory
-        <copy todir="${dist.dir}/linux">
+        <copy todir="${dist.dir}/linux/JCue">
           <fileset dir="${dist.dir}">
             <exclude name="win" />
             <exclude name="mac" />
@@ -72,16 +80,16 @@
           </fileset>
         </copy>
 
-        <copy todir="${dist.dir}/linux32/lib/linux32">
+        <copy todir="${dist.dir}/linux/JCue/lib/linux32">
           <fileset dir="lib/linux32" />
         </copy>
-        <copy todir="${dist.dir}/linux64/lib/linux64">
+        <copy todir="${dist.dir}/linux/JCue/lib/linux64">
           <fileset dir="lib/linux64" />
         </copy>
         ***************** -->
 
         <!-- Create temporary Mac directory -->
-        <copy todir="${dist.dir}/mac">
+        <copy todir="${dist.dir}/mac/JCue">
           <fileset dir="${dist.dir}">
             <exclude name="win/" />
             <exclude name="mac/" />
@@ -89,7 +97,7 @@
           </fileset>
         </copy>
 
-        <copy todir="${dist.dir}/mac/lib/mac">
+        <copy todir="${dist.dir}/mac/JCue/lib/mac">
           <fileset dir="lib/mac" />
         </copy>
         <!-- ************* -->

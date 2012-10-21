@@ -1,0 +1,12 @@
+<launch4jConfig>
+  <headerType>gui</headerType>
+  <jar>../dist/JCue.jar</jar>
+  <outfile>../dist/win/JCue/JCue.exe</outfile>
+  <errTitle>JCue</errTitle>
+  <chdir>.</chdir>
+  <customProcName>true</customProcName>
+  <icon></icon>
+  <jre>
+    <minVersion>1.6.0</minVersion>
+  </jre>
+</launch4jConfig>
