@@ -53,10 +53,10 @@ public class FadeCueUI extends AbstractCueUI  {
     }
     
     private void addComponents() {
-        this.add(this.targetCueLabel);
+        this.add(this.targetCueLabel, "align label");
         this.add(this.targetCueSelect, "span, wrap");
         
-        this.add(this.durationLabel);
+        this.add(this.durationLabel, "align label");
         this.add(this.durationField, "wrap");
         
         this.add(this.curvePanel, "grow, span, wrap");

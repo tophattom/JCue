@@ -1,9 +1,9 @@
 package jcue.ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Polygon;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import jcue.domain.audiocue.AudioCue;
@@ -12,11 +12,9 @@ import jcue.domain.audiocue.AudioCue;
  *
  * @author oppilas
  */
-public class WaveformPanel extends JPanel {
+public class WaveformPanel extends JPanel implements MouseMotionListener, MouseListener {
     
     public static final int PREF_HEIGHT = 170;
-
-    private AudioCue cue;
     
     public static final Color backgroundColor = new Color(64, 64, 64);
     public static final Color waveformColor = new Color(200, 200, 250);
@@ -25,14 +23,31 @@ public class WaveformPanel extends JPanel {
     
     private static final int DIR_RIGHT = 1;
     private static final int DIR_LEFT = -1;
+    
+    private static final int DRAG_IN = 1;
+    private static final int DRAG_OUT = 2;
+    
+    private AudioCue cue;
+    
+    private int inX, outX;
+    private int dragging;
 
     public WaveformPanel() {
         super();
         super.setPreferredSize(new Dimension(0, PREF_HEIGHT));
+        
+        this.dragging = 0;
+        
+        this.addMouseMotionListener(this);
+        this.addMouseListener(this);
     }
 
     public void setCue(AudioCue cue) {
         this.cue = cue;
+        
+        this.inX = (int) (this.getWidth() * (this.cue.getInPos() / this.cue.getAudio().getLength()));
+        this.outX = (int) (this.getWidth() * (this.cue.getOutPos() / this.cue.getAudio().getLength()));
+        
         repaint();
     }
 
@@ -40,6 +55,10 @@ public class WaveformPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        Graphics2D g2d = (Graphics2D) g;
+        
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
         //if (this.cue != null) {
         int width = this.getWidth();
         int height = this.getHeight();
@@ -48,24 +67,23 @@ public class WaveformPanel extends JPanel {
         BufferedImage waveformImg = this.cue.getAudio().getWaveformImg();
         
         if (waveformImg != null) {
-            g.drawImage(this.cue.getAudio().getWaveformImg(), 0, 0, width, height, null);
+            g2d.drawImage(this.cue.getAudio().getWaveformImg(), 0, 0, width, height, null);
         } else {
-            g.setColor(backgroundColor);
-            g.fillRect(0, 0, width, height);
+            g2d.setColor(backgroundColor);
+            g2d.fillRect(0, 0, width, height);
         }
         
         //In and out marker drawing
-        int inX = (int) (width * (this.cue.getInPos() / this.cue.getAudio().getLength()));
-        int outX = (int) (width * (this.cue.getOutPos() / this.cue.getAudio().getLength()));
         
-        g.setColor(this.inOutColor);
+        
+        g2d.setColor(this.inOutColor);
         
         //In marker
-        g.drawLine(inX, 0, inX, height);
-        g.fillPolygon(this.getMarkerTriangle(inX, DIR_RIGHT));
+        g2d.drawLine(inX, 0, inX, height);
+        g2d.fillPolygon(this.getMarkerTriangle(inX, DIR_RIGHT));
         
-        g.drawLine(outX, 0, outX, height);
-        g.fillPolygon(this.getMarkerTriangle(outX, DIR_LEFT));
+        g2d.drawLine(outX, 0, outX, height);
+        g2d.fillPolygon(this.getMarkerTriangle(outX, DIR_LEFT));
         //}
     }
 
@@ -76,5 +94,44 @@ public class WaveformPanel extends JPanel {
         result.addPoint(x, 14);
         
         return result;
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent me) {
+        if (this.dragging == DRAG_IN) {
+            this.inX = me.getX();
+        }
+        
+        this.repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent me) {
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent me) {
+        int mX = me.getX();
+        
+        if (Math.abs(mX - this.inX) < 2) {
+            this.dragging = DRAG_IN;
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent me) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent me) {
     }
 }
