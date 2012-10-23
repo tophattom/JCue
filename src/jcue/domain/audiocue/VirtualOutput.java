@@ -114,7 +114,10 @@ public class VirtualOutput {
     public boolean isMuted() {
         return muted;
     }
-    
+
+    public HSTREAM getStream() {
+        return stream;
+    }
     
     @Override
     protected void finalize() throws Throwable {

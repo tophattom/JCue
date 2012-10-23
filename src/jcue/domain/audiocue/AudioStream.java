@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import jcue.domain.AbstractCue;
@@ -11,6 +12,7 @@ import jcue.domain.SoundDevice;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
+import jouvieje.bass.structures.HFX;
 import jouvieje.bass.structures.HSTREAM;
 import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.BufferUtils;
@@ -355,6 +357,17 @@ public class AudioStream {
      */
     public double getDevicePan(SoundDevice sd) {
         return this.outputs.get(sd).getPan();
+    }
+    
+    public ArrayList<HFX> addEffect(int type, int priority) {
+        ArrayList<HFX> result = new ArrayList<HFX>();
+        
+        for (VirtualOutput vo : this.outputs.values()) {
+            HFX handle = Bass.BASS_ChannelSetFX(vo.getStream().asInt(), type, priority);
+            result.add(handle);
+        }
+        
+        return result;
     }
     
     private void createWaveformImg() {
