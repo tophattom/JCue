@@ -8,7 +8,6 @@ import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.effect.EffectRack;
-import jcue.domain.audiocue.effect.ReverbEffect;
 
 /**
  * 

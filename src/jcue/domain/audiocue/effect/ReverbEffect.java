@@ -1,5 +1,6 @@
 package jcue.domain.audiocue.effect;
 
+import jouvieje.bass.enumerations.BASS_FX_BFX;
 import jouvieje.bass.structures.BASS_BFX_REVERB;
 
 /**
@@ -9,18 +10,20 @@ import jouvieje.bass.structures.BASS_BFX_REVERB;
 public class ReverbEffect extends AbstractEffect {
 
     private BASS_BFX_REVERB struct;
-    
+
     public ReverbEffect() {
+        super(BASS_FX_BFX.BASS_FX_BFX_REVERB.asInt());
+
         this.struct = BASS_BFX_REVERB.allocate();
         super.setEffectStruct(struct);
     }
-    
+
     @Override
     public String[] getParameters() {
         String[] result = {"Level", "Delay"};
         return result;
     }
-    
+
     @Override
     public double getParameter(String param) {
         if (param.toLowerCase().equals("level")) {
@@ -28,7 +31,7 @@ public class ReverbEffect extends AbstractEffect {
         } else if (param.toLowerCase().equals("delay")) {
             return this.struct.getDelay();
         }
-        
+
         return 0;
     }
 
@@ -39,8 +42,7 @@ public class ReverbEffect extends AbstractEffect {
         } else if (param.toLowerCase().equals("delay")) {
             this.struct.setDelay((int) Math.max(1200, Math.min(10000, value)));
         }
-        
+
         this.updateEffect();
     }
-    
 }

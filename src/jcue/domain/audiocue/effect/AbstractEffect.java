@@ -16,6 +16,12 @@ public abstract class AbstractEffect {
     
     protected int type;
 
+    public AbstractEffect(int type) {
+        this.type = type;
+    }
+    
+    
+
     public ArrayList<HFX> getHandles() {
         return handles;
     }
