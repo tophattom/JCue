@@ -45,6 +45,7 @@ public abstract class AbstractEffect {
     }
     
     public abstract String[] getParameters();
+    public abstract double getParameter(String param);
     public abstract void setParameter(String param, double value);
 
 }

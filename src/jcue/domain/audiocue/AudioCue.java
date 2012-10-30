@@ -7,6 +7,8 @@ import jcue.domain.CueList;
 import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.domain.SoundDevice;
+import jcue.domain.audiocue.effect.EffectRack;
+import jcue.domain.audiocue.effect.ReverbEffect;
 
 /**
  * 
@@ -22,6 +24,8 @@ public class AudioCue extends AbstractCue {
     private double volume, pan;
     
     private ArrayList<SoundDevice> outputs;
+    
+    private EffectRack effectRack;
 
     public AudioCue(String name, String description, ArrayList<SoundDevice> outputs) {
         super(name, description, CueType.AUDIO);
@@ -35,6 +39,8 @@ public class AudioCue extends AbstractCue {
         
         this.fadeIn = 0.0;
         this.fadeOut = 0.0;
+        
+        this.effectRack = new EffectRack(this);
     }
 
     public void loadAudio(String filePath) {
@@ -188,5 +194,9 @@ public class AudioCue extends AbstractCue {
         cl.fireContentsChanged(this, cl.getCueIndex(this) - 1, cl.getCueIndex(this));
         
         return true;
+    }
+
+    public EffectRack getEffectRack() {
+        return effectRack;
     }
 }

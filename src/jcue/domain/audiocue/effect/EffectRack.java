@@ -1,8 +1,8 @@
 package jcue.domain.audiocue.effect;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import jcue.domain.audiocue.AudioCue;
-import jouvieje.bass.Bass;
 import jouvieje.bass.structures.HFX;
 
 /**
@@ -17,13 +17,61 @@ public class EffectRack {
 
     public EffectRack(AudioCue cue) {
         this.cue = cue;
+        
+        this.effects = new ArrayList<AbstractEffect>();
     }
 
     public void addEffect(AbstractEffect effect) {
         if (this.cue != null) {
-            ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), this.effects.size());
+            ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), 0);
+            effect.setHandles(handles);
+            this.effects.add(effect);
+            
+            this.update();
+        }
+    }
+    
+    private void addEffect(AbstractEffect effect, int priority) {
+        if (this.cue != null) {
+            ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), priority);
             effect.setHandles(handles);
             this.effects.add(effect);
         }
+    }
+    
+    public void removeEffect(AbstractEffect effect) {
+        if (this.effects.contains(effect)) {
+            this.cue.getAudio().removeEffect(effect);
+            
+            this.effects.remove(effect);
+        }
+    }
+    
+    public void update() {
+        ArrayList<AbstractEffect> tmpEffects = new ArrayList<AbstractEffect>(this.effects);
+        
+        for (AbstractEffect ae : tmpEffects) {
+            removeEffect(ae);
+        }
+        
+        int size = tmpEffects.size();
+        int i = 0;
+        
+        for (AbstractEffect ae : tmpEffects) {
+            this.addEffect(ae, size - i);
+            
+            i++;
+        }
+    }
+    
+    public void clear() {
+        Iterator<AbstractEffect> it = this.effects.iterator();
+        while (it.hasNext()) {
+            AbstractEffect ae = it.next();
+            
+            this.cue.getAudio().removeEffect(ae);
+        }
+        
+        this.effects.clear();
     }
 }
