@@ -131,6 +131,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
 
         //Waveform
         this.waveform = new WaveformPanel();
+        this.waveform.addPropertyChangeListener(this);
         //***********
 
         //Transport controls
@@ -356,6 +357,14 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         } else if (source == this.outField) {
             if (this.outField.getValue() != null) {
                 this.cue.setOutPos((Double) this.outField.getValue());
+            }
+        } else if (source == this.waveform) {
+            String propertyName = pce.getPropertyName();
+            
+            if (propertyName.equals("inPos")) {
+                this.inField.setValue(pce.getNewValue());
+            } else if (propertyName.equals("outPos")) {
+                this.outField.setValue(pce.getNewValue());
             }
         }
         

@@ -74,7 +74,10 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
         }
         
         //In and out marker drawing
-        
+        if (this.cue != null && this.cue.getAudio() != null) {
+            this.inX = (int) ((double) this.getWidth() * (this.cue.getInPos() / this.cue.getAudio().getLength()));
+            this.outX = (int) ((double) this.getWidth() * (this.cue.getOutPos() / this.cue.getAudio().getLength()));
+        }
         
         g2d.setColor(this.inOutColor);
         
@@ -99,7 +102,21 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     @Override
     public void mouseDragged(MouseEvent me) {
         if (this.dragging == DRAG_IN) {
-            this.inX = me.getX();
+            this.inX = Math.max(0, Math.min(this.getWidth(), me.getX()));
+            
+            double oldIn = this.cue.getInPos();
+            double inPos = this.cue.getAudio().getLength() * ((double) this.inX / this.getWidth());
+            this.cue.setInPos(inPos);
+            
+            this.firePropertyChange("inPos", oldIn, inPos);
+        } else if (this.dragging == DRAG_OUT) {
+            this.outX = Math.max(0, Math.min(this.getWidth(), me.getX()));
+            
+            double oldOut = this.cue.getOutPos();
+            double outPos = this.cue.getAudio().getLength() * ((double) this.outX / this.getWidth());
+            this.cue.setOutPos(outPos);
+            
+            this.firePropertyChange("outPos", oldOut, outPos);
         }
         
         this.repaint();
@@ -118,13 +135,16 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     public void mousePressed(MouseEvent me) {
         int mX = me.getX();
         
-        if (Math.abs(mX - this.inX) < 2) {
+        if (Math.abs(mX - this.inX) < 10) {
             this.dragging = DRAG_IN;
+        } else if (Math.abs(mX - this.outX) < 10) {
+            this.dragging = DRAG_OUT;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent me) {
+        this.dragging = 0;
     }
 
     @Override
