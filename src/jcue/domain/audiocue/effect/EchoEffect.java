@@ -16,43 +16,41 @@ public class EchoEffect extends AbstractEffect {
 
         this.struct = BASS_BFX_ECHO2.allocate();
         super.setEffectStruct(struct);
+        
+        this.params.put("dry mix", new EffectParameter("Dry mix", "", -2, 2, "double"));
+        this.params.put("wet mix", new EffectParameter("Wet mix", "", -2, 2, "double"));
+        this.params.put(("feedback"), new EffectParameter("Feedback", "", -1, 1, "double"));
+        this.params.put("delay", new EffectParameter("Delay", "s", 0, 6, "double"));
     }
-
-    @Override
-    public String[] getParameters() {
-        String[] result = {"Dry mix", "Wet mix", "Feedback", "Delay"};
-        return result;
-    }
-
-    @Override
-    public double getParameter(String param) {
-        String lowParam = param.toLowerCase();
-
-        if (lowParam.equals("dry mix")) {
-            return this.struct.getDryMix();
-        } else if (lowParam.equals("wet mix")) {
-            return this.struct.getWetMix();
-        } else if (lowParam.equals("feedback")) {
-            return this.struct.getFeedback();
-        } else if (lowParam.contains("delay")) {
-            return this.struct.getDelay();
-        }
-
-        return 0;
-    }
-
+    
     @Override
     public void setParameter(String param, double value) {
         String lowParam = param.toLowerCase();
-
-        if (lowParam.equals("dry mix")) {
-            this.struct.setDryMix((float) Math.max(-2, Math.min(2, value)));
-        } else if (lowParam.equals("wet mix")) {
-            this.struct.setWetMix((float) Math.max(-2, Math.min(2, value)));
-        } else if (lowParam.equals("feedback")) {
-            this.struct.setFeedback((float) Math.max(-1, Math.min(1, value)));
-        } else if (lowParam.contains("delay")) {
-            this.struct.setDelay((float) Math.max(0, Math.min(6, value)));
+        
+        if (this.params.containsKey(lowParam)) {
+            EffectParameter paramObject = this.params.get(lowParam);
+            
+            paramObject.setValue(value);
+            
+            if (lowParam.equals("dry mix")) {
+                this.struct.setDryMix((float) paramObject.getValue());
+            } else if (lowParam.equals("wet mix")) {
+                this.struct.setWetMix((float) paramObject.getValue());
+            } else if (lowParam.equals("feedback")) {
+                this.struct.setFeedback((float) paramObject.getValue());
+            } else if (lowParam.equals("delay")) {
+                this.struct.setDelay((float) paramObject.getValue());
+            }
         }
+        
+        this.updateEffect();
+    }
+
+    @Override
+    public void updateParameters() {
+        this.params.get("dry mix").setValue(this.struct.getDryMix());
+        this.params.get("wet mix").setValue(this.struct.getWetMix());
+        this.params.get("feedback").setValue(this.struct.getFeedback());
+        this.params.get("delay").setValue(this.struct.getDelay());
     }
 }

@@ -3,6 +3,7 @@ package jcue.domain.audiocue.effect;
 import java.util.ArrayList;
 import java.util.Iterator;
 import jcue.domain.audiocue.AudioCue;
+import jouvieje.bass.Bass;
 import jouvieje.bass.structures.HFX;
 
 /**
@@ -34,7 +35,11 @@ public class EffectRack {
     private void addEffect(AbstractEffect effect, int priority) {
         if (this.cue != null) {
             ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), priority);
+            
             effect.setHandles(handles);
+            Bass.BASS_FXGetParameters(handles.get(0), effect.getEffectStruct());
+            effect.updateParameters();
+            
             this.effects.add(effect);
         }
     }
@@ -73,5 +78,9 @@ public class EffectRack {
         }
         
         this.effects.clear();
+    }
+    
+    public int size() {
+        return this.effects.size();
     }
 }

@@ -1,6 +1,7 @@
 package jcue.domain.audiocue.effect;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import jouvieje.bass.Bass;
 import jouvieje.bass.structures.HFX;
 import jouvieje.bass.utils.Pointer;
@@ -15,13 +16,14 @@ public abstract class AbstractEffect {
     private Pointer effectStruct;
     
     protected int type;
+    
+    protected LinkedHashMap<String, EffectParameter> params;
 
     public AbstractEffect(int type) {
         this.type = type;
+        this.params = new LinkedHashMap<String, EffectParameter>();
     }
     
-    
-
     public ArrayList<HFX> getHandles() {
         return handles;
     }
@@ -50,8 +52,38 @@ public abstract class AbstractEffect {
         }
     }
     
-    public abstract String[] getParameters();
-    public abstract double getParameter(String param);
-    public abstract void setParameter(String param, double value);
+    public ArrayList<EffectParameter> getParameters() {
+        return new ArrayList<EffectParameter>(this.params.values());
+    }
+    
+    public ArrayList<String> getParameterKeys() {
+        return new ArrayList<String>(this.params.keySet());
+    }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (EffectParameter ep : this.params.values()) {
+            sb.append(ep);
+            sb.append("\n");
+        }
+        
+        return sb.toString();
+    }
+    
+    
+    
+    public EffectParameter getParameter(String param) {
+        String lowParam = param.toLowerCase();
+        
+        if (this.params.containsKey(lowParam)) {
+            return this.params.get(lowParam);
+        }
+
+        return null;
+    }
+    
+    public abstract void setParameter(String param, double value);
+    public abstract void updateParameters();
 }

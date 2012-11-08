@@ -16,33 +16,33 @@ public class ReverbEffect extends AbstractEffect {
 
         this.struct = BASS_BFX_REVERB.allocate();
         super.setEffectStruct(struct);
-    }
-
-    @Override
-    public String[] getParameters() {
-        String[] result = {"Level", "Delay"};
-        return result;
-    }
-
-    @Override
-    public double getParameter(String param) {
-        if (param.toLowerCase().equals("level")) {
-            return this.struct.getLevel();
-        } else if (param.toLowerCase().equals("delay")) {
-            return this.struct.getDelay();
-        }
-
-        return 0;
+        
+        this.params.put("level", new EffectParameter("Level", "", 0, 0.9, "double"));
+        this.params.put("delay", new EffectParameter("Delay", "ms", 1200, 10000, "int"));
     }
 
     @Override
     public void setParameter(String param, double value) {
-        if (param.toLowerCase().equals("level")) {
-            this.struct.setLevel((float) Math.max(0, value));
-        } else if (param.toLowerCase().equals("delay")) {
-            this.struct.setDelay((int) Math.max(1200, Math.min(10000, value)));
+        String lowParam = param.toLowerCase();
+        
+        if (this.params.containsKey(lowParam)) {
+            EffectParameter paramObject = this.params.get(lowParam);
+            
+            paramObject.setValue(value);
+        
+            if (param.toLowerCase().equals("level")) {
+                this.struct.setLevel((float) paramObject.getValue());
+            } else if (param.toLowerCase().equals("delay")) {
+                this.struct.setDelay((int) paramObject.getValue());
+            }
         }
 
         this.updateEffect();
+    }
+
+    @Override
+    public void updateParameters() {
+        this.params.get("level").setValue(this.struct.getLevel());
+        this.params.get("delay").setValue(this.struct.getDelay());
     }
 }
