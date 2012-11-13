@@ -46,6 +46,9 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     
     private JButton playButton, pauseButton, stopButton;
     
+    private JButton effectRackButton;
+    private EffectRackWindow rackWindow;
+    
     private JLabel deviceLabel;
     private JComboBox deviceSelect;
     private ComboBoxModel deviceSelectModel;
@@ -154,6 +157,13 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.stopButton.addActionListener(this);
         //**************
         
+        //Effect rack
+        this.effectRackButton = new JButton("Effect rack");
+        this.effectRackButton.setActionCommand("effectRack");
+        this.effectRackButton.addActionListener(this);
+        
+        this.rackWindow = new EffectRackWindow();
+        
         //Adding outputs
         this.deviceLabel = new JLabel("Device:");
         
@@ -206,6 +216,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         transportPanel.add(this.playButton);
         transportPanel.add(this.pauseButton);
         transportPanel.add(this.stopButton);
+        transportPanel.add(this.effectRackButton);
         
         this.add(transportPanel, "span 3, wrap");
         
@@ -340,6 +351,9 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             this.cue.addOutput(sd);
             this.updateDevicesPanel();
+        } else if (command.equals("effectRack")) {
+            this.rackWindow.setCue(this.cue);
+            this.rackWindow.setVisible(true);
         }
     }
 

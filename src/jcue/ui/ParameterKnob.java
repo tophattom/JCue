@@ -35,7 +35,7 @@ public class ParameterKnob extends JPanel implements PropertyChangeListener {
         valueFormat.setMaximumFractionDigits(2);
         
         this.valueField = new JFormattedTextField(valueFormat);
-        this.valueField.setColumns(5);
+        this.valueField.setColumns(6);
         this.valueField.setValue(param.getValue());
         this.valueField.addPropertyChangeListener(this);
         
@@ -56,8 +56,11 @@ public class ParameterKnob extends JPanel implements PropertyChangeListener {
         this.knob.setValue(this.param.getValue());
         this.valueField.setValue(this.param.getValue());
     }
-    
-    
+
+    public EffectParameter getParam() {
+        return param;
+    }
+   
     @Override
     public void propertyChange(PropertyChangeEvent pce) {
         Object source = pce.getSource();
@@ -73,6 +76,8 @@ public class ParameterKnob extends JPanel implements PropertyChangeListener {
             this.param.setValue(value.doubleValue());
             this.knob.setValue(value.doubleValue());
         }
+        
+        this.firePropertyChange("effectProperty", null, null);
     }
     
 }

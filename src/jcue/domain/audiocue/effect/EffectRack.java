@@ -51,6 +51,10 @@ public class EffectRack {
             this.effects.remove(effect);
         }
     }
+
+    public ArrayList<AbstractEffect> getEffects() {
+        return effects;
+    }
     
     public void update() {
         ArrayList<AbstractEffect> tmpEffects = new ArrayList<AbstractEffect>(this.effects);
