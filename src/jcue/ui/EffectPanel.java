@@ -1,12 +1,14 @@
 package jcue.ui;
 
-import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EffectParameter;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -16,16 +18,25 @@ public class EffectPanel extends JPanel implements PropertyChangeListener {
     
     private AbstractEffect effect;
     
+    private JCheckBox active;
     private ArrayList<ParameterKnob> knobs;
 
     public EffectPanel(AbstractEffect effect) {
-        super(new FlowLayout(FlowLayout.LEFT));
+        super(new MigLayout("fillx"));
+        this.setBorder(BorderFactory.createTitledBorder("Effect"));
         
         this.effect = effect;
         
+        this.active = new JCheckBox("Active");
         this.knobs = new ArrayList<ParameterKnob>();
         
-        for (EffectParameter ep : effect.getParameters()) {
+        addComponents();
+    }
+    
+    private void addComponents() {
+        this.add(this.active);
+        
+        for (EffectParameter ep : this.effect.getParameters()) {
             ParameterKnob pk = new ParameterKnob(ep);
             pk.addPropertyChangeListener(this);
             this.add(pk);
@@ -38,11 +49,9 @@ public class EffectPanel extends JPanel implements PropertyChangeListener {
         this.effect = effect;
         
         this.removeAll();
+        this.knobs.clear();
         
-        for (EffectParameter ep : this.effect.getParameters()) {
-            ParameterKnob pk = new ParameterKnob(ep);
-            this.add(pk);
-        }
+        addComponents();
     }
 
     @Override
