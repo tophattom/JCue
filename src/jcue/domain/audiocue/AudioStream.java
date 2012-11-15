@@ -364,8 +364,10 @@ public class AudioStream {
         ArrayList<HFX> result = new ArrayList<HFX>();
         
         for (VirtualOutput vo : this.outputs.values()) {
-            HFX handle = Bass.BASS_ChannelSetFX(vo.getStream().asInt(), type, priority);
-            result.add(handle);
+            if (vo.getStream() != null) {
+                HFX handle = Bass.BASS_ChannelSetFX(vo.getStream().asInt(), type, priority);
+                result.add(handle);
+            }
         }
         
         return result;

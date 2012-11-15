@@ -1,9 +1,13 @@
 package jcue.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import jcue.domain.audiocue.effect.AbstractEffect;
@@ -14,12 +18,16 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Jaakko
  */
-public class EffectPanel extends JPanel implements PropertyChangeListener {
+public class EffectPanel extends JPanel implements PropertyChangeListener, ActionListener {
     
     private AbstractEffect effect;
     
     private JCheckBox active;
     private ArrayList<ParameterKnob> knobs;
+    
+    private JButton removeButton;
+    
+    private static final ImageIcon removeIcon = new ImageIcon("images/remove_small.png");
 
     public EffectPanel(AbstractEffect effect) {
         super(new MigLayout("fillx"));
@@ -30,12 +38,13 @@ public class EffectPanel extends JPanel implements PropertyChangeListener {
         this.active = new JCheckBox("Active");
         this.knobs = new ArrayList<ParameterKnob>();
         
+        this.removeButton = new JButton(removeIcon);
+        this.removeButton.addActionListener(this);
+        
         addComponents();
     }
     
     private void addComponents() {
-        this.add(this.active);
-        
         for (EffectParameter ep : this.effect.getParameters()) {
             ParameterKnob pk = new ParameterKnob(ep);
             pk.addPropertyChangeListener(this);
@@ -43,6 +52,9 @@ public class EffectPanel extends JPanel implements PropertyChangeListener {
             
             this.knobs.add(pk);
         }
+        
+        this.add(this.active, "newline, split 2, span");
+        this.add(this.removeButton);
     }
 
     public void setEffect(AbstractEffect effect) {
@@ -64,6 +76,15 @@ public class EffectPanel extends JPanel implements PropertyChangeListener {
                 EffectParameter ep = knob.getParam();
                 this.effect.setParameter(ep.getName().toLowerCase(), ep.getValue());
             }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        Object source = ae.getSource();
+        
+        if (source == this.removeButton) {
+            this.firePropertyChange("removeEffect", null, this.effect);
         }
     }
 }
