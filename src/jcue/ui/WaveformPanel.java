@@ -12,14 +12,14 @@ import jcue.domain.audiocue.AudioCue;
  *
  * @author oppilas
  */
-public class WaveformPanel extends JPanel implements MouseMotionListener, MouseListener {
+public class WaveformPanel extends JPanel implements MouseMotionListener, MouseListener, Runnable {
     
     public static final int PREF_HEIGHT = 170;
     
     public static final Color backgroundColor = new Color(64, 64, 64);
     public static final Color waveformColor = new Color(200, 200, 250);
-    private final Color inOutColor = Color.YELLOW;
-    private final Color positionColor = Color.RED;
+    private static final Color inOutColor = Color.YELLOW;
+    private static final Color positionColor = Color.RED;
     
     private static final int DIR_RIGHT = 1;
     private static final int DIR_LEFT = -1;
@@ -29,8 +29,11 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     
     private AudioCue cue;
     
-    private int inX, outX;
+    private int inX, outX, posX;
     private int dragging;
+    
+    private Thread updater;
+    private boolean running = false;
 
     public WaveformPanel() {
         super();
@@ -40,6 +43,32 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
         
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
+    }
+    
+    public void start() {
+        if (this.updater == null) {
+            this.updater = new Thread(this, "WaveformPanel updater");
+        }
+        
+        this.running = true;
+        this.updater.start();
+    }
+    
+    public void stop() {
+        this.running = false;
+    }
+    
+    @Override
+    public void run() {
+        while (running) {
+            this.repaint();
+            
+            try {
+                Thread.sleep(5);
+            } catch (Exception e) {}
+        }
+        
+        this.updater = null;
     }
 
     public void setCue(AudioCue cue) {
@@ -75,19 +104,26 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
         
         //In and out marker drawing
         if (this.cue != null && this.cue.getAudio() != null) {
-            this.inX = (int) ((double) this.getWidth() * (this.cue.getInPos() / this.cue.getAudio().getLength()));
-            this.outX = (int) ((double) this.getWidth() * (this.cue.getOutPos() / this.cue.getAudio().getLength()));
+            double length = this.cue.getAudio().getLength();
+            
+            this.inX = (int) ((double) width * (this.cue.getInPos() / length));
+            this.outX = (int) ((double) width * (this.cue.getOutPos() / length));
+            this.posX = (int) ((double) width * (this.cue.getAudio().getPosition() / length));
         }
         
-        g2d.setColor(this.inOutColor);
+        g2d.setColor(inOutColor);
         
         //In marker
         g2d.drawLine(inX, 0, inX, height);
         g2d.fillPolygon(this.getMarkerTriangle(inX, DIR_RIGHT));
         
+        //Out marker
         g2d.drawLine(outX, 0, outX, height);
         g2d.fillPolygon(this.getMarkerTriangle(outX, DIR_LEFT));
-        //}
+        
+        //Position marker
+        g2d.setColor(positionColor);
+        g2d.drawLine(posX, 0, posX, height);
     }
 
     private Polygon getMarkerTriangle(int x, int dir) {

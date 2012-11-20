@@ -326,16 +326,22 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             this.playButton.setSelected(true);
             this.pauseButton.setSelected(false);
+            
+            this.waveform.start();
         } else if (command.equals("pause")) {
             this.cue.pause();
             
             this.playButton.setSelected(false);
             this.pauseButton.setSelected(true);
+            
+            this.waveform.stop();
         } else if (command.equals("stop")) {
             this.cue.stop();
             
             this.playButton.setSelected(false);
             this.pauseButton.setSelected(false);
+            
+            this.waveform.stop();
         } else if (command.equals("addDevice")) {
             SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
             
