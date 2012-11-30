@@ -11,6 +11,7 @@ import jcue.domain.SoundDevice;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
+import jouvieje.bass.structures.BASS_CHANNELINFO;
 import jouvieje.bass.structures.HSTREAM;
 import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.BufferUtils;
@@ -24,6 +25,8 @@ public class AudioStream {
 
     private TreeMap<SoundDevice, VirtualOutput> outputs;
     private HSTREAM masterStream;
+    
+    private BASS_CHANNELINFO streamInfo;
     
     private HSYNC stopSync;
     private String filePath;
@@ -76,6 +79,9 @@ public class AudioStream {
         //Get information on the stream
         HSTREAM tmpStream = this.masterStream;
         if (tmpStream != null) {
+            this.streamInfo = BASS_CHANNELINFO.allocate();
+            Bass.BASS_ChannelGetInfo(tmpStream.asInt(), streamInfo);
+            
             double bytePos = Bass.BASS_ChannelGetLength(tmpStream.asInt(), BASS_POS.BASS_POS_BYTE);
             this.length = Bass.BASS_ChannelBytes2Seconds(tmpStream.asInt(), (long) bytePos);
 
@@ -260,6 +266,11 @@ public class AudioStream {
         return filePath;
     }
 
+    public BASS_CHANNELINFO getStreamInfo() {
+        return streamInfo;
+    }
+
+    
     /**
      * Returns floating point data of the audio.
      *
