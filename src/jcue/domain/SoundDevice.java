@@ -3,6 +3,7 @@ package jcue.domain;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.BASS_DEVICE_STATUS;
 import jouvieje.bass.structures.BASS_DEVICEINFO;
+import jouvieje.bass.structures.BASS_INFO;
 
 /**
  * Represents a physical output device.
@@ -17,7 +18,9 @@ public class SoundDevice implements Comparable<SoundDevice> {
     private double volume;
     
     private boolean autoInclude;
-
+    
+    private BASS_INFO bassInfo;
+    
     public SoundDevice(String name, int id) {
         this.name = name;
         this.id = id;
@@ -84,6 +87,9 @@ public class SoundDevice implements Comparable<SoundDevice> {
         if (!BASS_Init) {
             throw new Exception("Device " + this.id + " couldn't be initialized! BASS error code: " + Bass.BASS_ErrorGetCode());
         }
+        
+        this.bassInfo = BASS_INFO.allocate();
+        Bass.BASS_GetInfo(bassInfo);
     }
     
     public void setSampleRate(int sampleRate) throws Exception {
@@ -103,6 +109,14 @@ public class SoundDevice implements Comparable<SoundDevice> {
         return name;
     }
 
+    public int getSpeakers() {
+        if (this.bassInfo != null) {
+            return this.bassInfo.getSpeakers();
+        }
+        
+        return 0;
+    }
+    
     /**
      * Sets the auto include status. Auto include devices
      * are automatically added to new cues.
