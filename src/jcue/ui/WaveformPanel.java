@@ -28,6 +28,7 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     private static final int DRAG_OUT = 2;
     
     private AudioCue cue;
+    private AudioCueUI cueUI;
     
     private int inX, outX, posX;
     private int dragging;
@@ -35,11 +36,12 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     private Thread updater;
     private boolean running = false;
 
-    public WaveformPanel() {
+    public WaveformPanel(AudioCueUI cueUI) {
         super();
         super.setPreferredSize(new Dimension(0, PREF_HEIGHT));
         
         this.dragging = 0;
+        this.cueUI = cueUI;
         
         this.addMouseMotionListener(this);
         this.addMouseListener(this);
@@ -62,6 +64,7 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     public void run() {
         while (running) {
             this.repaint();
+            this.cueUI.setPositionFieldValue(this.cue.getAudio().getPosition());
             
             try {
                 Thread.sleep(5);
