@@ -359,6 +359,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             this.waveform.stop();
             this.waveform.repaint();
+            
+            this.posField.setValue(this.cue.getInPos());
         } else if (command.equals("addDevice")) {
             SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
             
