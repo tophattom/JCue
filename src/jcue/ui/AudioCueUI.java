@@ -46,6 +46,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     
     private JButton playButton, pauseButton, stopButton;
     
+    private JFormattedTextField posField;
+    
     private JLabel deviceLabel;
     private JComboBox deviceSelect;
     private ComboBoxModel deviceSelectModel;
@@ -130,7 +132,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         //*********
 
         //Waveform
-        this.waveform = new WaveformPanel();
+        this.waveform = new WaveformPanel(this);
         this.waveform.addPropertyChangeListener(this);
         //***********
 
@@ -154,6 +156,12 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.stopButton.setActionCommand("stop");
         this.stopButton.addActionListener(this);
         //**************
+        
+        //Position field
+        this.posField = new JFormattedTextField(new TimeFormatter());
+        
+        this.posField.setColumns(8);
+        //************
         
         //Adding outputs
         this.deviceLabel = new JLabel("Device:");
@@ -204,11 +212,13 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         //Create a panel for laying out buttons
         JPanel transportPanel = new JPanel();
         transportPanel.setLayout(new BoxLayout(transportPanel, BoxLayout.X_AXIS));
-        transportPanel.add(this.playButton);
+        transportPanel.add(this.playButton, "split 3");
         transportPanel.add(this.pauseButton);
         transportPanel.add(this.stopButton);
         
-        this.add(transportPanel, "span 3, wrap");
+        this.add(transportPanel, "span, growx, split 2");
+        
+        this.add(this.posField, "align right, wrap");
         
         this.add(this.volumeLabel, "align label");
         this.add(this.volumeSlider, "span 3, growx");
@@ -278,6 +288,10 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
 
     private void setLengthFieldValue(double value) {
         this.lengthField.setValue(value);
+    }
+    
+    public void setPositionFieldValue(double value) {
+        this.posField.setValue(value);
     }
 
     @Override
