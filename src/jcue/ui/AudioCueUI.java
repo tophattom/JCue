@@ -114,12 +114,14 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.fadeInLabel = new JLabel("Fade in:");
         this.fadeInField = new JFormattedTextField(fadeInFormat);
         this.fadeInField.setColumns(5);
+        this.fadeInField.addPropertyChangeListener(this);
         
         NumberFormat fadeOutFormat = (NumberFormat) fadeInFormat.clone();
         
         this.fadeOutLabel = new JLabel("Fade out:");
         this.fadeOutField = new JFormattedTextField(fadeOutFormat);
         this.fadeOutField.setColumns(5);
+        this.fadeOutField.addPropertyChangeListener(this);
         //********
 
         //Loop controls
@@ -382,6 +384,18 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         } else if (source == this.outField) {
             if (this.outField.getValue() != null) {
                 this.cue.setOutPos((Double) this.outField.getValue());
+            }
+        } else if (source == this.fadeInField) {
+            Number value = (Number) this.fadeInField.getValue();
+            
+            if (this.cue != null) {
+                this.cue.setFadeIn(value.doubleValue());
+            }
+        } else if (source == this.fadeOutField) {
+            Number value = (Number) this.fadeOutField.getValue();
+            
+            if (this.cue != null) {
+                this.cue.setFadeOut(value.doubleValue());
             }
         } else if (source == this.waveform) {
             String propertyName = pce.getPropertyName();

@@ -1,5 +1,6 @@
 package jcue.domain.audiocue;
 
+import java.awt.geom.QuadCurve2D;
 import java.io.File;
 import java.util.ArrayList;
 import jcue.domain.AbstractCue;
@@ -7,6 +8,7 @@ import jcue.domain.CueList;
 import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.domain.SoundDevice;
+import jcue.domain.fadecue.ParameterEnvelope;
 
 /**
  * 
@@ -17,7 +19,9 @@ public class AudioCue extends AbstractCue {
 
     private AudioStream audio;
     private double inPos, outPos;
+    
     private double fadeIn, fadeOut;
+    private ParameterEnvelope fadeInCurve, fadeOutCurve;
     
     private double volume, pan;
     
@@ -74,6 +78,12 @@ public class AudioCue extends AbstractCue {
                     this.audio.setMasterVolume(this.volume);
                 }
                 
+                //If fade in time has been set, start the fade
+                if (this.fadeInCurve != null) {
+                    this.audio.setMasterVolumeDirect(0);
+                    fadeInCurve.start();
+                }
+                
                 this.audio.play();              //Start playing the audio
             }
         }
@@ -95,6 +105,14 @@ public class AudioCue extends AbstractCue {
         if (this.audio != null) {
             this.audio.stop();
             this.audio.setPosition(this.inPos);
+        }
+        
+        if (this.fadeInCurve != null) {
+            fadeInCurve.stop();
+        }
+
+        if (this.fadeOutCurve != null) {
+            fadeOutCurve.stop();
         }
     }
 
@@ -133,10 +151,35 @@ public class AudioCue extends AbstractCue {
     
     public void setFadeIn(double fadeIn) {
         this.fadeIn = fadeIn;
+        
+        if (fadeIn > 0) {
+            if (this.fadeInCurve == null) {
+                fadeInCurve = new ParameterEnvelope();
+                
+                fadeInCurve.setTargetCue(this);
+            }
+            
+            this.updateFadeCurves();
+        } else {
+            fadeInCurve = null;
+        }
     }
 
     public void setFadeOut(double fadeOut) {
         this.fadeOut = fadeOut;
+        
+        if (fadeOut > 0) {
+            if (this.fadeOutCurve == null) {
+                fadeOutCurve = new ParameterEnvelope();
+                
+                fadeOutCurve.setTargetCue(this);
+            }
+            
+            this.updateFadeCurves();
+            
+        } else {
+            fadeOutCurve = null;
+        }
     }
 
     public void setInPos(double inPos) {
@@ -146,6 +189,8 @@ public class AudioCue extends AbstractCue {
     public void setOutPos(double outPos) {
         this.outPos = outPos;
         this.audio.setOutPosition(outPos, this);
+        
+        this.updateFadeCurves();
     }
 
     public void setPan(double pan) {
@@ -155,6 +200,8 @@ public class AudioCue extends AbstractCue {
     public void setVolume(double volume) {
         this.volume = volume;
         this.audio.setMasterVolume(volume);
+        
+        this.updateFadeCurves();
     }
     
     public void setDeviceVolume(SoundDevice sd, double volume) {
@@ -188,5 +235,23 @@ public class AudioCue extends AbstractCue {
         cl.fireContentsChanged(this, cl.getCueIndex(this) - 1, cl.getCueIndex(this));
         
         return true;
+    }
+    
+    private void updateFadeCurves() {
+        double midY = this.volume / 2.0;
+        
+        if (this.fadeInCurve != null) {
+            QuadCurve2D inCurve = fadeInCurve.getCurves().get(0);
+            fadeInCurve.setCurve(inCurve, 0, 1, 0.5, midY, 1, 1.0 - this.volume, false);
+            fadeInCurve.setDuration(this.fadeIn);
+        }
+        
+        if (this.fadeOutCurve != null) {
+            QuadCurve2D outCurve = fadeOutCurve.getCurves().get(0);
+            fadeOutCurve.setCurve(outCurve, 0, 1.0 - this.volume, 0.5, midY, 1, 1, false);
+            fadeOutCurve.setDuration(this.fadeOut);
+            
+            this.audio.setFadeOut(this.outPos - this.fadeOut, fadeOutCurve);
+        }
     }
 }

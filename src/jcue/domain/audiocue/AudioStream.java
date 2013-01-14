@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.TreeMap;
 import jcue.domain.AbstractCue;
 import jcue.domain.SoundDevice;
+import jcue.domain.fadecue.ParameterEnvelope;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
@@ -28,7 +29,7 @@ public class AudioStream {
     
     private BASS_CHANNELINFO streamInfo;
     
-    private HSYNC stopSync;
+    private HSYNC stopSync, fadeOutSync;
     private String filePath;
     
     private double length;
@@ -245,6 +246,18 @@ public class AudioStream {
 
             long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.masterStream.asInt(), seconds);
             this.stopSync = Bass.BASS_ChannelSetSync(this.masterStream.asInt(), BASS_SYNC.BASS_SYNC_POS, bytePos, new StopCallback(cue), null);
+        }
+    }
+    
+    public void setFadeOut(double startPos, ParameterEnvelope curve) {
+        if (this.masterStream != null) {
+            if (this.fadeOutSync != null) {
+                Bass.BASS_ChannelRemoveSync(this.masterStream.asInt(), this.fadeOutSync);
+                this.fadeOutSync = null;
+            }
+            
+            long bytePos = Bass.BASS_ChannelSeconds2Bytes(this.masterStream.asInt(), startPos);
+            this.fadeOutSync = Bass.BASS_ChannelSetSync(this.masterStream.asInt(), BASS_SYNC.BASS_SYNC_POS, bytePos, new FadeOutCallback(curve), null);
         }
     }
 
