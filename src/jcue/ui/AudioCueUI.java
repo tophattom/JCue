@@ -13,6 +13,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
 import jcue.domain.AbstractCue;
+import jcue.domain.CueState;
 import jcue.domain.DeviceManager;
 import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.AudioCue;
@@ -161,6 +162,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.posField = new JFormattedTextField(new TimeFormatter());
         
         this.posField.setColumns(8);
+        this.posField.setEditable(false);
         //************
         
         //Adding outputs
@@ -356,6 +358,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             this.pauseButton.setSelected(false);
             
             this.waveform.stop();
+            this.waveform.repaint();
         } else if (command.equals("addDevice")) {
             SoundDevice sd = (SoundDevice) this.deviceSelect.getSelectedItem();
             
@@ -385,6 +388,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
                 this.inField.setValue(pce.getNewValue());
             } else if (propertyName.equals("outPos")) {
                 this.outField.setValue(pce.getNewValue());
+            } else if (propertyName.equals("ctiPos")) {
+                this.posField.setValue(pce.getNewValue());
             }
         }
         

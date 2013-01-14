@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import jcue.domain.CueState;
 import jcue.domain.audiocue.AudioCue;
 
 /**
@@ -26,6 +27,7 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     
     private static final int DRAG_IN = 1;
     private static final int DRAG_OUT = 2;
+    private static final int DRAG_POS = 3;
     
     private AudioCue cue;
     private AudioCueUI cueUI;
@@ -118,28 +120,30 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
         
         //In marker
         g2d.drawLine(inX, 0, inX, height);
-        g2d.fillPolygon(this.getMarkerTriangle(inX, DIR_RIGHT));
+        g2d.fillPolygon(getMarkerTriangle(inX, DIR_RIGHT));
         
         //Out marker
         g2d.drawLine(outX, 0, outX, height);
-        g2d.fillPolygon(this.getMarkerTriangle(outX, DIR_LEFT));
+        g2d.fillPolygon(getMarkerTriangle(outX, DIR_LEFT));
         
         //Position marker
         g2d.setColor(positionColor);
         g2d.drawLine(posX, 0, posX, height);
-    }
-
-    private Polygon getMarkerTriangle(int x, int dir) {
-        Polygon result = new Polygon();
-        result.addPoint(x, 0);
-        result.addPoint(x + (10 * dir), 7);
-        result.addPoint(x, 14);
-        
-        return result;
+        g2d.fillPolygon(getPosTriangle(posX));
     }
 
     @Override
     public void mouseDragged(MouseEvent me) {
+        if (this.dragging == DRAG_POS) {
+            this.posX = Math.max(0, Math.min(this.getWidth(), me.getX()));
+            
+            double oldPos = this.cue.getAudio().getPosition();
+            double newPos = this.cue.getAudio().getLength() * ((double) this.posX / this.getWidth());
+            this.cue.getAudio().setPosition(newPos);
+            this.cue.setState(CueState.PAUSED);
+            
+            this.firePropertyChange("ctiPos", oldPos, newPos);
+        }
         if (this.dragging == DRAG_IN) {
             this.inX = Math.max(0, Math.min(this.getWidth(), me.getX()));
             
@@ -174,7 +178,9 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
     public void mousePressed(MouseEvent me) {
         int mX = me.getX();
         
-        if (Math.abs(mX - this.inX) < 10) {
+        if (Math.abs(mX - this.posX) < 10) {
+            this.dragging = DRAG_POS;
+        } else if (Math.abs(mX - this.inX) < 10) {
             this.dragging = DRAG_IN;
         } else if (Math.abs(mX - this.outX) < 10) {
             this.dragging = DRAG_OUT;
@@ -192,5 +198,23 @@ public class WaveformPanel extends JPanel implements MouseMotionListener, MouseL
 
     @Override
     public void mouseExited(MouseEvent me) {
+    }
+    
+    private static Polygon getMarkerTriangle(int x, int dir) {
+        Polygon result = new Polygon();
+        result.addPoint(x, 0);
+        result.addPoint(x + (10 * dir), 7);
+        result.addPoint(x, 14);
+        
+        return result;
+    }
+    
+    private static Polygon getPosTriangle(int x) {
+        Polygon result = new Polygon();
+        result.addPoint(x - 7, 0);
+        result.addPoint(x + 7, 0);
+        result.addPoint(x, 14);
+        
+        return result;
     }
 }
