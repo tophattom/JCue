@@ -51,6 +51,9 @@ public class EditorListener implements ActionListener, ListSelectionListener {
             this.cueList.addCue(CueType.NOTE);
             
             this.list.setSelectedIndex(this.cueList.getSize() - 1);
+        } else if (command.equals("deleteCue")) {
+            this.cueList.deleteCue(window.getCurrentCue());
+            window.setUI(null);
         }
     }
 
@@ -62,6 +65,7 @@ public class EditorListener implements ActionListener, ListSelectionListener {
             if (selection instanceof AbstractCue) {
                 AbstractCue cue = (AbstractCue) list.getSelectedValue();
                 this.window.setUI(cue);
+                this.window.setCurrentCue(cue);
             }
         }
     }

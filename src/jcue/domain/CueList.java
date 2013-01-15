@@ -96,6 +96,17 @@ public class CueList extends AbstractTableModel implements ListModel {
         //Increment the "id" counter
         this.counter++;
     }
+    
+    public void deleteCue(AbstractCue cue) {
+        if (this.cues.contains(cue)) {
+            int index = getCueIndex(cue);
+            
+            this.fireIntervalRemoved(cue, index - 1, index);
+            super.fireTableRowsDeleted(index - 1, index);
+            
+            this.cues.remove(cue);
+        }
+    }
 
     /**
      * Get cue by its index.

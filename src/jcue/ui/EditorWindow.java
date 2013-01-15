@@ -1,6 +1,7 @@
 package jcue.ui;
 
 import java.awt.*;
+import java.io.File;
 import javax.swing.*;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
@@ -22,9 +23,6 @@ public class EditorWindow extends JFrame {
     private JList cueList;
     private JButton upButton, downButton, deleteButton;
     
-    private JTabbedPane editorTabs;
-    private JPanel effectPanel;
-    
     private AudioCueUI audioPanel;
     private EventCueUI eventPanel;
     private FadeCueUI fadePanel;
@@ -32,7 +30,12 @@ public class EditorWindow extends JFrame {
     private JPanel uiArea;
     
     private CueList cues;
+    private AbstractCue currentCue;
     
+    private static final ImageIcon upIcon = new ImageIcon("images/up.png");
+    private static final ImageIcon downIcon = new ImageIcon("images/down.png");
+    private static final ImageIcon deleteIcon = new ImageIcon("images/remove_small.png");
+            
     public EditorWindow(CueList cues) {
         super("Cue - Editor");
         this.setPreferredSize(new Dimension(960, 720));
@@ -85,9 +88,11 @@ public class EditorWindow extends JFrame {
         //*************
 
         //Buttons for managing cue list
-        this.upButton = new JButton("^");
-        this.downButton = new JButton("V");
-        this.deleteButton = new JButton("X");
+        this.upButton = new JButton(upIcon);
+        this.downButton = new JButton(downIcon);
+        
+        this.deleteButton = new JButton(deleteIcon);
+        this.deleteButton.setActionCommand("deleteCue");
         //**********
         
         //Add buttons to a new panel for layout
@@ -96,10 +101,21 @@ public class EditorWindow extends JFrame {
         top.add(this.eventButton);
         top.add(this.fadeButton);
         
+        //Left panel
+        JPanel left = new JPanel(new MigLayout("flowy, insets 0, fill"));
+        left.add(this.cueList, "grow, split");
+        
+        JPanel leftBot = new JPanel(new MigLayout("fill, insets 0"));
+        leftBot.add(upButton, "split 2");
+        leftBot.add(downButton);
+        leftBot.add(deleteButton, "align right");
+        
+        left.add(leftBot, "growx");
+        
         //Add everything to window
         container.setLayout(new MigLayout("fill, insets panel"));
         container.add(top, "dock north");
-        container.add(this.cueList, "dock west, gap 6px 0 0 6px");
+        container.add(left, "dock west, gap 6px 0 0 6px");
         container.add(scrollPane, "grow");
     }
 
@@ -112,6 +128,9 @@ public class EditorWindow extends JFrame {
         this.eventButton.addActionListener(editorListener);
         this.fadeButton.addActionListener(editorListener);
         
+        //Buttons for re-arranging cues
+        this.deleteButton.addActionListener(editorListener);
+        
         //Editor list
         this.cueList.addListSelectionListener(editorListener);
         
@@ -121,8 +140,14 @@ public class EditorWindow extends JFrame {
     }
     
     public void setUI(AbstractCue cue) {
-        CueType type = cue.getType();
         CardLayout cl = (CardLayout) this.uiArea.getLayout();
+        
+        if (cue == null) {
+            cl.show(this.uiArea, "empty");
+            return;
+        }
+        
+        CueType type = cue.getType();
         
         if (type == CueType.AUDIO) {
             cl.show(this.uiArea, "audio");
@@ -140,5 +165,13 @@ public class EditorWindow extends JFrame {
             FadeCue fc = (FadeCue) cue;
             this.fadePanel.setCurrentCue(fc);
         }
+    }
+    
+    public void setCurrentCue(AbstractCue cue) {
+        this.currentCue = cue;
+    }
+    
+    public AbstractCue getCurrentCue() {
+        return this.currentCue;
     }
 }
