@@ -23,7 +23,6 @@ public class CueList extends AbstractTableModel implements ListModel {
 
     protected EventListenerList listListenerList = new EventListenerList();
     private ArrayList<AbstractCue> cues;
-    private AbstractCue currentCue;
     private int counter;
     private DeviceManager dm;
 
@@ -31,7 +30,6 @@ public class CueList extends AbstractTableModel implements ListModel {
         super();
         
         this.cues = new ArrayList<AbstractCue>();
-        this.currentCue = null;
 
         this.counter = 1;
 
@@ -107,15 +105,33 @@ public class CueList extends AbstractTableModel implements ListModel {
             this.cues.remove(cue);
         }
     }
+    
+    public void moveCue(AbstractCue cue, int newIndex) {
+        int size = cues.size();
+        int index = getCueIndex(cue);
+        
+        cues.remove(cue);
+        
+        if (newIndex < 0) {
+            cues.add(0, cue);
+        } else if (newIndex >= size) {
+            cues.add(cue);
+        } else {
+            cues.add(newIndex, cue);
+        }
+        
+        this.fireContentsChanged(cue, index, newIndex);
+        this.fireTableDataChanged();
+    }
 
     /**
      * Get cue by its index.
      * 
-     * @param pos index starting from 0
+     * @param index index starting from 0
      * @return cue at index
      */
-    public AbstractCue getCue(int pos) {
-        return this.cues.get(pos);
+    public AbstractCue getCue(int index) {
+        return this.cues.get(index);
     }
 
     /**

@@ -54,6 +54,18 @@ public class EditorListener implements ActionListener, ListSelectionListener {
         } else if (command.equals("deleteCue")) {
             this.cueList.deleteCue(window.getCurrentCue());
             window.setUI(null);
+        } else if (command.equals("moveUp")) {
+            AbstractCue cue = window.getCurrentCue();
+            int index = cueList.getCueIndex(cue);
+            
+            this.cueList.moveCue(cue, index - 1);
+            window.setSelectedIndex(index - 1);
+        } else if (command.equals("moveDown")) {
+            AbstractCue cue = window.getCurrentCue();
+            int index = cueList.getCueIndex(cue);
+            
+            this.cueList.moveCue(cue, index + 1);
+            window.setSelectedIndex(index + 1);
         }
     }
 

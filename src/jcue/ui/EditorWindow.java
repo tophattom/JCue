@@ -89,7 +89,10 @@ public class EditorWindow extends JFrame {
 
         //Buttons for managing cue list
         this.upButton = new JButton(upIcon);
+        this.upButton.setActionCommand("moveUp");
+        
         this.downButton = new JButton(downIcon);
+        this.downButton.setActionCommand("moveDown");
         
         this.deleteButton = new JButton(deleteIcon);
         this.deleteButton.setActionCommand("deleteCue");
@@ -130,6 +133,8 @@ public class EditorWindow extends JFrame {
         
         //Buttons for re-arranging cues
         this.deleteButton.addActionListener(editorListener);
+        this.upButton.addActionListener(editorListener);
+        this.downButton.addActionListener(editorListener);
         
         //Editor list
         this.cueList.addListSelectionListener(editorListener);
@@ -173,5 +178,9 @@ public class EditorWindow extends JFrame {
     
     public AbstractCue getCurrentCue() {
         return this.currentCue;
+    }
+    
+    public void setSelectedIndex(int index) {
+        this.cueList.setSelectedIndex(index);
     }
 }
