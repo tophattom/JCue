@@ -3,6 +3,7 @@ package jcue.domain.fadecue;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
+import jcue.domain.CueState;
 import jcue.domain.audiocue.AudioCue;
 import jcue.ui.CurvePanel;
 
@@ -37,11 +38,15 @@ public class ParameterEnvelope implements Runnable {
         this.updater.start();
         
         this.startTime = System.nanoTime();
+        
+        this.targetCue.setState(CueState.FADING);
     }
     
     public void stop() {
         this.running = false;
         this.updater = null;
+        
+        this.targetCue.setState(CueState.PLAYING);
     }
     
     @Override

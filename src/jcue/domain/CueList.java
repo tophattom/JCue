@@ -265,6 +265,13 @@ public class CueList extends AbstractTableModel implements ListModel {
                 AudioCue ac = (AudioCue) cue;
                 return ac.getState();
             }
+        } else if (i1 == 3) {
+            return cue.getStartMode();
+        } else if (i1 == 4) {
+            if (cue instanceof AudioCue) {
+                AudioCue ac = (AudioCue) cue;
+                return ac.getRemainingTime();
+            }
         }
         
         return null;

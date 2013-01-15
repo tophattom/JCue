@@ -144,6 +144,10 @@ public class AudioCue extends AbstractCue {
     public double getDeviceVolume(SoundDevice sd) {
         return this.audio.getDeviceVolume(sd);
     }
+    
+    public double getRemainingTime() {
+        return this.outPos - this.audio.getPosition();
+    }
 
     public AudioStream getAudio() {
         return audio;

@@ -9,8 +9,7 @@ public enum CueState {
     PLAYING("Playing"),
     STOPPED("Stopped"),
     PAUSED("Paused"),
-    FADING_IN("Fading in"),
-    FADING_OUT("Fading out"),
+    FADING("Fading"),
     WAITING("Waiting"),
     DONE("Done");
     
