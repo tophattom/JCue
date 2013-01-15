@@ -76,12 +76,12 @@ public class AudioCue extends AbstractCue {
                 if (this.state == CueState.STOPPED) {
                     this.audio.setPosition(this.inPos);
                     this.audio.setMasterVolume(this.volume);
-                }
-                
-                //If fade in time has been set, start the fade
-                if (this.fadeInCurve != null) {
-                    this.audio.setMasterVolumeDirect(0);
-                    fadeInCurve.start();
+                    
+                    //If fade in time has been set, start the fade
+                    if (this.fadeInCurve != null) {
+                        this.audio.setMasterVolumeDirect(0);
+                        fadeInCurve.start();
+                    }
                 }
                 
                 this.audio.play();              //Start playing the audio

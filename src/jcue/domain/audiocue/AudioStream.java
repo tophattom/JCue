@@ -336,7 +336,7 @@ public class AudioStream {
     
     public void setMasterVolumeDirect(double volume) {
         for (VirtualOutput vo : this.outputs.values()) {
-            vo.setVolumeDirect(this.volume * volume);
+            vo.updateVolume(volume);
         }
     }
     
