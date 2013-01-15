@@ -106,7 +106,11 @@ public class CueList extends AbstractTableModel implements ListModel {
         }
     }
     
-    public void moveCue(AbstractCue cue, int newIndex) {
+    public boolean moveCue(AbstractCue cue, int newIndex) {
+        if (cue == null) {
+            return false;
+        }
+        
         int size = cues.size();
         int index = getCueIndex(cue);
         
@@ -122,6 +126,8 @@ public class CueList extends AbstractTableModel implements ListModel {
         
         this.fireContentsChanged(cue, index, newIndex);
         this.fireTableDataChanged();
+        
+        return true;
     }
 
     /**
