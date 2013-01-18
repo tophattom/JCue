@@ -47,6 +47,20 @@
         <copy todir="${dist.dir}/images">
           <fileset dir="images/" />
         </copy>
+        
+        <!-- Create temporary Mac directory -->
+        <copy todir="${dist.dir}/mac/JCue">
+          <fileset dir="${dist.dir}">
+            <exclude name="win/" />
+            <exclude name="mac/" />
+            <exclude name="linux/" />
+          </fileset>
+        </copy>
+
+        <copy todir="${dist.dir}/mac/JCue/lib/mac">
+          <fileset dir="lib/mac" />
+        </copy>
+        <!-- ************* -->
 
         <!-- Create temporary Windows directory -->
         <copy todir="${dist.dir}/win/JCue">
@@ -87,21 +101,6 @@
           <fileset dir="lib/linux64" />
         </copy>
         ***************** -->
-
-        <!-- Create temporary Mac directory -->
-        <copy todir="${dist.dir}/mac/JCue">
-          <fileset dir="${dist.dir}">
-            <exclude name="win/" />
-            <exclude name="mac/" />
-            <exclude name="linux/" />
-          </fileset>
-        </copy>
-
-        <copy todir="${dist.dir}/mac/JCue/lib/mac">
-          <fileset dir="lib/mac" />
-        </copy>
-        <!-- ************* -->
-
 
         <!-- Prompt for package version -->
         <input message="Enter package version:" addproperty="version" />
