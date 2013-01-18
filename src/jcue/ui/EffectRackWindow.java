@@ -15,6 +15,7 @@ import jcue.domain.audiocue.AudioCue;
 import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EchoEffect;
 import jcue.domain.audiocue.effect.EffectRack;
+import jcue.domain.audiocue.effect.LowPassFilter;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -79,8 +80,8 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
     public void actionPerformed(ActionEvent ae) {
         Object source = ae.getSource();
         
-        if (source == this.addButton) {
-            this.cue.getEffectRack().addEffect(new EchoEffect());
+        if (source == this.addButton && cue.getAudio() != null) {
+            this.cue.getEffectRack().addEffect(new LowPassFilter(cue.getAudio()));
             
             this.update();
         }

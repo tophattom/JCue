@@ -13,6 +13,7 @@ import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
+import jouvieje.bass.structures.BASS_CHANNELINFO;
 import jouvieje.bass.structures.HFX;
 import jouvieje.bass.structures.HSTREAM;
 import jouvieje.bass.structures.HSYNC;
@@ -36,7 +37,9 @@ public class AudioStream {
     private double volume, pan;
     
     private BufferedImage waveformImg;
-
+    
+    private BASS_CHANNELINFO channelInfo;
+    
     public AudioStream(List<SoundDevice> outputs) {
         this.outputs = new TreeMap<SoundDevice, VirtualOutput>();
         
@@ -46,6 +49,8 @@ public class AudioStream {
 
         this.volume = 1.0;
         this.pan = 0.0;
+        
+        this.channelInfo = BASS_CHANNELINFO.allocate();
     }
 
     /**
@@ -83,6 +88,8 @@ public class AudioStream {
             this.length = Bass.BASS_ChannelBytes2Seconds(tmpStream.asInt(), (long) bytePos);
 
             this.filePath = path;
+            
+            Bass.BASS_ChannelGetInfo(tmpStream.asInt(), this.channelInfo);
 
             createWaveformImg();
         }
@@ -417,5 +424,9 @@ public class AudioStream {
 
     public BufferedImage getWaveformImg() {
         return waveformImg;
+    }
+    
+    public int getFreq() {
+        return channelInfo.getFreq();
     }
 }
