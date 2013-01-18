@@ -31,7 +31,7 @@ public class EffectPanel extends JPanel implements PropertyChangeListener, Actio
 
     public EffectPanel(AbstractEffect effect) {
         super(new MigLayout("fillx"));
-        this.setBorder(BorderFactory.createTitledBorder("Effect"));
+        this.setBorder(BorderFactory.createTitledBorder(effect.getName()));
         
         this.effect = effect;
         

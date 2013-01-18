@@ -12,6 +12,8 @@ import jouvieje.bass.utils.Pointer;
  */
 public abstract class AbstractEffect {
     
+    private String name;
+    
     private ArrayList<HFX> handles;
     private Pointer effectStruct;
     
@@ -19,9 +21,10 @@ public abstract class AbstractEffect {
     
     protected LinkedHashMap<String, EffectParameter> params;
 
-    public AbstractEffect(int type) {
+    public AbstractEffect(int type, String name) {
         this.type = type;
         this.params = new LinkedHashMap<String, EffectParameter>();
+        this.name = name;
     }
     
     public ArrayList<HFX> getHandles() {
@@ -82,6 +85,10 @@ public abstract class AbstractEffect {
         }
 
         return null;
+    }
+    
+    public String getName() {
+        return name;
     }
     
     public abstract void setParameter(String param, double value);

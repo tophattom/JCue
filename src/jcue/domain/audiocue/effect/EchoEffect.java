@@ -12,7 +12,7 @@ public class EchoEffect extends AbstractEffect {
     private BASS_BFX_ECHO2 struct;
 
     public EchoEffect() {
-        super(BASS_FX_BFX.BASS_FX_BFX_ECHO2.asInt());
+        super(BASS_FX_BFX.BASS_FX_BFX_ECHO2.asInt(), "Echo");
 
         this.struct = BASS_BFX_ECHO2.allocate();
         super.setEffectStruct(struct);

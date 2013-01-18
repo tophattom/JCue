@@ -12,7 +12,7 @@ public class ReverbEffect extends AbstractEffect {
     private BASS_BFX_REVERB struct;
 
     public ReverbEffect() {
-        super(BASS_FX_BFX.BASS_FX_BFX_REVERB.asInt());
+        super(BASS_FX_BFX.BASS_FX_BFX_REVERB.asInt(), "Reverb");
 
         this.struct = BASS_BFX_REVERB.allocate();
         super.setEffectStruct(struct);

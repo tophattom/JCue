@@ -13,7 +13,7 @@ public class LowPassFilter extends AbstractEffect {
     private BASS_BFX_LPF struct;
     
     public LowPassFilter(AudioStream stream) {
-        super(BASS_FX_BFX.BASS_FX_BFX_LPF.asInt());
+        super(BASS_FX_BFX.BASS_FX_BFX_LPF.asInt(), "Low pass filter");
         
         this.struct = BASS_BFX_LPF.allocate();
         super.setEffectStruct(struct);
