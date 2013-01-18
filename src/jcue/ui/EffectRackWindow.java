@@ -9,6 +9,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import jcue.domain.audiocue.AudioCue;
@@ -16,6 +17,7 @@ import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EchoEffect;
 import jcue.domain.audiocue.effect.EffectRack;
 import jcue.domain.audiocue.effect.LowPassFilter;
+import jcue.domain.audiocue.effect.ReverbEffect;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -26,7 +28,9 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
 
     private AudioCue cue;
     
+    private JComboBox selectEffect;
     private JButton addButton;
+    
     
     private static final ImageIcon addIcon = new ImageIcon("images/add_small.png");
 
@@ -34,6 +38,9 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
         super("Effect rack");
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setPreferredSize(new Dimension(500, 500));
+        
+        String[] effects = {"Echo", "Low pass filter", "Reverb"};
+        this.selectEffect = new JComboBox(effects);
         
         this.addButton = new JButton(addIcon);
         this.addButton.addActionListener(this);
@@ -50,6 +57,7 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
         c.removeAll();
         c.setLayout(new MigLayout("fillx"));
         
+        c.add(this.selectEffect, "split 2");
         c.add(this.addButton, "wrap");
         
         if (this.cue != null) {
@@ -81,7 +89,18 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
         Object source = ae.getSource();
         
         if (source == this.addButton && cue.getAudio() != null) {
-            this.cue.getEffectRack().addEffect(new LowPassFilter(cue.getAudio()));
+            String effectName = (String) this.selectEffect.getSelectedItem();
+            AbstractEffect effect = null;
+            
+            if (effectName.equals("Echo")) {
+                effect = new EchoEffect();
+            } else if (effectName.equals("Low pass filter")) {
+                effect = new LowPassFilter(cue.getAudio());
+            } else if (effectName.equals("Reverb")) {
+                effect = new ReverbEffect();
+            }
+            
+            this.cue.getEffectRack().addEffect(effect);
             
             this.update();
         }
