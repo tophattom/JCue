@@ -36,6 +36,9 @@ public class EffectPanel extends JPanel implements PropertyChangeListener, Actio
         this.effect = effect;
         
         this.active = new JCheckBox("Active");
+        this.active.setSelected(effect.isActive());
+        this.active.addActionListener(this);
+        
         this.knobs = new ArrayList<ParameterKnob>();
         
         this.removeButton = new JButton(removeIcon);
@@ -85,6 +88,9 @@ public class EffectPanel extends JPanel implements PropertyChangeListener, Actio
         
         if (source == this.removeButton) {
             this.firePropertyChange("removeEffect", null, this.effect);
+        } else if (source == this.active) {
+            this.effect.setActive(this.active.isSelected());
+            this.firePropertyChange("activeEffect", null, this.effect);
         }
     }
 }

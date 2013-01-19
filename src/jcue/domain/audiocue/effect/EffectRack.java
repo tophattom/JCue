@@ -24,28 +24,38 @@ public class EffectRack {
 
     public void addEffect(AbstractEffect effect) {
         if (this.cue != null && this.cue.getAudio() != null) {
-            ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), 0);
+            ArrayList<HFX> handles = null;
+            handles = this.cue.getAudio().addEffect(effect.getType(), 0);
             
-            if (!handles.isEmpty()) {
+            if (handles != null && !handles.isEmpty()) {
                 effect.setHandles(handles);
-                this.effects.add(effect);
-
-                this.update();
+                
+                Bass.BASS_FXGetParameters(handles.get(0), effect.getEffectStruct());
+                effect.updateParameters();
             }
+            
+            this.effects.add(effect);
+            
+            this.update();
         }
     }
     
     private void addEffect(AbstractEffect effect, int priority) {
         if (this.cue != null) {
-            ArrayList<HFX> handles = this.cue.getAudio().addEffect(effect.getType(), priority);
+            ArrayList<HFX> handles = null;
             
-            if (!handles.isEmpty()) {
+            if (effect.isActive()) {
+                handles = this.cue.getAudio().addEffect(effect.getType(), priority);
+            }
+            
+            if (handles != null && !handles.isEmpty()) {
                 effect.setHandles(handles);
+                
                 Bass.BASS_FXGetParameters(handles.get(0), effect.getEffectStruct());
                 effect.updateParameters();
-
-                this.effects.add(effect);
             }
+            
+            this.effects.add(effect);
         }
     }
     

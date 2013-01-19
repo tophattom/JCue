@@ -17,6 +17,8 @@ public abstract class AbstractEffect {
     private ArrayList<HFX> handles;
     private Pointer effectStruct;
     
+    private boolean active;
+    
     protected int type;
     
     protected LinkedHashMap<String, EffectParameter> params;
@@ -25,6 +27,9 @@ public abstract class AbstractEffect {
         this.type = type;
         this.params = new LinkedHashMap<String, EffectParameter>();
         this.name = name;
+        this.active = true;
+        
+        this.handles = new ArrayList<HFX>();
     }
     
     public ArrayList<HFX> getHandles() {
@@ -61,6 +66,14 @@ public abstract class AbstractEffect {
     
     public ArrayList<String> getParameterKeys() {
         return new ArrayList<String>(this.params.keySet());
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

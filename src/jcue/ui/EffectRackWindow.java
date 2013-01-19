@@ -115,6 +115,11 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
             this.cue.getEffectRack().removeEffect(ae);
             
             this.update();
+        } else if (pce.getPropertyName().equals("activeEffect")) {
+            AbstractEffect ae = (AbstractEffect) pce.getNewValue();
+            this.cue.getEffectRack().update();
+            
+            this.update();
         }
     }
 }
