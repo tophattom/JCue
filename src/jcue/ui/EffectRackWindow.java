@@ -16,6 +16,7 @@ import jcue.domain.audiocue.AudioCue;
 import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EchoEffect;
 import jcue.domain.audiocue.effect.EffectRack;
+import jcue.domain.audiocue.effect.HighPassFilter;
 import jcue.domain.audiocue.effect.LowPassFilter;
 import jcue.domain.audiocue.effect.ReverbEffect;
 import net.miginfocom.swing.MigLayout;
@@ -39,7 +40,7 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setPreferredSize(new Dimension(500, 500));
         
-        String[] effects = {"Echo", "Low pass filter", "Reverb"};
+        String[] effects = {"Echo", "High pass filter", "Low pass filter", "Reverb"};
         this.selectEffect = new JComboBox(effects);
         
         this.addButton = new JButton(addIcon);
@@ -94,6 +95,8 @@ public class EffectRackWindow extends JFrame implements ActionListener, Property
             
             if (effectName.equals("Echo")) {
                 effect = new EchoEffect();
+            } else if (effectName.equals("High pass filter")) {
+                effect = new HighPassFilter(cue.getAudio());
             } else if (effectName.equals("Low pass filter")) {
                 effect = new LowPassFilter(cue.getAudio());
             } else if (effectName.equals("Reverb")) {

@@ -32,6 +32,8 @@ public class EffectRack {
                 
                 Bass.BASS_FXGetParameters(handles.get(0), effect.getEffectStruct());
                 effect.updateParameters();
+                
+                effect.updateEffect();
             }
             
             this.effects.add(effect);
@@ -51,8 +53,7 @@ public class EffectRack {
             if (handles != null && !handles.isEmpty()) {
                 effect.setHandles(handles);
                 
-                Bass.BASS_FXGetParameters(handles.get(0), effect.getEffectStruct());
-                effect.updateParameters();
+                effect.updateEffect();
             }
             
             this.effects.add(effect);
