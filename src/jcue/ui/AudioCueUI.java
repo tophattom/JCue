@@ -423,6 +423,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             if (propertyName.equals("inPos")) {
                 this.inField.setValue(pce.getNewValue());
+                this.relPosField.setValue(cue.getAudio().getPosition() - (Double) pce.getNewValue());
             } else if (propertyName.equals("outPos")) {
                 this.outField.setValue(pce.getNewValue());
             } else if (propertyName.equals("ctiPos")) {
