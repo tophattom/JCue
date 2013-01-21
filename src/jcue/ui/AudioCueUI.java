@@ -50,7 +50,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     private JButton effectRackButton;
     private EffectRackWindow rackWindow;
     
-    private JFormattedTextField posField;
+    private JFormattedTextField posField, relPosField;
     
     private JLabel deviceLabel;
     private JComboBox deviceSelect;
@@ -175,6 +175,11 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         this.posField.setColumns(8);
         this.posField.setEditable(false);
+        
+        this.relPosField = new JFormattedTextField(new TimeFormatter());
+        
+        this.relPosField.setColumns(8);
+        this.relPosField.setEditable(false);
         //************
         
         //Adding outputs
@@ -231,9 +236,10 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         transportPanel.add(this.stopButton);
         transportPanel.add(this.effectRackButton);
         
-        this.add(transportPanel, "span, growx, split 2");
+        this.add(transportPanel, "span, growx, split 3");
         
-        this.add(this.posField, "align right, wrap");
+        this.add(this.posField, "align right");
+        this.add(this.relPosField, "align right, wrap");
         
         this.add(this.volumeLabel, "align label");
         this.add(this.volumeSlider, "span 3, growx");
@@ -307,6 +313,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
     
     public void setPositionFieldValue(double value) {
         this.posField.setValue(value);
+        this.relPosField.setValue(value - cue.getInPos());
     }
 
     @Override
@@ -420,6 +427,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
                 this.outField.setValue(pce.getNewValue());
             } else if (propertyName.equals("ctiPos")) {
                 this.posField.setValue(pce.getNewValue());
+                this.relPosField.setValue((Double) pce.getNewValue() - cue.getInPos());
             }
         }
         
