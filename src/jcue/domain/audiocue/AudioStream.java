@@ -4,15 +4,18 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import jcue.domain.AbstractCue;
 import jcue.domain.SoundDevice;
+import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.fadecue.ParameterEnvelope;
 import jcue.ui.WaveformPanel;
 import jouvieje.bass.Bass;
 import jouvieje.bass.defines.*;
 import jouvieje.bass.structures.BASS_CHANNELINFO;
+import jouvieje.bass.structures.HFX;
 import jouvieje.bass.structures.HSTREAM;
 import jouvieje.bass.structures.HSYNC;
 import jouvieje.bass.utils.BufferUtils;
@@ -37,7 +40,9 @@ public class AudioStream {
     private double volume, pan;
     
     private BufferedImage waveformImg;
-
+    
+    private BASS_CHANNELINFO channelInfo;
+    
     public AudioStream(List<SoundDevice> outputs) {
         this.outputs = new TreeMap<SoundDevice, VirtualOutput>();
         
@@ -47,6 +52,8 @@ public class AudioStream {
 
         this.volume = 1.0;
         this.pan = 0.0;
+        
+        this.channelInfo = BASS_CHANNELINFO.allocate();
     }
 
     /**
@@ -87,6 +94,8 @@ public class AudioStream {
             this.length = Bass.BASS_ChannelBytes2Seconds(tmpStream.asInt(), (long) bytePos);
 
             this.filePath = path;
+            
+            Bass.BASS_ChannelGetInfo(tmpStream.asInt(), this.channelInfo);
 
             createWaveformImg();
         }
@@ -381,6 +390,27 @@ public class AudioStream {
         return this.outputs.get(sd).getPan();
     }
     
+    public ArrayList<HFX> addEffect(int type, int priority) {
+        ArrayList<HFX> result = new ArrayList<HFX>();
+        
+        for (VirtualOutput vo : this.outputs.values()) {
+            if (vo.getStream() != null) {
+                HFX handle = Bass.BASS_ChannelSetFX(vo.getStream().asInt(), type, priority);
+                result.add(handle);
+            }
+        }
+        
+        return result;
+    }
+    
+    public void removeEffect(AbstractEffect effect) {
+        for (VirtualOutput vo : this.outputs.values()) {
+            for (HFX hfx : effect.getHandles()) {
+                Bass.BASS_ChannelRemoveFX(vo.getStream().asInt(), hfx);
+            }
+        }
+    }
+    
     private void createWaveformImg() {
         FloatBuffer streamData = getStreamData();
         if (this.waveformImg == null) {
@@ -417,5 +447,9 @@ public class AudioStream {
 
     public BufferedImage getWaveformImg() {
         return waveformImg;
+    }
+    
+    public int getFreq() {
+        return channelInfo.getFreq();
     }
 }
