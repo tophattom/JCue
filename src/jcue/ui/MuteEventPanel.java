@@ -2,12 +2,7 @@ package jcue.ui;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
+import javax.swing.*;
 import jcue.domain.SoundDevice;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.eventcue.MuteEvent;

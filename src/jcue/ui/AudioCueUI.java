@@ -164,7 +164,9 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         //**************
         
         //Effect rack
-        this.effectRackButton = new JButton("Effect rack");
+        ImageIcon rackIcon = new ImageIcon("images/effect_rack.png");
+        
+        this.effectRackButton = new JButton(rackIcon);
         this.effectRackButton.setActionCommand("effectRack");
         this.effectRackButton.addActionListener(this);
         

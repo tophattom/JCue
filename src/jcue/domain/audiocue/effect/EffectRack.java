@@ -72,6 +72,14 @@ public class EffectRack {
         return effects;
     }
     
+    public void resetToDefaults() {
+        for (AbstractEffect ae : effects) {
+            ae.setActive(ae.isDefaultActive());
+        }
+        
+        update();
+    }
+    
     public void update() {
         ArrayList<AbstractEffect> tmpEffects = new ArrayList<AbstractEffect>(this.effects);
         

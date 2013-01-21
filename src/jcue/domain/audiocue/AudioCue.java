@@ -3,13 +3,9 @@ package jcue.domain.audiocue;
 import java.awt.geom.QuadCurve2D;
 import java.io.File;
 import java.util.ArrayList;
-import jcue.domain.AbstractCue;
-import jcue.domain.CueList;
-import jcue.domain.CueState;
-import jcue.domain.CueType;
-import jcue.domain.SoundDevice;
-import jcue.domain.fadecue.ParameterEnvelope;
+import jcue.domain.*;
 import jcue.domain.audiocue.effect.EffectRack;
+import jcue.domain.fadecue.ParameterEnvelope;
 
 /**
  * 
@@ -74,6 +70,8 @@ public class AudioCue extends AbstractCue {
     @Override
     public void start(boolean delay) {
         super.start(delay);
+        
+        effectRack.resetToDefaults();
         
         if (!delay || super.getStartDelay() == 0) {
             if (this.audio != null) {

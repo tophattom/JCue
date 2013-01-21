@@ -90,6 +90,7 @@ public class EffectPanel extends JPanel implements PropertyChangeListener, Actio
             this.firePropertyChange("removeEffect", null, this.effect);
         } else if (source == this.active) {
             this.effect.setActive(this.active.isSelected());
+            this.effect.setDefaultActive(this.active.isSelected());
             this.firePropertyChange("activeEffect", null, this.effect);
         }
     }
