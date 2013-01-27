@@ -16,10 +16,7 @@ import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import jcue.domain.AbstractCue;
-import jcue.domain.eventcue.AbstractEvent;
-import jcue.domain.eventcue.EventCue;
-import jcue.domain.eventcue.MuteEvent;
-import jcue.domain.eventcue.TransportEvent;
+import jcue.domain.eventcue.*;
 
 /**
  *
@@ -37,6 +34,7 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
     
     private TransportEventPanel transportPanel;
     private MuteEventPanel mutePanel;
+    private EffectEventPanel effectPanel;
     
     private EventCue cue;
 
@@ -73,10 +71,12 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
         
         this.transportPanel = new TransportEventPanel(cue);
         this.mutePanel = new MuteEventPanel(cue);
+        this.effectPanel = new EffectEventPanel(cue);
         
         this.controlPanel.add(new JPanel(), "empty");
         this.controlPanel.add(this.transportPanel, "transport");
         this.controlPanel.add(this.mutePanel, "mute");
+        this.controlPanel.add(this.effectPanel, "effect");
         
         
         addComponents();
@@ -111,6 +111,7 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
         
         this.transportPanel.setEvent(null);
         this.mutePanel.setEvent(null);
+        this.effectPanel.setEvent(null);
         
         CardLayout cl = (CardLayout) this.controlPanel.getLayout();
         cl.show(this.controlPanel, "empty");
@@ -130,6 +131,8 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
             this.cue.addEvent(new TransportEvent());
         } else if (source == this.addMute) {
             this.cue.addEvent(new MuteEvent());
+        } else if (source == this.addEffect) {
+            this.cue.addEvent(new EffectEvent());
         }
         
         this.update();
@@ -155,6 +158,12 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
                     cl.show(this.controlPanel, "mute");
                     
                     this.mutePanel.setEvent(me);
+                } else if (selection instanceof EffectEvent) {
+                    EffectEvent ee = (EffectEvent) selection;
+                    
+                    cl.show(this.controlPanel, "effect");
+                    
+                    this.effectPanel.setEvent(ee);
                 }
             }
         }

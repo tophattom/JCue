@@ -164,7 +164,9 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         //**************
         
         //Effect rack
-        this.effectRackButton = new JButton("Effect rack");
+        ImageIcon rackIcon = new ImageIcon("images/effect_rack.png");
+        
+        this.effectRackButton = new JButton(rackIcon);
         this.effectRackButton.setActionCommand("effectRack");
         this.effectRackButton.addActionListener(this);
         
@@ -423,6 +425,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
             
             if (propertyName.equals("inPos")) {
                 this.inField.setValue(pce.getNewValue());
+                this.relPosField.setValue(cue.getAudio().getPosition() - (Double) pce.getNewValue());
             } else if (propertyName.equals("outPos")) {
                 this.outField.setValue(pce.getNewValue());
             } else if (propertyName.equals("ctiPos")) {

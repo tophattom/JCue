@@ -17,7 +17,7 @@ public abstract class AbstractEffect {
     private ArrayList<HFX> handles;
     private Pointer effectStruct;
     
-    private boolean active;
+    private boolean defaultActive, active;
     
     protected int type;
     
@@ -27,6 +27,8 @@ public abstract class AbstractEffect {
         this.type = type;
         this.params = new LinkedHashMap<String, EffectParameter>();
         this.name = name;
+        
+        this.defaultActive = true;
         this.active = true;
         
         this.handles = new ArrayList<HFX>();
@@ -76,6 +78,14 @@ public abstract class AbstractEffect {
         this.active = active;
     }
 
+    public boolean isDefaultActive() {
+        return defaultActive;
+    }
+
+    public void setDefaultActive(boolean defaultActive) {
+        this.defaultActive = defaultActive;
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
