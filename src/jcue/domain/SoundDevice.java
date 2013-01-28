@@ -15,8 +15,6 @@ public class SoundDevice implements Comparable<SoundDevice> {
     private String name;
     private int id;
     
-    private double volume;
-    
     private boolean autoInclude;
     
     private BASS_INFO bassInfo;
@@ -24,8 +22,6 @@ public class SoundDevice implements Comparable<SoundDevice> {
     public SoundDevice(String name, int id) {
         this.name = name;
         this.id = id;
-        
-        this.volume = 1.0;
         
         this.autoInclude = false;
     }

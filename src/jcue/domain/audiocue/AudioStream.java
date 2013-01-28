@@ -37,7 +37,7 @@ public class AudioStream {
     
     private double length;
     
-    private double volume, pan;
+    private double volume;
     
     private BufferedImage waveformImg;
     
@@ -51,7 +51,6 @@ public class AudioStream {
         }
 
         this.volume = 1.0;
-        this.pan = 0.0;
         
         this.channelInfo = BASS_CHANNELINFO.allocate();
     }
