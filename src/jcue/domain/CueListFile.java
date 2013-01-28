@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import jcue.domain.audiocue.AudioCue;
+import jcue.domain.audiocue.AudioStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -95,6 +96,10 @@ public class CueListFile {
         addChildCues(cue, result, doc);
         
         
+        if (cue instanceof AudioCue) {
+            result.appendChild(audioElement((AudioCue) cue, doc));
+        }
+        
         
         return result;
     }
@@ -110,5 +115,42 @@ public class CueListFile {
         }
         
         cueElem.appendChild(childrenElem);
+    }
+    
+    private static Element audioElement(AudioCue ac, Document doc) {
+        Element result = doc.createElement("audio");
+        
+        //FIle
+        Element fileElem = doc.createElement("filepath");
+        AudioStream stream = ac.getAudio();
+        if (stream != null) {
+            fileElem.appendChild(doc.createTextNode(ac.getAudio().getFilePath()));
+        }
+        result.appendChild(fileElem);
+        
+        //In and out positions
+        Element inElem = doc.createElement("in");
+        inElem.appendChild(doc.createTextNode(Double.toString(ac.getInPos())));
+        result.appendChild(inElem);
+        
+        Element outElem = doc.createElement("out");
+        outElem.appendChild(doc.createTextNode(Double.toString(ac.getOutPos())));
+        result.appendChild(outElem);
+        
+        //Fade in and out times
+        Element fadeInElem = doc.createElement("fadein");
+        fadeInElem.appendChild(doc.createTextNode(Double.toString(ac.getFadeIn())));
+        result.appendChild(fadeInElem);
+        
+        Element fadeOutElem = doc.createElement("fadeout");
+        fadeOutElem.appendChild(doc.createTextNode(Double.toString(ac.getFadeOut())));
+        result.appendChild(fadeOutElem);
+        
+        //Master volume
+        Element volumeElem = doc.createElement("mastervolume");
+        volumeElem.appendChild(doc.createTextNode(Double.toString(ac.getVolume())));
+        result.appendChild(volumeElem);
+        
+        return result;
     }
 }

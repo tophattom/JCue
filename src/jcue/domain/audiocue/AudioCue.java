@@ -20,7 +20,7 @@ public class AudioCue extends AbstractCue {
     private double fadeIn, fadeOut;
     private ParameterEnvelope fadeInCurve, fadeOutCurve;
     
-    private double volume, pan;
+    private double volume;
     
     private ArrayList<SoundDevice> outputs;
     
@@ -34,7 +34,6 @@ public class AudioCue extends AbstractCue {
         this.audio = new AudioStream(this.outputs);
         
         this.volume = 1.0;
-        this.pan = 0.0;
         
         this.fadeIn = 0.0;
         this.fadeOut = 0.0;
@@ -136,10 +135,6 @@ public class AudioCue extends AbstractCue {
         return outPos;
     }
 
-    public double getPan() {
-        return pan;
-    }
-
     public double getVolume() {
         return volume;
     }
@@ -198,10 +193,6 @@ public class AudioCue extends AbstractCue {
         this.audio.setOutPosition(outPos, this);
         
         this.updateFadeCurves();
-    }
-
-    public void setPan(double pan) {
-        this.pan = pan;
     }
 
     public void setVolume(double volume) {
