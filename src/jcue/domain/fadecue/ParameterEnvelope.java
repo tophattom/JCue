@@ -45,8 +45,6 @@ public class ParameterEnvelope implements Runnable {
     public void stop() {
         this.running = false;
         this.updater = null;
-        
-        this.targetCue.setState(CueState.PLAYING);
     }
     
     @Override
@@ -57,6 +55,7 @@ public class ParameterEnvelope implements Runnable {
             double position = ((double) elapsedTime / lDuration);
             
             if (elapsedTime > lDuration) {
+                this.targetCue.setState(CueState.PLAYING);
                 this.stop();
                 break;
             }
