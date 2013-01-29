@@ -2,6 +2,8 @@ package jcue.domain;
 
 import java.util.LinkedHashSet;
 import jcue.ui.AbstractCueUI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Base class for all different types of cues. Defines properties common to all
@@ -146,6 +148,52 @@ public abstract class AbstractCue {
     @Override
     public String toString() {
         return this.name + " " + this.description + " (" + this.type + ")";
+    }
+    
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("cue");
+        
+        //Type
+        Element typeElem = doc.createElement("type");
+        typeElem.appendChild(doc.createTextNode(type.toString()));
+        result.appendChild(typeElem);
+        
+        //Name and description
+        Element nameElem = doc.createElement("name");
+        nameElem.appendChild(doc.createTextNode(name));
+        result.appendChild(nameElem);
+        
+        Element descElem = doc.createElement("description");
+        descElem.appendChild(doc.createTextNode(description));
+        result.appendChild(descElem);
+        
+        //Start mode
+        Element modeElem = doc.createElement("startmode");
+        modeElem.appendChild(doc.createTextNode(startMode.toString()));
+        result.appendChild(modeElem);
+        
+        //Start delay
+        Element delayElem = doc.createElement("delay");
+        delayElem.appendChild(doc.createTextNode(Double.toString(startDelay)));
+        result.appendChild(delayElem);
+        
+        //Parent elem
+        Element parentElem = doc.createElement("parentcue");
+        if (parentCue != null) {
+            parentElem.appendChild(doc.createTextNode(parentCue.getName()));
+        }
+        result.appendChild(parentElem);
+        
+        //Children
+        Element childrenElem = doc.createElement("children");
+        for (AbstractCue ac : childCues) {
+            Element childElem = doc.createElement("child");
+            childElem.appendChild(doc.createTextNode(ac.getName()));
+            childrenElem.appendChild(childElem);
+        }
+        result.appendChild(childrenElem);
+        
+        return result;
     }
 
     /**

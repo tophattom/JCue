@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import jcue.domain.*;
 import jcue.domain.audiocue.effect.EffectRack;
 import jcue.domain.fadecue.ParameterEnvelope;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -234,6 +236,7 @@ public class AudioCue extends AbstractCue {
         
         return true;
     }
+    
     public EffectRack getEffectRack() {
         return effectRack;
     }
@@ -255,4 +258,68 @@ public class AudioCue extends AbstractCue {
             this.audio.setFadeOut(this.outPos - this.fadeOut, fadeOutCurve);
         }
     }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+        
+        //In and out positions
+        Element inElem = doc.createElement("in");
+        inElem.appendChild(doc.createTextNode(Double.toString(inPos)));
+        result.appendChild(inElem);
+        
+        Element outElem = doc.createElement("out");
+        outElem.appendChild(doc.createTextNode(Double.toString(outPos)));
+        result.appendChild(outElem);
+        
+        //Fade in and out times
+        Element fadeInElem = doc.createElement("fadein");
+        fadeInElem.appendChild(doc.createTextNode(Double.toString(fadeIn)));
+        result.appendChild(fadeInElem);
+        
+        Element fadeOutElem = doc.createElement("fadeout");
+        fadeOutElem.appendChild(doc.createTextNode(Double.toString(fadeOut)));
+        result.appendChild(fadeOutElem);
+        
+        //Volume
+        Element volumeElem = doc.createElement("mastervolume");
+        volumeElem.appendChild(doc.createTextNode(Double.toString(volume)));
+        result.appendChild(volumeElem);
+        
+        //Outputs
+        Element outputsElem = doc.createElement("outputs");
+        for (SoundDevice sd : outputs) {
+            Element outputElem = doc.createElement("output");
+            
+            //Device id
+            Element deviceElem = doc.createElement("deviceid");
+            deviceElem.appendChild(doc.createTextNode(Integer.toString(sd.getId())));
+            outputElem.appendChild(deviceElem);
+            
+            //Volume and pan
+            Element volElem = doc.createElement("volume");
+            volElem.appendChild(doc.createTextNode(Double.toString(audio.getDeviceVolume(sd))));
+            outputElem.appendChild(volElem);
+            
+            Element panElem = doc.createElement("pan");
+            panElem.appendChild(doc.createTextNode(Double.toString(audio.getDevicePan(sd))));
+            outputElem.appendChild(panElem);
+            
+            //Muted
+            Element mutedElem = doc.createElement("muted");
+            mutedElem.appendChild(doc.createTextNode(Boolean.toString(audio.isMuted(sd))));
+            outputElem.appendChild(mutedElem);
+            
+            outputsElem.appendChild(outputElem);
+        }
+        result.appendChild(outputsElem);
+        
+        //Effect rack
+        //result.appendChild(effectRack.toElement(doc));
+        
+        return result;
+    }
+    
+    
+    
 }
