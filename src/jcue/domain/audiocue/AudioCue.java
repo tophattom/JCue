@@ -263,6 +263,11 @@ public class AudioCue extends AbstractCue {
     public Element toElement(Document doc) {
         Element result = super.toElement(doc);
         
+        //File name
+        Element fileElem = doc.createElement("filepath");
+        fileElem.appendChild(doc.createTextNode(audio.getFilePath()));
+        result.appendChild(fileElem);
+        
         //In and out positions
         Element inElem = doc.createElement("in");
         inElem.appendChild(doc.createTextNode(Double.toString(inPos)));
