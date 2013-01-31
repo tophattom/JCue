@@ -324,7 +324,4 @@ public class AudioCue extends AbstractCue {
         
         return result;
     }
-    
-    
-    
 }

@@ -4,6 +4,8 @@ import jouvieje.bass.Bass;
 import jouvieje.bass.defines.BASS_DEVICE_STATUS;
 import jouvieje.bass.structures.BASS_DEVICEINFO;
 import jouvieje.bass.structures.BASS_INFO;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Represents a physical output device.
@@ -161,5 +163,26 @@ public class SoundDevice implements Comparable<SoundDevice> {
     @Override
     public int compareTo(SoundDevice t) {
         return this.id - t.id;
+    }
+    
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("device");
+        
+        //Name
+        Element nameElem = doc.createElement("name");
+        nameElem.appendChild(doc.createTextNode(name));
+        result.appendChild(nameElem);
+        
+        //Id
+        Element idElem = doc.createElement("id");
+        idElem.appendChild(doc.createTextNode(Integer.toString(id)));
+        result.appendChild(idElem);
+        
+        //Auto include
+        Element includeElem = doc.createElement("autoinclude");
+        includeElem.appendChild(doc.createTextNode(Boolean.toString(autoInclude)));
+        result.appendChild(includeElem);
+        
+        return result;
     }
 }
