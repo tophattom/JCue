@@ -1,5 +1,8 @@
 package jcue.domain.eventcue;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  * Stops, pauses or starts an audio cue
  *
@@ -59,5 +62,17 @@ public class TransportEvent extends AbstractEvent {
         } else {
             return "Unknown mode";
         }
+    }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+
+        //Mode
+        Element modeElem = doc.createElement("mode");
+        result.appendChild(doc.createTextNode(Integer.toString(mode)));
+        result.appendChild(modeElem);
+
+        return result;
     }
 }

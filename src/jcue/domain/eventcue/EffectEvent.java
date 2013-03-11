@@ -2,6 +2,8 @@ package jcue.domain.eventcue;
 
 import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EffectRack;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -48,11 +50,7 @@ public class EffectEvent extends AbstractEvent {
     public void setRack(EffectRack rack) {
         this.rack = rack;
     }
-    
-    
-    
-    
-    
+
     @Override
     public void perform() {
         if (this.mode == EFFECT_ON) {
@@ -79,5 +77,22 @@ public class EffectEvent extends AbstractEvent {
         } else {
             return "Toggle effect";
         }
+    }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+
+        //Mode
+        Element modeElem = doc.createElement("mode");
+        modeElem.appendChild(doc.createTextNode(Integer.toString(mode)));
+        result.appendChild(modeElem);
+
+        //Target effect
+        Element targetElem = doc.createElement("target");
+        targetElem.appendChild(doc.createTextNode(targetEffect.getName()));
+        result.appendChild(targetElem);
+
+        return result;
     }
 }

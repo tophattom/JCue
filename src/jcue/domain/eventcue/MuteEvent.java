@@ -2,6 +2,8 @@ package jcue.domain.eventcue;
 
 import jcue.domain.SoundDevice;
 import jcue.domain.audiocue.AudioStream;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Mutes or unmutes an audio cue's output
@@ -77,5 +79,22 @@ public class MuteEvent extends AbstractEvent {
         } else {
             return "Unknown mode";
         }
+    }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+
+        //Mode
+        Element modeElem = doc.createElement("mode");
+        modeElem.appendChild(doc.createTextNode(Integer.toString(mode)));
+        result.appendChild(modeElem);
+
+        //Target output
+        Element targetElem = doc.createElement("target");
+        targetElem.appendChild(doc.createTextNode(Integer.toString(targetOutput.getId())));
+        result.appendChild(targetElem);
+
+        return result;
     }
 }

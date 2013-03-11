@@ -1,6 +1,8 @@
 package jcue.domain.eventcue;
 
 import jcue.domain.audiocue.AudioCue;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Represents an event that can be applied to a cue.
@@ -28,6 +30,22 @@ public abstract class AbstractEvent {
 
     public AudioCue getTargetCue() {
         return targetCue;
+    }
+
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("event");
+
+        //Type
+        Element typeElem = doc.createElement("type");
+        typeElem.appendChild(doc.createTextNode(Integer.toString(type)));
+        result.appendChild(typeElem);
+
+        //Target
+        Element targetElem = doc.createElement("target");
+        targetElem.appendChild(doc.createTextNode(targetCue.getName()));
+        result.appendChild(targetElem);
+
+        return result;
     }
 
     public abstract void perform();

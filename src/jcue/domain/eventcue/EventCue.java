@@ -5,6 +5,8 @@ import jcue.domain.AbstractCue;
 import jcue.domain.CueState;
 import jcue.domain.CueType;
 import jcue.ui.EventCueUI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Cue for launching events on other cues.
@@ -54,5 +56,19 @@ public class EventCue extends AbstractCue {
 
     @Override
     public void pause() {
+    }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+
+        //Events
+        Element eventsElem = doc.createElement("events");
+        for (AbstractEvent ae : events) {
+            eventsElem.appendChild(ae.toElement(doc));
+        }
+        result.appendChild(eventsElem);
+
+        return result;
     }
 }
