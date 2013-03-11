@@ -25,6 +25,13 @@ public class ProjectFile {
             Element projectElem = doc.createElement("project");
             doc.appendChild(projectElem);
             
+            //Devices
+            Element devicesElem = doc.createElement("devices");
+            for (SoundDevice sd : DeviceManager.getInstance().getDevices()) {
+                devicesElem.appendChild(sd.toElement(doc));
+            }
+            projectElem.appendChild(devicesElem);
+            
             //Cues
             Element cuesElem = doc.createElement("cues");
             for (AbstractCue ac : CueList.getInstance().getCues()) {
