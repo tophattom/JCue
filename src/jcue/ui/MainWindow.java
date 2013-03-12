@@ -1,6 +1,8 @@
 package jcue.ui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import javax.swing.*;
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
@@ -16,7 +18,10 @@ public class MainWindow implements Runnable {
     private JFrame frame;
     
     private JMenuBar menuBar;
-    private JMenu fileMenu, aboutMenu;
+    private JMenu fileMenu, helpMenu;
+
+    private JMenuItem fileNew, fileOpen, fileSave, fileSaveAs, fileExit;
+    private JMenuItem helpAbout;
     
     private JPanel topPanel;
     private JTable mainCueList;
@@ -49,7 +54,7 @@ public class MainWindow implements Runnable {
         
         this.editor = new EditorWindow(this.cues);
         
-        this.eventListener = new MainWindowListener(this);
+        this.eventListener = new MainWindowListener(this, player);
         
         createMenus();
         createComponents(frame.getContentPane());
@@ -62,10 +67,43 @@ public class MainWindow implements Runnable {
         menuBar = new JMenuBar();
         
         fileMenu = new JMenu("File");
-        aboutMenu = new JMenu("About");
+        helpMenu = new JMenu("Help");
+
+        //Create file menu items
+        fileNew = new JMenuItem("New...");
+        fileNew.setActionCommand("fileNew");
+        fileNew.addActionListener(eventListener);
+
+        fileOpen = new JMenuItem("Open...");
+        fileOpen.setActionCommand("fileOpen");
+        fileOpen.addActionListener(eventListener);
+
+        fileSave = new JMenuItem("Save");
+        fileSave.setActionCommand("fileSave");
+        fileSave.addActionListener(eventListener);
+
+        fileSaveAs = new JMenuItem("Save as...");
+        fileSaveAs.setActionCommand("fileSaveAs");
+        fileSaveAs.addActionListener(eventListener);
+
+        fileExit = new JMenuItem("Exit");
+        fileExit.setActionCommand("fileExit");
+        fileExit.addActionListener(eventListener);
+
+        //Add options to file menu
+        fileMenu.add(fileNew);
+        fileMenu.add(fileOpen);
+        fileMenu.add(fileSave);
+        fileMenu.add(fileSaveAs);
+        fileMenu.add(fileExit);
+
+        //About menu
+        helpAbout = new JMenuItem("About");
+
+        helpMenu.add(helpAbout);
         
         menuBar.add(fileMenu);
-        menuBar.add(aboutMenu);
+        menuBar.add(helpMenu);
         
         frame.setJMenuBar(menuBar);
     }
@@ -110,6 +148,11 @@ public class MainWindow implements Runnable {
     
     public void showEditorWindow() {
         this.editor.setVisible(true);
+
+        if (cues.size() == 0) {
+            editor.setCurrentCue(null);
+            editor.setSelectedIndex(-1);
+        }
     }
 
     public CuePlayer getPlayer() {

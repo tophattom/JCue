@@ -202,7 +202,15 @@ public class CueList extends AbstractTableModel implements ListModel {
         
         return result;
     }
-    
+
+    public void clear() {
+        if (!cues.isEmpty()) {
+            super.fireTableRowsDeleted(0, cues.size() - 1);
+            cues.clear();
+            counter = 1;
+        }
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Model stuff">
     @Override
     public int getSize() {

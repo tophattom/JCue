@@ -174,6 +174,7 @@ public class EditorWindow extends JFrame {
     
     public void setCurrentCue(AbstractCue cue) {
         this.currentCue = cue;
+        setUI(currentCue);
     }
     
     public AbstractCue getCurrentCue() {
