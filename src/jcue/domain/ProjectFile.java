@@ -21,6 +21,10 @@ public class ProjectFile {
 
     
     public static void saveProject() {
+        if (currentPath.isEmpty()) {
+            return;
+        }
+
         try {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.newDocument();

@@ -51,6 +51,7 @@ public class AudioStream {
         }
 
         this.volume = 1.0;
+        this.filePath = "";
         
         this.channelInfo = BASS_CHANNELINFO.allocate();
     }

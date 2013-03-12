@@ -2,11 +2,14 @@ package jcue.ui.event;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
 import jcue.domain.ProjectFile;
 import jcue.ui.MainWindow;
+
+import javax.swing.*;
 
 /**
  *
@@ -55,13 +58,43 @@ public class MainWindowListener implements ActionListener {
         } else if (command.equals("fileOpen")) {
             mainWindow.updateTitleBar();
         } else if (command.equals("fileSave")) {
+            if (ProjectFile.currentPath.isEmpty()) {
+                File saveLocation = chooseSaveLocation();
+
+                if (saveLocation != null) {
+                    ProjectFile.currentPath = saveLocation.getAbsolutePath();
+                }
+            }
+
+            ProjectFile.saveProject();
+
             mainWindow.updateTitleBar();
         } else if (command.equals("fileSaveAs")) {
+            File saveLocation = chooseSaveLocation();
+            if (saveLocation != null) {
+                ProjectFile.currentPath = saveLocation.getAbsolutePath();
+
+                ProjectFile.saveProject();
+            }
+
             mainWindow.updateTitleBar();
         } else if (command.equals("fileExit")) {
             player.stop();
             System.exit(0);
         }
     }
-    
+
+
+    private static File chooseSaveLocation() {
+        JFileChooser chooser = new JFileChooser();
+        int result = chooser.showSaveDialog(null);
+
+        File file = null;
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+        }
+
+        return file;
+    }
 }
