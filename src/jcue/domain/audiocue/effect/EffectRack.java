@@ -5,6 +5,9 @@ import java.util.Iterator;
 import jcue.domain.audiocue.AudioCue;
 import jouvieje.bass.Bass;
 import jouvieje.bass.structures.HFX;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -110,5 +113,16 @@ public class EffectRack {
     
     public int size() {
         return this.effects.size();
+    }
+
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("effectrack");
+
+        //Effects
+        for (AbstractEffect ae : effects) {
+            result.appendChild(ae.toElement(doc));
+        }
+
+        return result;
     }
 }

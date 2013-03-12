@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import jouvieje.bass.Bass;
 import jouvieje.bass.structures.HFX;
 import jouvieje.bass.utils.Pointer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -18,7 +21,7 @@ public abstract class AbstractEffect {
     private Pointer effectStruct;
     
     private boolean defaultActive, active;
-    
+
     protected int type;
     
     protected LinkedHashMap<String, EffectParameter> params;
@@ -116,4 +119,34 @@ public abstract class AbstractEffect {
     
     public abstract void setParameter(String param, double value);
     public abstract void updateParameters();
+
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("effect");
+
+        //Type
+        Element typeElem = doc.createElement("type");
+        typeElem.appendChild(doc.createTextNode(Integer.toString(type)));
+        result.appendChild(typeElem);
+
+        //Name
+        Element nameElem = doc.createElement("name");
+        nameElem.appendChild(doc.createTextNode(name));
+        result.appendChild(nameElem);
+
+        //Active by default
+        Element activeElem = doc.createElement("active");
+        activeElem.appendChild(doc.createTextNode(Boolean.toString(defaultActive)));
+        result.appendChild(activeElem);
+
+        //Parameters
+        Element paramsElem = doc.createElement("parameters");
+        for (String s : params.keySet()) {
+            Element paramElem = params.get(s).toElement(doc);
+            paramElem.setAttribute("key", s);
+            paramsElem.appendChild(paramElem);
+        }
+        result.appendChild(paramsElem);
+
+        return result;
+    }
 }

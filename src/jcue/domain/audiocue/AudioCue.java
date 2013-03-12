@@ -320,7 +320,7 @@ public class AudioCue extends AbstractCue {
         result.appendChild(outputsElem);
         
         //Effect rack
-        //result.appendChild(effectRack.toElement(doc));
+        result.appendChild(effectRack.toElement(doc));
         
         return result;
     }
