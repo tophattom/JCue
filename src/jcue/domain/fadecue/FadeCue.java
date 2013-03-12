@@ -2,6 +2,8 @@ package jcue.domain.fadecue;
 
 import jcue.domain.AbstractCue;
 import jcue.domain.CueType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -48,5 +50,15 @@ public class FadeCue extends AbstractCue {
     
     public void setDuration(double duration) {
         this.envelope.setDuration(duration);
+    }
+
+    @Override
+    public Element toElement(Document doc) {
+        Element result = super.toElement(doc);
+
+        //Envelope
+        result.appendChild(envelope.toElement(doc));
+
+        return result;
     }
 }

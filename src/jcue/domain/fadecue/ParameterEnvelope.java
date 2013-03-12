@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import jcue.domain.CueState;
 import jcue.domain.audiocue.AudioCue;
 import jcue.ui.CurvePanel;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  *
@@ -344,5 +347,41 @@ public class ParameterEnvelope implements Runnable {
     public double getEnvelopeY(double x) {
         QuadCurve2D curveAtX = getCurveAtX(x);
         return getCurveY(curveAtX, findTforX(curveAtX, x));
+    }
+
+    public Element toElement(Document doc) {
+        Element result = doc.createElement("envelope");
+
+        //Duration
+        Element durationElem = doc.createElement("duration");
+        durationElem.appendChild(doc.createTextNode(Double.toString(duration)));
+        result.appendChild(durationElem);
+
+        //Target
+        Element targetElem = doc.createElement("target");
+        if (targetCue != null) {
+            targetElem.appendChild(doc.createTextNode(targetCue.getName()));
+        }
+        result.appendChild(targetElem);
+
+        //Curves
+        Element curvesElem = doc.createElement("curves");
+        for (QuadCurve2D c : curves) {
+            Element curveElem = doc.createElement("curve");
+
+            curveElem.setAttribute("x1", Double.toString(c.getX1()));
+            curveElem.setAttribute("y1", Double.toString(c.getY1()));
+
+            curveElem.setAttribute("ctrlX", Double.toString(c.getCtrlX()));
+            curveElem.setAttribute("ctrlY", Double.toString(c.getCtrlY()));
+
+            curveElem.setAttribute("x2", Double.toString(c.getX2()));
+            curveElem.setAttribute("y2", Double.toString(c.getY2()));
+
+            curvesElem.appendChild(curveElem);
+        }
+        result.appendChild(curvesElem);
+
+        return result;
     }
 }
