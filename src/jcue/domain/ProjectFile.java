@@ -16,8 +16,11 @@ import org.w3c.dom.Element;
  * @author Jaakko
  */
 public class ProjectFile {
+
+    public static String currentPath = "";
+
     
-    public static void saveProject(File file) {
+    public static void saveProject() {
         try {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.newDocument();
@@ -45,12 +48,17 @@ public class ProjectFile {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(file);
+            StreamResult result = new StreamResult(new File(currentPath));
             
             transformer.transform(source, result);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         
+    }
+
+    public static void openProject(File file) {
+
+        currentPath = file.getAbsolutePath();
     }
 }

@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
+import jcue.domain.ProjectFile;
 import jcue.ui.MainWindow;
 
 /**
@@ -48,9 +49,15 @@ public class MainWindowListener implements ActionListener {
 
             CueList cueList = CueList.getInstance();
             cueList.clear();
+
+            ProjectFile.currentPath = "";
+            mainWindow.updateTitleBar();
         } else if (command.equals("fileOpen")) {
+            mainWindow.updateTitleBar();
         } else if (command.equals("fileSave")) {
+            mainWindow.updateTitleBar();
         } else if (command.equals("fileSaveAs")) {
+            mainWindow.updateTitleBar();
         } else if (command.equals("fileExit")) {
             player.stop();
             System.exit(0);

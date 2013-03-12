@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
+import jcue.domain.ProjectFile;
 import jcue.ui.event.MainWindowListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -161,5 +162,9 @@ public class MainWindow implements Runnable {
     
     public void setSelectedRow(int row) {
         this.mainCueList.setRowSelectionInterval(row, row);
+    }
+
+    public void updateTitleBar() {
+        frame.setTitle("Cue - " + ProjectFile.currentPath);
     }
 }
