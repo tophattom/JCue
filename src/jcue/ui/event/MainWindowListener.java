@@ -56,6 +56,15 @@ public class MainWindowListener implements ActionListener {
             ProjectFile.currentPath = "";
             mainWindow.updateTitleBar();
         } else if (command.equals("fileOpen")) {
+            player.stop();
+
+            File file = chooseFile();
+
+            if (file != null) {
+                CueList.getInstance().clear();
+                ProjectFile.openProject(file);
+            }
+
             mainWindow.updateTitleBar();
         } else if (command.equals("fileSave")) {
             if (ProjectFile.currentPath.isEmpty()) {
@@ -88,6 +97,19 @@ public class MainWindowListener implements ActionListener {
     private static File chooseSaveLocation() {
         JFileChooser chooser = new JFileChooser();
         int result = chooser.showSaveDialog(null);
+
+        File file = null;
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+        }
+
+        return file;
+    }
+
+    private static File chooseFile() {
+        JFileChooser chooser = new JFileChooser();
+        int result = chooser.showOpenDialog(null);
 
         File file = null;
 

@@ -3,11 +3,14 @@ package jcue.domain.audiocue;
 import java.awt.geom.QuadCurve2D;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import jcue.domain.*;
 import jcue.domain.audiocue.effect.EffectRack;
 import jcue.domain.fadecue.ParameterEnvelope;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -322,6 +325,91 @@ public class AudioCue extends AbstractCue {
         //Effect rack
         result.appendChild(effectRack.toElement(doc));
         
+        return result;
+    }
+
+    public static AudioCue fromElement(Element elem) {
+        //General cue stuff
+        String name = ProjectFile.getTagValue("name", elem);
+        String description = ProjectFile.getTagValue("description", elem);
+        StartMode startMode = StartMode.fromString(ProjectFile.getTagValue("startmode", elem));
+        double delay = Double.parseDouble(ProjectFile.getTagValue("delay", elem));
+
+        String parentName = ProjectFile.getTagValue("parentcue", elem);
+        AbstractCue parentCue = CueList.getInstance().getCue(parentName);
+
+        //Temporary structure for outputs' info
+        LinkedHashMap<SoundDevice, VirtualOutput> outputInfo = new LinkedHashMap<SoundDevice, VirtualOutput>();
+
+        //Load info on used outputs
+        NodeList outputNodes = elem.getElementsByTagName("output");
+        for (int i = 0; i < outputNodes.getLength(); i++) {
+            Element outputElem = (Element) outputNodes.item(i);
+
+            if (outputElem.getParentNode().getParentNode() == elem) {
+                int deviceId = Integer.parseInt(ProjectFile.getTagValue("deviceid", outputElem));
+                double vol = Double.parseDouble(ProjectFile.getTagValue("volume", outputElem));
+                double pan = Double.parseDouble(ProjectFile.getTagValue("pan", outputElem));
+                boolean muted = Boolean.parseBoolean(ProjectFile.getTagValue("muted", outputElem));
+
+                SoundDevice device = DeviceManager.getInstance().getDevice(deviceId);
+                VirtualOutput tmpOutput = new VirtualOutput(device);
+                tmpOutput.setPan(pan);
+                tmpOutput.setVolume(vol, 0);
+                if (muted) {
+                    tmpOutput.mute();
+                }
+
+                outputInfo.put(device, tmpOutput);
+            }
+        }
+
+        //Create resulting cue
+        AudioCue result = new AudioCue(name, description, new ArrayList<SoundDevice>(outputInfo.keySet()));
+
+        result.setStartMode(startMode);
+        result.setStartDelay(delay);
+
+        //Handle parent cue
+        if (parentCue != null) {
+            result.setParentCue(parentCue);
+        } else {
+            ProjectFile.addToParentQueue(result, parentName);
+        }
+
+        //Load audio
+        String filePath = ProjectFile.getTagValue("filepath", elem);
+        if (filePath != null) {
+            result.loadAudio(filePath);
+        }
+
+        //Parse parameters
+        double inPos = Double.parseDouble(ProjectFile.getTagValue("in", elem));
+        double outPos = Double.parseDouble(ProjectFile.getTagValue("out", elem));
+
+        double fadeInTime = Double.parseDouble(ProjectFile.getTagValue("fadein", elem));
+        double fadeOutTime = Double.parseDouble(ProjectFile.getTagValue("fadeout", elem));
+
+        double masterVolume = Double.parseDouble(ProjectFile.getTagValue("mastervolume", elem));
+
+        //Set parameters
+        result.setInPos(inPos);
+        result.setOutPos(outPos);
+        result.setFadeIn(fadeInTime);
+        result.setFadeOut(fadeOutTime);
+        result.setVolume(masterVolume);
+
+        //Set device parameters
+        for (SoundDevice sd : outputInfo.keySet()) {
+            VirtualOutput tmpOutput = outputInfo.get(sd);
+
+            result.setDeviceVolume(sd, tmpOutput.getVolume());
+            result.getAudio().setDevicePan(tmpOutput.getPan(), sd);
+            if (tmpOutput.isMuted()) {
+                result.getAudio().muteOutput(sd);
+            }
+        }
+
         return result;
     }
 }

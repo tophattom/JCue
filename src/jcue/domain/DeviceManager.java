@@ -127,4 +127,8 @@ public class DeviceManager {
         
         return false;
     }
+
+    public boolean hasDevice(SoundDevice sd) {
+        return devices.contains(sd);
+    }
 }

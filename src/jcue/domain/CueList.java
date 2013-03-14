@@ -140,6 +140,16 @@ public class CueList extends AbstractTableModel implements ListModel {
         return this.cues.get(index);
     }
 
+    public AbstractCue getCue(String name) {
+        for (AbstractCue ac : cues) {
+            if (ac.getName().equals(name)) {
+                return ac;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * 
      * @return amount of cues in the list

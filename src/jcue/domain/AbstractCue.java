@@ -1,6 +1,8 @@
 package jcue.domain;
 
 import java.util.LinkedHashSet;
+
+import jcue.domain.audiocue.AudioCue;
 import jcue.ui.AbstractCueUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -230,5 +232,17 @@ public abstract class AbstractCue {
         }
         
         this.state = CueState.STOPPED;
+    }
+
+    public static AbstractCue fromElement(Element cueElem) {
+        String typeString = ProjectFile.getTagValue("type", cueElem);
+        CueType cueType = CueType.fromString(typeString);
+
+        if (cueType == CueType.AUDIO) {
+            AudioCue result = AudioCue.fromElement(cueElem);
+            return result;
+        }
+
+        return null;
     }
 }
