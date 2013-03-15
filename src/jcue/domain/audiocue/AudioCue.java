@@ -410,6 +410,10 @@ public class AudioCue extends AbstractCue {
             }
         }
 
+        //Load effects
+        Element rackElem = (Element) elem.getElementsByTagName("effectrack").item(0);
+        result.getEffectRack().fromElement(rackElem);
+
         return result;
     }
 }

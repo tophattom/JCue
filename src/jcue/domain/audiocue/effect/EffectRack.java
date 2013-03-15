@@ -2,12 +2,17 @@ package jcue.domain.audiocue.effect;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import jcue.domain.ProjectFile;
 import jcue.domain.audiocue.AudioCue;
 import jouvieje.bass.Bass;
+import jouvieje.bass.enumerations.BASS_FX_BFX;
+import jouvieje.bass.structures.BASS_BFX_ECHO;
 import jouvieje.bass.structures.HFX;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -134,5 +139,47 @@ public class EffectRack {
         }
 
         return result;
+    }
+
+    public void fromElement(Element elem) {
+        NodeList effectNodes = elem.getElementsByTagName("effect");
+        for (int i = 0; i < effectNodes.getLength(); i++) {
+            Element effectElem = (Element) effectNodes.item(i);
+
+            if (effectElem.getParentNode() == elem) {
+                int type = Integer.parseInt(ProjectFile.getTagValue("type", effectElem));
+                AbstractEffect effect = null;
+
+                //Create effect
+                if (type == BASS_FX_BFX.BASS_FX_BFX_ECHO.asInt()) {
+                    effect = new EchoEffect();
+                } else if (type == BASS_FX_BFX.BASS_FX_BFX_REVERB.asInt()) {
+                    effect = new ReverbEffect();
+                } else if (type == BASS_FX_BFX.BASS_FX_BFX_LPF.asInt()) {
+                    effect = new LowPassFilter(cue.getAudio());
+                } else if (type == BASS_FX_BFX.BASS_FX_BFX_BQF.asInt()) {
+                    effect = new HighPassFilter(cue.getAudio());
+                }
+
+                //Load parameters
+                if (effect != null) {
+                    addEffect(effect);
+
+                    NodeList paramNodes = effectElem.getElementsByTagName("parameter");
+                    for (int j = 0; j < paramNodes.getLength(); j++) {
+                        Element paramElem = (Element) paramNodes.item(j);
+
+                        if (paramElem.getParentNode().getParentNode() == effectElem) {
+                            String param = paramElem.getAttribute("key");
+                            double value = Double.parseDouble(ProjectFile.getTagValue("value", paramElem));
+
+                            effect.setParameter(param, value);
+                        }
+                    }
+                }
+
+
+            }
+        }
     }
 }

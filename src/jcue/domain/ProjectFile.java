@@ -159,7 +159,7 @@ public class ProjectFile {
                 }
             } else {
                 EffectEvent ee = (EffectEvent) ae;
-                String effectName = targetName.substring(0, 7);
+                String effectName = targetName.substring(7, targetName.length());
 
                 if (ae.getTargetCue() != null) {
                     AbstractEffect effect = ae.getTargetCue().getEffectRack().getEffect(effectName);
