@@ -1,5 +1,6 @@
 package jcue.domain.eventcue;
 
+import jcue.domain.ProjectFile;
 import jcue.domain.audiocue.AudioCue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,4 +50,22 @@ public abstract class AbstractEvent {
     }
 
     public abstract void perform();
+
+    public static AbstractEvent fromElement(Element elem) {
+        int type = Integer.parseInt(ProjectFile.getTagValue("type", elem));
+
+        AbstractEvent result = null;
+
+        if (type == TYPE_TRANSPORT) {
+            result = TransportEvent.fromElement(elem);
+        } else if (type == TYPE_MUTE) {
+            result = MuteEvent.fromElement(elem);
+        } else if (type == TYPE_LOOP) {
+            result = LoopEvent.fromElement(elem);
+        } else if (type == TYPE_EFFECT) {
+            result = EffectEvent.fromElement(elem);
+        }
+
+        return result;
+    }
 }

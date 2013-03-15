@@ -1,12 +1,12 @@
 package jcue.domain.eventcue;
 
 import java.util.ArrayList;
-import jcue.domain.AbstractCue;
-import jcue.domain.CueState;
-import jcue.domain.CueType;
+
+import jcue.domain.*;
 import jcue.ui.EventCueUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Cue for launching events on other cues.
@@ -68,6 +68,41 @@ public class EventCue extends AbstractCue {
             eventsElem.appendChild(ae.toElement(doc));
         }
         result.appendChild(eventsElem);
+
+        return result;
+    }
+
+    public static EventCue fromElement(Element elem) {
+        //General cue stuff
+        String name = ProjectFile.getTagValue("name", elem);
+        String description = ProjectFile.getTagValue("description", elem);
+        StartMode startMode = StartMode.fromString(ProjectFile.getTagValue("startmode", elem));
+        double delay = Double.parseDouble(ProjectFile.getTagValue("delay", elem));
+
+        String parentName = ProjectFile.getTagValue("parentcue", elem);
+        AbstractCue parentCue = CueList.getInstance().getCue(parentName);
+
+        //Create cue
+        EventCue result = new EventCue(name, description);
+
+        //Set cue parameters
+        result.setStartMode(startMode);
+        result.setStartDelay(delay);
+        if (parentCue != null) {
+            result.setParentCue(parentCue);
+        } else {
+            ProjectFile.addToParentQueue(result, parentName);
+        }
+
+        //Parse events
+        NodeList eventNodes = elem.getElementsByTagName("event");
+        for (int i = 0; i < eventNodes.getLength(); i++) {
+            Element eventElem = (Element) eventNodes.item(i);
+
+            if (eventElem.getParentNode().getParentNode() == elem) {
+                result.addEvent(AbstractEvent.fromElement(eventElem));
+            }
+        }
 
         return result;
     }

@@ -85,14 +85,7 @@ public class EffectEventPanel extends AbstractEventPanel {
         
         Object source = ae.getSource();
         
-        if (source == super.targetCueSelect) {
-            this.update();
-            
-            AudioCue cue = (AudioCue) super.targetCueSelect.getSelectedItem();
-            if (cue != null) {
-                event.setRack(cue.getEffectRack());
-            }
-        } else if (source == targetEffectSelect) {
+        if (source == targetEffectSelect) {
             JComboBox cb = (JComboBox) source;
             
             if (this.event != null) {

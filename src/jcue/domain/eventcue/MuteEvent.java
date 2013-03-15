@@ -1,6 +1,10 @@
 package jcue.domain.eventcue;
 
+import jcue.domain.CueList;
+import jcue.domain.DeviceManager;
+import jcue.domain.ProjectFile;
 import jcue.domain.SoundDevice;
+import jcue.domain.audiocue.AudioCue;
 import jcue.domain.audiocue.AudioStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -91,9 +95,29 @@ public class MuteEvent extends AbstractEvent {
         result.appendChild(modeElem);
 
         //Target output
-        Element targetElem = doc.createElement("target");
+        Element targetElem = doc.createElement("targetoutput");
         targetElem.appendChild(doc.createTextNode(Integer.toString(targetOutput.getId())));
         result.appendChild(targetElem);
+
+        return result;
+    }
+
+    public static MuteEvent fromElement(Element elem) {
+        int mode = Integer.parseInt(ProjectFile.getTagValue("mode", elem));
+        String targetName = ProjectFile.getTagValue("target", elem);
+        AudioCue targetCue = (AudioCue) CueList.getInstance().getCue(targetName);
+
+        int outputId = Integer.parseInt(ProjectFile.getTagValue("targetoutput", elem));
+        SoundDevice targetOutput = DeviceManager.getInstance().getDevice(outputId);
+
+        MuteEvent result = new MuteEvent(mode);
+        result.setTargetOutput(targetOutput);
+
+        if (targetCue != null) {
+            result.setTargetCue(targetCue);
+        } else {
+            ProjectFile.addToTargetQueue(result, targetName);
+        }
 
         return result;
     }

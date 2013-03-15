@@ -1,5 +1,8 @@
 package jcue.domain.eventcue;
 
+import jcue.domain.CueList;
+import jcue.domain.ProjectFile;
+import jcue.domain.audiocue.AudioCue;
 import jcue.domain.audiocue.effect.AbstractEffect;
 import jcue.domain.audiocue.effect.EffectRack;
 import org.w3c.dom.Document;
@@ -47,8 +50,11 @@ public class EffectEvent extends AbstractEvent {
         this.targetEffect = targetEffect;
     }
 
-    public void setRack(EffectRack rack) {
-        this.rack = rack;
+
+    @Override
+    public void setTargetCue(AudioCue targetCue) {
+        super.setTargetCue(targetCue);
+        this.rack = targetCue.getEffectRack();
     }
 
     @Override
@@ -89,9 +95,29 @@ public class EffectEvent extends AbstractEvent {
         result.appendChild(modeElem);
 
         //Target effect
-        Element targetElem = doc.createElement("target");
+        Element targetElem = doc.createElement("targeteffect");
         targetElem.appendChild(doc.createTextNode(targetEffect.getName()));
         result.appendChild(targetElem);
+
+        return result;
+    }
+
+    public static EffectEvent fromElement(Element elem) {
+        int mode = Integer.parseInt(ProjectFile.getTagValue("mode", elem));
+        String targetName = ProjectFile.getTagValue("target", elem);
+        AudioCue targetCue = (AudioCue) CueList.getInstance().getCue(targetName);
+
+        String effectName = ProjectFile.getTagValue("targeteffect", elem);
+
+        EffectEvent result = new EffectEvent(mode);
+
+        if (targetCue != null) {
+            result.setTargetCue(targetCue);
+        } else {
+            ProjectFile.addToTargetQueue(result, targetName);
+        }
+
+        ProjectFile.addToTargetQueue(result, "effect:" + effectName);
 
         return result;
     }

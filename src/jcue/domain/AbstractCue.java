@@ -3,6 +3,7 @@ package jcue.domain;
 import java.util.LinkedHashSet;
 
 import jcue.domain.audiocue.AudioCue;
+import jcue.domain.eventcue.EventCue;
 import jcue.ui.AbstractCueUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -240,6 +241,9 @@ public abstract class AbstractCue {
 
         if (cueType == CueType.AUDIO) {
             AudioCue result = AudioCue.fromElement(cueElem);
+            return result;
+        } else if (cueType == CueType.EVENT) {
+            EventCue result = EventCue.fromElement(cueElem);
             return result;
         }
 

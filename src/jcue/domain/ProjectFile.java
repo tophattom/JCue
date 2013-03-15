@@ -2,6 +2,7 @@ package jcue.domain;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -9,6 +10,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import jcue.domain.audiocue.AudioCue;
+import jcue.domain.audiocue.effect.AbstractEffect;
+import jcue.domain.eventcue.AbstractEvent;
+import jcue.domain.eventcue.EffectEvent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,6 +30,7 @@ public class ProjectFile {
 
     private static HashMap<Integer, Integer> idReplace = new HashMap<Integer, Integer>();
     private static HashMap<AbstractCue, String> parentQueue = new HashMap<AbstractCue, String>();
+    private static HashMap<AbstractEvent, String> targetQueue = new LinkedHashMap<AbstractEvent, String>();
 
     public static void saveProject() {
         if (currentPath.isEmpty()) {
@@ -98,6 +105,9 @@ public class ProjectFile {
                 CueList.getInstance().addCue(AbstractCue.fromElement(cueElem));
             }
 
+            //Set missing parents and targets
+            processParentQueue();
+            processTargetQueue();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,7 +130,46 @@ public class ProjectFile {
         parentQueue.put(cue, parentName);
     }
 
-    private static void processParentQueue() {
+    public static void addToTargetQueue(AbstractEvent event, String targetName) {
+        targetQueue.put(event, targetName);
+    }
 
+    private static void processParentQueue() {
+        for (AbstractCue ac : parentQueue.keySet()) {
+            String parentName = parentQueue.get(ac);
+            AbstractCue parentCue = CueList.getInstance().getCue(parentName);
+
+            if (parentCue != null) {
+                ac.setParentCue(parentCue);
+            }
+        }
+
+        parentQueue.clear();
+    }
+
+    private static void processTargetQueue() {
+        for (AbstractEvent ae : targetQueue.keySet()) {
+            String targetName = targetQueue.get(ae);
+
+            if (!targetName.startsWith("effect:")) {
+                AudioCue targetCue = (AudioCue) CueList.getInstance().getCue(targetName);
+
+                if (targetCue != null) {
+                    ae.setTargetCue(targetCue);
+                }
+            } else {
+                EffectEvent ee = (EffectEvent) ae;
+                String effectName = targetName.substring(0, 7);
+
+                if (ae.getTargetCue() != null) {
+                    AbstractEffect effect = ae.getTargetCue().getEffectRack().getEffect(effectName);
+
+                    if (effect != null) {
+                        ee.setTargetEffect(effect);
+                    }
+                }
+            }
+
+        }
     }
 }

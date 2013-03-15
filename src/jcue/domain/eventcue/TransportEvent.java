@@ -1,5 +1,9 @@
 package jcue.domain.eventcue;
 
+import jcue.domain.AbstractCue;
+import jcue.domain.CueList;
+import jcue.domain.ProjectFile;
+import jcue.domain.audiocue.AudioCue;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -70,8 +74,24 @@ public class TransportEvent extends AbstractEvent {
 
         //Mode
         Element modeElem = doc.createElement("mode");
-        result.appendChild(doc.createTextNode(Integer.toString(mode)));
+        modeElem.appendChild(doc.createTextNode(Integer.toString(mode)));
         result.appendChild(modeElem);
+
+        return result;
+    }
+
+    public static TransportEvent fromElement(Element elem) {
+        int mode = Integer.parseInt(ProjectFile.getTagValue("mode", elem));
+        String targetName = ProjectFile.getTagValue("target", elem);
+        AudioCue targetCue = (AudioCue) CueList.getInstance().getCue(targetName);
+
+        TransportEvent result = new TransportEvent(mode);
+
+        if (targetCue != null) {
+            result.setTargetCue(targetCue);
+        } else {
+            ProjectFile.addToTargetQueue(result, targetName);
+        }
 
         return result;
     }

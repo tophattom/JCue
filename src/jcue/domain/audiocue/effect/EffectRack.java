@@ -74,7 +74,17 @@ public class EffectRack {
     public ArrayList<AbstractEffect> getEffects() {
         return effects;
     }
-    
+
+    public AbstractEffect getEffect(String name) {
+        for (AbstractEffect ae : effects) {
+            if (ae.getName().equals(name)) {
+                return ae;
+            }
+        }
+
+        return null;
+    }
+
     public void resetToDefaults() {
         for (AbstractEffect ae : effects) {
             ae.setActive(ae.isDefaultActive());
