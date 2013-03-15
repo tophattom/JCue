@@ -70,7 +70,10 @@ public class AbstractEventPanel extends JPanel implements ActionListener {
             JComboBox cb = (JComboBox) source;
             
             if (this.event != null) {
-                this.event.setTargetCue((AudioCue) cb.getSelectedItem());
+                AudioCue target = (AudioCue) cb.getSelectedItem();
+                if (target != null) {
+                    this.event.setTargetCue(target);
+                }
             }
         }
     }
