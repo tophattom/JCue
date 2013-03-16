@@ -52,6 +52,15 @@ public class ParameterEnvelope implements Runnable {
     
     @Override
     public void run() {
+        if (duration == 0) {
+            QuadCurve2D lastCurve = curves.get(curves.size() - 1);
+            double value = lastCurve.getY2();
+
+            this.targetCue.getAudio().setMasterVolumeDirect(1.0 - value);
+
+            return;
+        }
+
         while (this.running) {
             long elapsedTime = (System.nanoTime() - this.startTime);
             long lDuration = (long) (this.duration * 1000000000);
