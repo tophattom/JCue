@@ -182,6 +182,10 @@ public class EditorWindow extends JFrame {
     }
     
     public void setSelectedIndex(int index) {
-        this.cueList.setSelectedIndex(index);
+        if (index > -1) {
+            this.cueList.setSelectedIndex(index);
+        } else {
+            cueList.clearSelection();
+        }
     }
 }

@@ -56,6 +56,7 @@ public class EditorListener implements ActionListener, ListSelectionListener {
             
             window.setCurrentCue(null);
             window.setUI(null);
+            window.setSelectedIndex(-1);
         } else if (command.equals("moveUp")) {
             AbstractCue cue = window.getCurrentCue();
             int index = cueList.getCueIndex(cue);
