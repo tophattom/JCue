@@ -26,7 +26,7 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
     
     private JList eventsList;
     
-    private JButton addButton;
+    private JButton addButton, removeButton;
     private JPopupMenu addMenu;
     private JMenuItem addTransport, addLoop, addMute, addEffect;
     
@@ -65,7 +65,9 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
         this.addEffect.addActionListener(this);
         this.addMenu.add(addEffect);
         //*******
-        
+
+        this.removeButton = new JButton(new ImageIcon("images/remove_small.png"));
+        removeButton.addActionListener(this);
         
         this.controlPanel = new JPanel(new CardLayout());
         
@@ -86,7 +88,8 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
         this.add(this.eventsList, "split 2, span, hmin 150, wmin 100");
         this.add(this.controlPanel, "growx, aligny top, wrap");
         
-        this.add(this.addButton);
+        this.add(this.addButton, "split 2");
+        this.add(this.removeButton);
     }
 
     @Override
@@ -133,6 +136,16 @@ public class EventCueUI extends AbstractCueUI implements ListSelectionListener {
             this.cue.addEvent(new MuteEvent());
         } else if (source == this.addEffect) {
             this.cue.addEvent(new EffectEvent());
+        } else if (source == this.removeButton) {
+            AbstractEvent selection = (AbstractEvent) eventsList.getSelectedValue();
+
+            if (cue != null && selection != null) {
+                cue.removeEvent(selection);
+
+
+                CardLayout cl = (CardLayout) this.controlPanel.getLayout();
+                cl.show(this.controlPanel, "empty");
+            }
         }
         
         this.update();
