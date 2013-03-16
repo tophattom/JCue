@@ -73,6 +73,17 @@ public class EffectEventPanel extends AbstractEventPanel {
                 
                 //Set current selection
                 targetEffectSelect.setSelectedItem(event.getTargetEffect());
+            } else {
+                targetEffectSelect.setSelectedItem(null);
+            }
+
+            int mode = this.event.getMode();
+
+            for (int i = 1; i <= EffectEvent.MODE_COUNT; i++) {
+                if (mode == i) {
+                    this.modeSelect.get(i - 1).setSelected(true);
+                    break;
+                }
             }
         } else {
             targetEffectSelect.setSelectedItem(null);
@@ -84,8 +95,10 @@ public class EffectEventPanel extends AbstractEventPanel {
         super.actionPerformed(ae);
         
         Object source = ae.getSource();
-        
-        if (source == targetEffectSelect) {
+
+        if (source == super.targetCueSelect) {
+            this.update();
+        } else if (source == targetEffectSelect) {
             JComboBox cb = (JComboBox) source;
             
             if (this.event != null) {

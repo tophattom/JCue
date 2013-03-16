@@ -91,14 +91,7 @@ public abstract class AbstractEffect {
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        
-        for (EffectParameter ep : this.params.values()) {
-            sb.append(ep);
-            sb.append("\n");
-        }
-        
-        return sb.toString();
+        return name;
     }
     
     
