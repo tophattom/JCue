@@ -221,6 +221,11 @@ public class CueList extends AbstractTableModel implements ListModel {
         }
     }
 
+    public void contentsUpdated(Object obj, int index0, int index1) {
+        this.fireContentsChanged(obj, index0, index1);
+        super.fireTableRowsUpdated(index0, index1);
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Model stuff">
     @Override
     public int getSize() {

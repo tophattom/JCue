@@ -174,8 +174,16 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
             }
         } else if (source == this.nameField) {
             this.cue.setName(this.nameField.getText());
+
+            CueList cueList = CueList.getInstance();
+            int index = cueList.getCueIndex(cue);
+            cueList.contentsUpdated(cue, index -1, index);
         } else if (source == this.descField) {
             this.cue.setDescription(this.descField.getText());
+
+            CueList cueList = CueList.getInstance();
+            int index = cueList.getCueIndex(cue);
+            cueList.contentsUpdated(cue, index -1, index);
         }
     }
 
