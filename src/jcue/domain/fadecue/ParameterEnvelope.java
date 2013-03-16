@@ -33,6 +33,10 @@ public class ParameterEnvelope implements Runnable {
     }
     
     public void start() {
+        if (targetCue == null) {
+            return;
+        }
+
         if (this.updater == null) {
             this.updater = new Thread(this, "Envelope thread");
         }
