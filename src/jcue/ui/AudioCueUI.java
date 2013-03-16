@@ -325,6 +325,8 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         this.cue = (AudioCue) cue;
         this.update();
         this.updateDevicesPanel();
+
+        rackWindow.setCue((AudioCue) cue);
     }
     
     private void updateDevicesPanel() {
