@@ -2,12 +2,15 @@ package jcue.ui.event;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import jcue.domain.AbstractCue;
 import jcue.domain.CueList;
+import jcue.domain.CuePlayer;
 import jcue.domain.CueType;
 import jcue.ui.EditorWindow;
 
@@ -15,7 +18,7 @@ import jcue.ui.EditorWindow;
  *
  * @author Jaakko
  */
-public class EditorListener implements ActionListener, ListSelectionListener {
+public class EditorListener implements ActionListener, ListSelectionListener, WindowListener {
 
     private CueList cueList;
     
@@ -89,5 +92,42 @@ public class EditorListener implements ActionListener, ListSelectionListener {
                 this.window.setCurrentCue(cue);
             }
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void windowClosing(WindowEvent windowEvent) {
+        for (AbstractCue ac : cueList.getCues()) {
+            ac.stop();
+        }
+    }
+
+    @Override
+    public void windowClosed(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void windowIconified(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void windowActivated(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent windowEvent) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -31,6 +31,9 @@ public class MainWindowListener implements ActionListener {
 
         //Buttons
         if (command.equals("editor")) {
+            player.stopAll();
+            player.stop();
+
             this.mainWindow.showEditorWindow();
         } else if (command.equals("play")) {
             CuePlayer player = this.mainWindow.getPlayer();

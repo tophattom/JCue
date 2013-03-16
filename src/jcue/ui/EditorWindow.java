@@ -142,6 +142,9 @@ public class EditorWindow extends JFrame {
         //CueList data listener
         this.cues.addListDataListener(this.audioPanel);
         this.cues.addListDataListener(this.eventPanel);
+
+        //Window listener
+        this.addWindowListener(editorListener);
     }
     
     public void setUI(AbstractCue cue) {

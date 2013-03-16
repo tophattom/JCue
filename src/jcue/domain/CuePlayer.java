@@ -66,8 +66,10 @@ public class CuePlayer implements Runnable {
         for (AbstractCue ac : this.cues.getCues()) {
             ac.stop();
         }
-        
-        this.currentCue = this.cues.getCue(0);
+
+        if (cues.size() > 0) {
+            this.currentCue = this.cues.getCue(0);
+        }
     }
     
     @Override
