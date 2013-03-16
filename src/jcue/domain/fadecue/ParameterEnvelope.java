@@ -3,12 +3,16 @@ package jcue.domain.fadecue;
 import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
 import java.util.ArrayList;
+
+import jcue.domain.CueList;
 import jcue.domain.CueState;
+import jcue.domain.ProjectFile;
 import jcue.domain.audiocue.AudioCue;
 import jcue.ui.CurvePanel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -371,7 +375,7 @@ public class ParameterEnvelope implements Runnable {
         result.appendChild(durationElem);
 
         //Target
-        Element targetElem = doc.createElement("target");
+        Element targetElem = doc.createElement("targetcue");
         if (targetCue != null) {
             targetElem.appendChild(doc.createTextNode(targetCue.getName()));
         }
@@ -396,5 +400,39 @@ public class ParameterEnvelope implements Runnable {
         result.appendChild(curvesElem);
 
         return result;
+    }
+
+    protected void fromElement(Element elem) {
+        //Duration
+        double dur = Double.parseDouble(ProjectFile.getTagValue("duration", elem));
+
+        //Target cue
+        String targetName = ProjectFile.getTagValue("targetcue", elem);
+        AudioCue targetCue = (AudioCue) CueList.getInstance().getCue(targetName);
+
+        this.duration = dur;
+        if (targetCue != null) {
+            this.targetCue = targetCue;
+        }
+
+        //Curves
+        NodeList curveNodes = elem.getElementsByTagName("curve");
+        ArrayList<QuadCurve2D> tmpCurves = new ArrayList<QuadCurve2D>();
+        for (int i = 0; i < curveNodes.getLength(); i++) {
+            Element curveElem = (Element) curveNodes.item(i);
+
+            if (curveElem.getParentNode().getParentNode() == elem) {
+                double x1 = Double.parseDouble(curveElem.getAttribute("x1"));
+                double y1 = Double.parseDouble(curveElem.getAttribute("y1"));
+                double x2 = Double.parseDouble(curveElem.getAttribute("x2"));
+                double y2 = Double.parseDouble(curveElem.getAttribute("y2"));
+                double ctrlX = Double.parseDouble(curveElem.getAttribute("ctrlX"));
+                double ctrlY = Double.parseDouble(curveElem.getAttribute("ctrlY"));
+
+                tmpCurves.add(new QuadCurve2D.Double(x1, y1, ctrlX, ctrlY, x2, y2));
+            }
+        }
+
+        this.curves = tmpCurves;
     }
 }

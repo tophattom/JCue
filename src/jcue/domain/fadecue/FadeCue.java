@@ -1,7 +1,6 @@
 package jcue.domain.fadecue;
 
-import jcue.domain.AbstractCue;
-import jcue.domain.CueType;
+import jcue.domain.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,6 +57,34 @@ public class FadeCue extends AbstractCue {
 
         //Envelope
         result.appendChild(envelope.toElement(doc));
+
+        return result;
+    }
+
+    public static FadeCue fromElement(Element elem) {
+        //General cue stuff
+        String name = ProjectFile.getTagValue("name", elem);
+        String description = ProjectFile.getTagValue("description", elem);
+        StartMode startMode = StartMode.fromString(ProjectFile.getTagValue("startmode", elem));
+        double delay = Double.parseDouble(ProjectFile.getTagValue("delay", elem));
+
+        String parentName = ProjectFile.getTagValue("parentcue", elem);
+        AbstractCue parentCue = CueList.getInstance().getCue(parentName);
+
+        FadeCue result = new FadeCue(name, description);
+        result.setStartMode(startMode);
+        result.setStartDelay(delay);
+
+        if (parentCue != null) {
+            result.setParentCue(parentCue);
+        } else {
+            ProjectFile.addToParentQueue(result, parentName);
+        }
+
+        //Envelope
+        Element envElem = (Element) elem.getElementsByTagName("envelope").item(0);
+        result.envelope.fromElement(envElem);
+
 
         return result;
     }

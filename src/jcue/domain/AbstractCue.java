@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
+import jcue.domain.fadecue.FadeCue;
 import jcue.ui.AbstractCueUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -244,6 +245,9 @@ public abstract class AbstractCue {
             return result;
         } else if (cueType == CueType.EVENT) {
             EventCue result = EventCue.fromElement(cueElem);
+            return result;
+        } else if (cueType == CueType.FADE) {
+            FadeCue result = FadeCue.fromElement(cueElem);
             return result;
         }
 
