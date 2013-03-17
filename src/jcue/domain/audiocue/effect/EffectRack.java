@@ -176,9 +176,11 @@ public class EffectRack {
                             effect.setParameter(param, value);
                         }
                     }
+
+                    //Set active
+                    boolean active = Boolean.parseBoolean(ProjectFile.getTagValue("active", effectElem));
+                    effect.setDefaultActive(active);
                 }
-
-
             }
         }
     }
