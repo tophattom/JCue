@@ -91,6 +91,8 @@ public class CuePlayer implements Runnable {
                 }
             }
 
+            cues.fireTableDataChanged();
+
             //Sleep a bit
             try {
                 Thread.sleep(100);

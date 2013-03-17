@@ -80,7 +80,7 @@ public class AudioCue extends AbstractCue {
         if (!delay || super.getStartDelay() == 0) {
             if (this.audio != null) {
                 //Set audio position to start if the cue is not paused
-                if (this.state == CueState.STOPPED) {
+                if (this.state == CueState.STOPPED || state == CueState.WAITING) {
                     this.audio.setPosition(this.inPos);
                     this.audio.setMasterVolume(this.volume);
                     
@@ -92,6 +92,10 @@ public class AudioCue extends AbstractCue {
                 }
                 
                 this.audio.play();              //Start playing the audio
+
+                if (fadeInCurve == null) {
+                    this.state = CueState.PLAYING;
+                }
             }
         }
     }
