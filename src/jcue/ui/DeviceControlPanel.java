@@ -74,6 +74,7 @@ public class DeviceControlPanel extends JPanel implements ChangeListener,
         
         this.muteCheck = new JCheckBox("Mute");
         this.muteCheck.addItemListener(this);
+        this.muteCheck.setSelected(targetCue.getAudio().isMuted(targetDevice));
         
         this.removeButton = new JButton(removeIcon);
         this.removeButton.addActionListener(this);
