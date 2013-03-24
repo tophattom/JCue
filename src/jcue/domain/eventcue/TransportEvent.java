@@ -42,6 +42,10 @@ public class TransportEvent extends AbstractEvent {
     
     @Override
     public void perform() {
+        if (super.targetCue == null) {
+            return;
+        }
+
         if (this.mode == STOP) {
             super.targetCue.stop();
         } else if (this.mode == PAUSE) {
