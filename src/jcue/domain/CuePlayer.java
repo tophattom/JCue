@@ -15,7 +15,6 @@ public class CuePlayer implements Runnable {
     private CueList cues;
     
     private HashMap<AbstractCue, CueState> activeCues;
-    private LinkedList<AbstractCue> activeList;
     
     private AbstractCue currentCue;
     
@@ -23,7 +22,6 @@ public class CuePlayer implements Runnable {
     private Thread updater;
 
     public CuePlayer(CueList cues) {
-        this.activeList = new LinkedList<AbstractCue>();
         this.activeCues = new HashMap<AbstractCue, CueState>();
 
         this.running = false;
@@ -41,7 +39,9 @@ public class CuePlayer implements Runnable {
         this.updater.start();
         running = true;
 
-        this.currentCue = this.cues.getCue(0);
+        if (currentCue == null && cues.size() > 0) {
+            this.currentCue = this.cues.getCue(0);
+        }
     }
 
     public void stop() {
@@ -52,9 +52,8 @@ public class CuePlayer implements Runnable {
      * Starts next cue
      */
     public void startNext() {
-        this.currentCue.start(true);
-        this.activeList.add(currentCue);
         this.activeCues.put(currentCue, currentCue.getState());
+        this.currentCue.start(true);
 
         this.currentCue = getNextManualCue();
     }
@@ -70,10 +69,14 @@ public class CuePlayer implements Runnable {
         if (cues.size() > 0) {
             this.currentCue = this.cues.getCue(0);
         }
+
+        cues.fireTableDataChanged();
     }
     
     @Override
     public void run() {
+        int size = cues.size();
+
         while (running) {
             Iterator<Entry<AbstractCue, CueState>> iterator = this.activeCues.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -83,7 +86,7 @@ public class CuePlayer implements Runnable {
                 
                 CueState newState = ac.getState();
                 if (newState != oldState) {
-                    this.cues.fireTableCellUpdated(this.cues.getCueIndex(ac), 3);
+                    this.cues.fireTableCellUpdated(this.cues.getCueIndex(ac), 2);
                     
                     if (newState == CueState.STOPPED || newState == CueState.DONE) {
                         iterator.remove();
@@ -91,7 +94,9 @@ public class CuePlayer implements Runnable {
                 }
             }
 
-            cues.fireTableDataChanged();
+            for (int i = 0; i < size; i++) {
+                cues.fireTableCellUpdated(i, 4);
+            }
 
             //Sleep a bit
             try {

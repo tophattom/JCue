@@ -1,15 +1,14 @@
 package jcue.ui.event;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
 import jcue.domain.ProjectFile;
 import jcue.ui.MainWindow;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  *

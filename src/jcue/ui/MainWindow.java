@@ -114,6 +114,8 @@ public class MainWindow implements Runnable {
 
         mainCueList = new JTable(this.cues);
         mainCueList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        mainCueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        mainCueList.setColumnSelectionAllowed(false);
         
         //Buttons for playback
         playButton = new JButton("Play next");
