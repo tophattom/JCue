@@ -2,10 +2,10 @@ package jcue.ui.event;
 
 import jcue.domain.CueList;
 import jcue.domain.CuePlayer;
+import jcue.domain.FileUtils;
 import jcue.domain.ProjectFile;
 import jcue.ui.MainWindow;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -60,7 +60,7 @@ public class MainWindowListener implements ActionListener {
         } else if (command.equals("fileOpen")) {
             player.stop();
 
-            File file = chooseFile();
+            File file = FileUtils.chooseFile();
 
             if (file != null) {
                 CueList.getInstance().clear();
@@ -70,7 +70,7 @@ public class MainWindowListener implements ActionListener {
             mainWindow.updateTitleBar();
         } else if (command.equals("fileSave")) {
             if (ProjectFile.currentPath.isEmpty()) {
-                File saveLocation = chooseSaveLocation();
+                File saveLocation = FileUtils.chooseSaveLocation();
 
                 if (saveLocation != null) {
                     ProjectFile.currentPath = saveLocation.getAbsolutePath();
@@ -81,7 +81,7 @@ public class MainWindowListener implements ActionListener {
 
             mainWindow.updateTitleBar();
         } else if (command.equals("fileSaveAs")) {
-            File saveLocation = chooseSaveLocation();
+            File saveLocation = FileUtils.chooseSaveLocation();
             if (saveLocation != null) {
                 ProjectFile.currentPath = saveLocation.getAbsolutePath();
 
@@ -95,30 +95,4 @@ public class MainWindowListener implements ActionListener {
         }
     }
 
-
-    private static File chooseSaveLocation() {
-        JFileChooser chooser = new JFileChooser();
-        int result = chooser.showSaveDialog(null);
-
-        File file = null;
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-        }
-
-        return file;
-    }
-
-    private static File chooseFile() {
-        JFileChooser chooser = new JFileChooser();
-        int result = chooser.showOpenDialog(null);
-
-        File file = null;
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            file = chooser.getSelectedFile();
-        }
-
-        return file;
-    }
 }
