@@ -171,7 +171,7 @@ public class EffectRack {
 
                         if (paramElem.getParentNode().getParentNode() == effectElem) {
                             String param = paramElem.getAttribute("key");
-                            double value = Double.parseDouble(ProjectFile.getTagValue("value", paramElem));
+                            double value = Double.parseDouble(paramElem.getAttribute("value"));
 
                             effect.setParameter(param, value);
                         }

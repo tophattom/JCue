@@ -188,15 +188,6 @@ public abstract class AbstractCue {
         }
         result.appendChild(parentElem);
         
-        //Children
-        Element childrenElem = doc.createElement("children");
-        for (AbstractCue ac : childCues) {
-            Element childElem = doc.createElement("child");
-            childElem.appendChild(doc.createTextNode(ac.getName()));
-            childrenElem.appendChild(childElem);
-        }
-        result.appendChild(childrenElem);
-        
         return result;
     }
 
