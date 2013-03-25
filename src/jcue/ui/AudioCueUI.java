@@ -12,10 +12,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListDataEvent;
-import jcue.domain.AbstractCue;
-import jcue.domain.CueState;
-import jcue.domain.DeviceManager;
-import jcue.domain.SoundDevice;
+
+import jcue.domain.*;
 import jcue.domain.audiocue.AudioCue;
 
 /**
@@ -351,13 +349,10 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         String command = ae.getActionCommand();
         
         if (command.equals("loadAudio")) {  //File choose button was pressed
-            
-            JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new AudioFileFilter());
-            int result = chooser.showOpenDialog(null);
-            
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File file = chooser.getSelectedFile();
+
+            File file = FileUtils.chooseFile();
+
+            if (file != null) {
                 this.cue.loadAudio(file.getAbsolutePath());
                 //this.cue.updateUI();
             }
