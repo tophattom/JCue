@@ -10,6 +10,7 @@ import javax.swing.table.AbstractTableModel;
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.fadecue.FadeCue;
+import jcue.domain.notecue.NoteCue;
 
 /**
  * Stores the cues created. Only on instance of CueList can
@@ -67,6 +68,7 @@ public class CueList extends AbstractTableModel implements ListModel {
         } else if (cueType == CueType.FADE) {
             cue = new FadeCue("Q" + counter, "");
         } else if (cueType == CueType.NOTE) {
+            cue = new NoteCue("NOTE " + counter, "");
         }
 
         this.cues.add(cue);

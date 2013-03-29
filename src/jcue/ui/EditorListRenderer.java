@@ -8,6 +8,7 @@ import javax.swing.ListCellRenderer;
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.fadecue.FadeCue;
+import jcue.domain.notecue.NoteCue;
 
 /**
  *
@@ -31,8 +32,9 @@ public class EditorListRenderer extends JLabel implements ListCellRenderer {
                 setBackground(new Color(100, 200, 100));
             } else if (o instanceof FadeCue) {
                 setBackground(new Color(200, 100, 200));
+            } else if (o instanceof NoteCue) {
+                setBackground(new Color(240, 190, 0));
             }
-            //TODO: render other cue types
 
             setForeground(jlist.getForeground());
         }

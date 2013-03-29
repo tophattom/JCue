@@ -23,7 +23,6 @@ public class EditorListener implements ActionListener, ListSelectionListener, Wi
     private CueList cueList;
     
     private JList list;
-    private JPanel panel;
     
     private EditorWindow window;
 

@@ -30,9 +30,9 @@ public class AbstractCueUI extends JPanel implements PropertyChangeListener, Act
     private JLabel nameLabel, descLabel;
     private JTextField nameField, descField;
     
-    private JLabel startModeLabel, delayLabel, cueLabel;
-    private JComboBox startModeSelect, cueSelect;
-    private JFormattedTextField delayField;
+    protected JLabel startModeLabel, delayLabel, cueLabel;
+    protected JComboBox startModeSelect, cueSelect;
+    protected JFormattedTextField delayField;
     
     private AbstractCue cue;
 

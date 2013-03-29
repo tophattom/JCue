@@ -9,6 +9,7 @@ import jcue.domain.CueType;
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.fadecue.FadeCue;
+import jcue.domain.notecue.NoteCue;
 import jcue.ui.event.EditorListener;
 import net.miginfocom.swing.MigLayout;
 
@@ -18,7 +19,7 @@ import net.miginfocom.swing.MigLayout;
  */
 public class EditorWindow extends JFrame {
     
-    private JButton audioButton, eventButton, fadeButton;
+    private JButton audioButton, eventButton, fadeButton, noteButton;
     
     private JList cueList;
     private JButton upButton, downButton, deleteButton;
@@ -26,6 +27,7 @@ public class EditorWindow extends JFrame {
     private AudioCueUI audioPanel;
     private EventCueUI eventPanel;
     private FadeCueUI fadePanel;
+    private NoteCueUI notePanel;
     
     private JPanel uiArea;
     
@@ -59,11 +61,13 @@ public class EditorWindow extends JFrame {
         this.audioPanel = new AudioCueUI();
         this.eventPanel = new EventCueUI();
         this.fadePanel = new FadeCueUI();
+        this.notePanel = new NoteCueUI();
         
         this.uiArea.add(new JPanel(), "empty");
         this.uiArea.add(audioPanel, "audio");
         this.uiArea.add(eventPanel, "event");
         this.uiArea.add(fadePanel, "fade");
+        this.uiArea.add(notePanel, "note");
         
         
         //Cue list
@@ -85,6 +89,10 @@ public class EditorWindow extends JFrame {
         this.fadeButton = new JButton("Fade cue");
         this.fadeButton.setMargin(new Insets(10, 10, 10, 10));
         this.fadeButton.setActionCommand("change");
+
+        this.noteButton = new JButton("Note cue");
+        this.noteButton.setMargin(new Insets(10, 10, 10, 10));
+        this.noteButton.setActionCommand("note");
         //*************
 
         //Buttons for managing cue list
@@ -103,6 +111,7 @@ public class EditorWindow extends JFrame {
         top.add(this.audioButton);
         top.add(this.eventButton);
         top.add(this.fadeButton);
+        top.add(this.noteButton);
         
         //Left panel
         JPanel left = new JPanel(new MigLayout("flowy, insets 0, fill"));
@@ -130,6 +139,7 @@ public class EditorWindow extends JFrame {
         this.audioButton.addActionListener(editorListener);
         this.eventButton.addActionListener(editorListener);
         this.fadeButton.addActionListener(editorListener);
+        this.noteButton.addActionListener(editorListener);
         
         //Buttons for re-arranging cues
         this.deleteButton.addActionListener(editorListener);
@@ -172,6 +182,11 @@ public class EditorWindow extends JFrame {
             
             FadeCue fc = (FadeCue) cue;
             this.fadePanel.setCurrentCue(fc);
+        } else if (type == CueType.NOTE) {
+            cl.show(this.uiArea, "note");
+
+            NoteCue nc = (NoteCue) cue;
+            this.notePanel.setCurrentCue(nc);
         }
     }
     

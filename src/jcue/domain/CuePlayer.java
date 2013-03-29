@@ -122,14 +122,18 @@ public class CuePlayer implements Runnable {
         AbstractCue result = null;
 
         for (index += 1; index < size; index++) {
-            
-                result = this.cues.getCue(index);
-                if (result.getStartMode() == StartMode.MANUAL) {
-                    break;
-                } else {
-                    result = null;
-                }
-            
+            result = this.cues.getCue(index);
+
+            //Skip note cues
+            if (result.getType() == CueType.NOTE) {
+                continue;
+            }
+
+            if (result.getStartMode() == StartMode.MANUAL) {
+                break;
+            } else {
+                result = null;
+            }
         }
 
         return result;
