@@ -1,11 +1,10 @@
 package jcue.ui.event;
 
-import jcue.domain.CueList;
-import jcue.domain.CuePlayer;
-import jcue.domain.FileUtils;
-import jcue.domain.ProjectFile;
+import jcue.domain.*;
 import jcue.ui.MainWindow;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,8 +13,8 @@ import java.io.File;
  *
  * @author oppilas
  */
-public class MainWindowListener implements ActionListener {
-    
+public class MainWindowListener implements ActionListener, ListSelectionListener {
+
     private MainWindow mainWindow;
     private CuePlayer player;
 
@@ -36,13 +35,13 @@ public class MainWindowListener implements ActionListener {
             this.mainWindow.showEditorWindow();
         } else if (command.equals("play")) {
             CuePlayer player = this.mainWindow.getPlayer();
-            
+
             if (!player.isRunning()) {
                 player.start();
             }
-            
+
             player.startNext();
-            
+
             this.mainWindow.setSelectedRow(player.getCurrentIndex());
         } else if (command.equals("stop")) {
             this.mainWindow.getPlayer().stopAll();
@@ -95,4 +94,11 @@ public class MainWindowListener implements ActionListener {
         }
     }
 
+    @Override
+    public void valueChanged(ListSelectionEvent lse) {
+        int index = mainWindow.getSelectedRow();
+        AbstractCue cue = CueList.getInstance().getCue(index);
+
+        player.setCurrentCue(cue);
+    }
 }

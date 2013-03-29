@@ -116,6 +116,7 @@ public class MainWindow implements Runnable {
         mainCueList.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         mainCueList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mainCueList.setColumnSelectionAllowed(false);
+        mainCueList.getSelectionModel().addListSelectionListener(eventListener);
         
         //Buttons for playback
         playButton = new JButton("Play next");
@@ -164,6 +165,10 @@ public class MainWindow implements Runnable {
     
     public void setSelectedRow(int row) {
         this.mainCueList.setRowSelectionInterval(row, row);
+    }
+
+    public int getSelectedRow() {
+        return mainCueList.getSelectedRow();
     }
 
     public void updateTitleBar() {

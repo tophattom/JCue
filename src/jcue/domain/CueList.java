@@ -137,6 +137,10 @@ public class CueList extends AbstractTableModel implements ListModel {
      * @return cue at index
      */
     public AbstractCue getCue(int index) {
+        if (index < 0 || index > cues.size() - 1) {
+            return null;
+        }
+
         return this.cues.get(index);
     }
 
