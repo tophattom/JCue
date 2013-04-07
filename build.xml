@@ -65,9 +65,9 @@
         <!-- Create temporary Windows directory -->
         <copy todir="${dist.dir}/win/JCue">
           <fileset dir="${dist.dir}">
-            <exclude name="win" />
-            <exclude name="mac" />
-            <exclude name="linux" />
+            <exclude name="win/" />
+            <exclude name="mac/" />
+            <exclude name="linux/" />
             <exclude name="JCue.jar" />
           </fileset>
         </copy>
