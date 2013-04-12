@@ -11,7 +11,6 @@ import jcue.domain.audiocue.AudioCue;
 import jcue.ui.CurvePanel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -27,13 +26,20 @@ public class ParameterEnvelope implements Runnable {
     
     private long startTime;
     private double duration;
+
+    private boolean stopAtEnd;
     
     private AudioCue targetCue;
 
-    public ParameterEnvelope() {
+    public ParameterEnvelope(boolean stop) {
+        this.stopAtEnd = stop;
         this.curves = new ArrayList<QuadCurve2D>();
         
         this.curves.add(new QuadCurve2D.Double(0, 0.5, 0.5, 0.5, 1, 0.5));
+    }
+
+    public ParameterEnvelope() {
+        this(false);
     }
     
     public void start() {
@@ -76,6 +82,11 @@ public class ParameterEnvelope implements Runnable {
             
             if (elapsedTime > lDuration) {
                 this.targetCue.setState(CueState.PLAYING);
+
+                if (stopAtEnd) {
+                    targetCue.stop();
+                }
+
                 this.stop();
                 break;
             }

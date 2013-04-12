@@ -181,7 +181,7 @@ public class AudioCue extends AbstractCue {
         
         if (fadeOut > 0) {
             if (this.fadeOutCurve == null) {
-                fadeOutCurve = new ParameterEnvelope();
+                fadeOutCurve = new ParameterEnvelope(true);
                 
                 fadeOutCurve.setTargetCue(this);
             }
@@ -263,6 +263,12 @@ public class AudioCue extends AbstractCue {
             fadeOutCurve.setDuration(this.fadeOut);
             
             this.audio.setFadeOut(this.outPos - this.fadeOut, fadeOutCurve);
+        }
+    }
+
+    public void startFadeOut() {
+        if (this.fadeOutCurve != null) {
+            fadeOutCurve.start();
         }
     }
 

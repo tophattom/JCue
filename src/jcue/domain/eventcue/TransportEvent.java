@@ -17,8 +17,9 @@ public class TransportEvent extends AbstractEvent {
     public static final int STOP = 1;
     public static final int PAUSE = 2;
     public static final int START = 3;
+    public static final int FADE_STOP = 4;
     
-    public static final int MODE_COUNT = 3;
+    public static final int MODE_COUNT = 4;
     
     private int mode;
 
@@ -52,6 +53,8 @@ public class TransportEvent extends AbstractEvent {
             super.targetCue.pause();
         } else if (this.mode == START) {
             super.targetCue.start(true);
+        } else if (this.mode == FADE_STOP) {
+            super.targetCue.startFadeOut();
         }
     }
 
@@ -67,6 +70,8 @@ public class TransportEvent extends AbstractEvent {
             return "Pause";
         } else if (mode == START) {
             return "Start";
+        } else if (mode == FADE_STOP) {
+            return "Fade out and stop";
         } else {
             return "Unknown mode";
         }
