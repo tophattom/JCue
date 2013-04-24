@@ -4,6 +4,7 @@ import javax.swing.SwingUtilities;
 import jcue.domain.CueList;
 import jcue.domain.DeviceManager;
 import jcue.ui.MainWindow;
+import jouvieje.bass.Bass;
 import jouvieje.bass.BassInit;
 
 /**
@@ -13,6 +14,7 @@ import jouvieje.bass.BassInit;
 public class JCue {
     
     public static String libPath = null;
+    public static String pluginExtension = "";
 
     /**
      * @param args the command line arguments
@@ -38,6 +40,9 @@ public class JCue {
         
         //Load the libraries
         BassInit.loadLibraries();
+
+        //Load necessary plugins
+        Bass.BASS_PluginLoad("bassflac" + pluginExtension, 0);
     }
     
     /**
@@ -56,14 +61,19 @@ public class JCue {
             } else if (arch.contains("64")) {
                 libPath = "lib/win64";
             }
+
+            pluginExtension = ".dll";
         } else if (os.contains("linux")) {  //Is Linux
             if (arch.equals("x86")) {
                 libPath = "lib/linux32";
             } else if (arch.contains("64")) {
                 libPath = "lib/linux64";
             }
+
+            pluginExtension = ".so";
         } else if (os.contains("mac")) {    //Is Mac
             libPath = "lib/mac";
+            pluginExtension = ".dylib";
         }
         
         //Set the BASS library location according to the os type

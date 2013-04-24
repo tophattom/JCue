@@ -350,7 +350,7 @@ public class AudioCueUI extends AbstractCueUI implements ActionListener,
         
         if (command.equals("loadAudio")) {  //File choose button was pressed
 
-            File file = FileUtils.chooseFile();
+            File file = FileUtils.chooseFile(new AudioFileFilter());
 
             if (file != null) {
                 this.cue.loadAudio(file.getAbsolutePath());

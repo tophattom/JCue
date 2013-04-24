@@ -10,7 +10,7 @@ import javax.swing.filechooser.FileFilter;
 public class AudioFileFilter extends FileFilter {
     
     private static final String[] supportedTypes = {
-        "mp3", "mp2", "mp1", "ogg", "wav", "aiff", "aif", "aifc"
+        "mp3", "mp2", "mp1", "ogg", "wav", "aiff", "aif", "aifc", "flac"
     };
 
     @Override
@@ -22,11 +22,11 @@ public class AudioFileFilter extends FileFilter {
         String extension = getExtension(file);
         
         if (extension != null) {
-        for (int i = 0; i < supportedTypes.length; i++) {
-            if (extension.equals(supportedTypes[i])) {
-                return true;
+            for (int i = 0; i < supportedTypes.length; i++) {
+                if (extension.equals(supportedTypes[i])) {
+                    return true;
+                }
             }
-        }
         }
         
         return false;
@@ -45,7 +45,7 @@ public class AudioFileFilter extends FileFilter {
         if (i > 0 && i < s.length() - 1) {
             ext = s.substring(i + 1).toLowerCase();
         }
-        
+
         return ext;
     }
 }

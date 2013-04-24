@@ -1,6 +1,7 @@
 package jcue.domain;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 /**
@@ -27,6 +28,22 @@ public class FileUtils {
 
     public static File chooseFile() {
         JFileChooser chooser = new JFileChooser(previousFolder);
+        int result = chooser.showOpenDialog(null);
+
+        File file = null;
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            file = chooser.getSelectedFile();
+        }
+
+        updatePreviousFolder(file);
+
+        return file;
+    }
+
+    public static File chooseFile(FileFilter filter) {
+        JFileChooser chooser = new JFileChooser(previousFolder);
+        chooser.setFileFilter(filter);
         int result = chooser.showOpenDialog(null);
 
         File file = null;
