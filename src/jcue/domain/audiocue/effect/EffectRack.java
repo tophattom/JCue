@@ -151,7 +151,7 @@ public class EffectRack {
                 AbstractEffect effect = null;
 
                 //Create effect
-                if (type == BASS_FX_BFX.BASS_FX_BFX_ECHO.asInt()) {
+                if (type == BASS_FX_BFX.BASS_FX_BFX_ECHO2.asInt()) {
                     effect = new EchoEffect();
                 } else if (type == BASS_FX_BFX.BASS_FX_BFX_REVERB.asInt()) {
                     effect = new ReverbEffect();
