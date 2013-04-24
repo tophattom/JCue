@@ -74,18 +74,22 @@ public class MainWindow implements Runnable {
         fileNew = new JMenuItem("New...");
         fileNew.setActionCommand("fileNew");
         fileNew.addActionListener(eventListener);
+        fileNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 
         fileOpen = new JMenuItem("Open...");
         fileOpen.setActionCommand("fileOpen");
         fileOpen.addActionListener(eventListener);
+        fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 
         fileSave = new JMenuItem("Save");
         fileSave.setActionCommand("fileSave");
         fileSave.addActionListener(eventListener);
+        fileSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 
         fileSaveAs = new JMenuItem("Save as...");
         fileSaveAs.setActionCommand("fileSaveAs");
         fileSaveAs.addActionListener(eventListener);
+        fileSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK | ActionEvent.SHIFT_MASK));
 
         fileExit = new JMenuItem("Exit");
         fileExit.setActionCommand("fileExit");

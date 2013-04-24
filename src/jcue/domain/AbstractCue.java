@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import jcue.domain.audiocue.AudioCue;
 import jcue.domain.eventcue.EventCue;
 import jcue.domain.fadecue.FadeCue;
+import jcue.domain.notecue.NoteCue;
 import jcue.ui.AbstractCueUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,7 +37,7 @@ public abstract class AbstractCue {
 
     public AbstractCue(String name, String description, CueType type) {
         this.name = name;
-        this.description = description;
+        this.description = description == null ? "" : description;
         this.type = type;
         this.startMode = StartMode.MANUAL;
         
@@ -239,6 +240,9 @@ public abstract class AbstractCue {
             return result;
         } else if (cueType == CueType.FADE) {
             FadeCue result = FadeCue.fromElement(cueElem);
+            return result;
+        } else if (cueType == CueType.NOTE) {
+            NoteCue result = NoteCue.fromElement(cueElem);
             return result;
         }
 
